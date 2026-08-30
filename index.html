@@ -18,7 +18,7 @@
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
-        .nav-links { display: none !important; }
+        .nav-links { display: none !important; } /* إخفاء روابط الرئيسية والكورسات والمدرسون والكتب كما طلبت */
         .nav-buttons { display: flex; gap: 10px; align-items: center; }
         .btn-login { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-register { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
@@ -52,7 +52,6 @@
         .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
         .teacher-card h5 { color: #3b0a0a; font-size: 16px; }
 
-        /* صفحة الاختبار */
         #examPage { display: none; max-width: 900px; margin: 20px auto; padding: 30px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         #examPage.active { display: block; animation: fadeInUp 0.5s ease; }
         .exam-header { background: #2d4a3d; color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
@@ -332,14 +331,12 @@
                 <div class="pill">لم يحل (${Number(a.pending)||0})</div>
             `;
 
-            // المحاضرات والكتب الخاصة بالصف
             const courses = getCourses().filter(c => c.grade === user.grade);
             document.getElementById('studentCourses').innerHTML = courses.length ? courses.map(c => `<div class="exam-item"><span class="exam-name">${c.title}</span><a href="${c.link}" target="_blank" class="btn-card">مشاهدة</a></div>`).join('') : '<p>لا توجد محاضرات لصفك بعد.</p>';
 
             const books = getBooks().filter(b => b.grade === user.grade);
             document.getElementById('studentBooks').innerHTML = books.length ? books.map(b => `<div class="exam-item"><span class="exam-name">${b.title}</span><a href="${b.link}" target="_blank" class="btn-card">تحميل</a></div>`).join('') : '<p>لا توجد كتب لصفك بعد.</p>';
 
-            // عرض الاختبارات المتاحة (حسب الصف)
             const exams = getExams().filter(e => e.grade === user.grade);
             document.getElementById('studentExams').innerHTML = exams.length ? exams.map(ex => `
                 <div class="exam-item">
@@ -362,7 +359,6 @@
             document.getElementById('studentRegisteredCourses').innerHTML = (user.registeredCourses || []).length ? user.registeredCourses.map(c => `<div class="exam-item"><span class="exam-name">${c.title}</span><span>${c.teacher}</span></div>`).join('') : '<p>لا توجد مواد مسجلة.</p>';
         }
 
-        // ========== منطق الاختبار ==========
         function startExam(examId) {
             currentExam = getExams().find(e => e.id === examId);
             if (!currentExam) return;
@@ -480,11 +476,9 @@
             loadStudentDashboard(currentUser);
         }
 
-        // ========== أحداث التسجيل والدخول ==========
         document.addEventListener('DOMContentLoaded', function() {
             initData();
             
-            // تجهيز قائمة الصفوف بناءً على المرحلة
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
             const gradesMap = {
@@ -520,7 +514,7 @@
                 const newUser = {
                     id: 'user_' + Date.now(), name, email, phone, grade, password,
                     role: 'student',
-                    active: false, // يتطلب تفعيل الأدمن
+                    active: false,
                     attempts: { avg: 0, solved: 0, total: 0, pending: 0 },
                     exams: [], registeredCourses: [], completedLessons: 0, totalLessons: 38
                 };
