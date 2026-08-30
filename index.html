@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نور تعليم الأزهر - الطالب</title>
+    <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* [CSS السابق بالكامل كما هو] */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
+
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         .animate-fade { animation: fadeInUp 0.7s ease forwards; }
@@ -18,85 +18,87 @@
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
+        .nav-links { display: none !important; }
         .nav-buttons { display: flex; gap: 10px; align-items: center; }
         .btn-login { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-register { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
-        /* [كل الـ CSS الخاص بلوحة الطالب والكورسات] */
+        .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .card { background: #fff; border-radius: 16px; padding: 25px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+        .card h4 { font-size: 18px; color: #3b0a0a; margin-bottom: 10px; }
+        .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; display: inline-block; border: none; cursor: pointer; }
+
         .dashboard-section { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
         .dashboard-section.active { display: block; animation: fadeInUp 0.6s ease; }
-        .student-header-card { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
-        .student-header-card h2 { color: #3b0a0a; font-weight: 900; }
-        .student-header-card p { color: #777; margin-top: 8px; }
 
-        .main-dash-title { color: #3b0a0a; font-size: 28px; font-weight: 900; margin-bottom: 5px; }
-        .dash-subtitle { color: #777; margin-bottom: 30px; font-size: 14px; }
-
+        .student-header-card { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
         .attempts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 25px; }
-        .attempt-card { background: #fff; padding: 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; transition: 0.3s; }
-        .attempt-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+        .attempt-card { background: #fff; padding: 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .attempt-card .value { font-size: 36px; font-weight: 900; color: #3b0a0a; }
-        .attempt-card .label { font-size: 13px; color: #888; margin-top: 5px; }
+        .attempt-card .label { font-size: 13px; color: #888; }
         .attempt-card .icon-circle { width: 50px; height: 50px; background: #f4edd3; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 22px; }
 
+        .dash-block { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
+        .dash-block h4 { color: #3b0a0a; border-bottom: 2px solid #f4edd3; padding-bottom: 12px; margin-bottom: 20px; }
+
+        .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f0ede8; border-radius: 12px; margin-bottom: 15px; background: #fcfaf8; }
+        .exam-name { font-weight: 700; color: #3b0a0a; }
         .pill-bar { display: flex; gap: 15px; justify-content: flex-end; margin-bottom: 30px; }
-        .pill { background: #fff; border: 1px solid #ddd; color: #3b0a0a; padding: 6px 18px; border-radius: 30px; font-weight: 700; font-size: 13px; }
+        .pill { background: #fff; border: 1px solid #ddd; padding: 6px 18px; border-radius: 30px; font-weight: 700; font-size: 13px; }
         .pill.gold { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
 
-        .dash-block { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
-        .dash-block h4 { color: #3b0a0a; font-size: 20px; margin-bottom: 20px; border-bottom: 2px solid #f4edd3; padding-bottom: 12px; }
-
-        .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f0ede8; border-radius: 12px; margin-bottom: 15px; transition: 0.2s; background: #fcfaf8; }
-        .exam-item:hover { border-color: #d4af37; background: #fff; transform: translateX(-5px); }
-        .exam-name { font-weight: 700; color: #3b0a0a; font-size: 15px; }
-        .exam-status { font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
-        .exam-status.waiting { background: #fff7e0; color: #c99e00; }
-
-        .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f0ede8; }
+        .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; }
         .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
-        .teacher-card h5 { color: #3b0a0a; font-size: 16px; font-weight: 800; }
-        .teacher-card p { color: #888; font-size: 13px; }
+        .teacher-card h5 { color: #3b0a0a; font-size: 16px; }
 
-        /* [CSS صفحة الاختبار] */
+        /* صفحة الاختبار */
         #examPage { display: none; max-width: 900px; margin: 20px auto; padding: 30px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         #examPage.active { display: block; animation: fadeInUp 0.5s ease; }
-        
         .exam-header { background: #2d4a3d; color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
-        .exam-header h2 { font-size: 24px; color: #d4af37; }
-        .exam-header p { font-size: 14px; margin-top: 5px; color: #eee; }
-        
+        .exam-header h2 { color: #d4af37; font-size: 24px; }
         .progress-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; margin: 15px 0; overflow: hidden; }
         .progress-fill { width: 0%; height: 100%; background: #d4af37; transition: 0.4s; }
-
         .question-nav { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
         .q-btn { width: 40px; height: 40px; border-radius: 8px; border: 1px solid #ddd; background: #fff; font-weight: 700; cursor: pointer; }
         .q-btn.current { background: #3b0a0a; color: #d4af37; }
-        .q-btn.answered { background: #d4af37; color: #fff; border-color: #d4af37; }
-
-        .question-box { background: #fff; border: 1px solid #f0ede8; border-radius: 16px; padding: 25px; margin-bottom: 20px; }
+        .q-btn.answered { background: #d4af37; color: #fff; }
+        .question-box { border: 1px solid #f0ede8; border-radius: 16px; padding: 25px; margin-bottom: 20px; }
         .q-text { font-size: 20px; font-weight: 800; color: #3b0a0a; margin-bottom: 20px; text-align: right; }
         .options-list { list-style: none; }
-        .option-item { display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
-        .option-item:hover { background: #f9f6f0; }
+        .option-item { display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; cursor: pointer; }
         .option-item.selected { border-color: #d4af37; background: #fff9e6; }
-        .option-item input { width: 18px; height: 18px; cursor: pointer; }
-
+        .option-item input { width: 18px; height: 18px; }
         .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; }
-        .btn-nav { padding: 12px 30px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .btn-nav { padding: 12px 30px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
         .btn-next { background: #3b0a0a; color: #d4af37; }
         .btn-prev { background: #eee; color: #333; }
-
         .btn-finish { width: 100%; background: #2a7a2a; color: #fff; padding: 15px; border-radius: 12px; border: none; font-weight: 900; font-size: 18px; cursor: pointer; margin-top: 15px; }
-
+        .btn-start-exam { background: #d4af37; color: #3b0a0a; padding: 10px 30px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; }
         .result-box { text-align: center; padding: 30px; background: #f0fdf4; border: 1px solid #c3e6cb; border-radius: 16px; }
         .result-title { font-size: 32px; font-weight: 900; color: #2a7a2a; margin-bottom: 10px; }
         .result-details { font-size: 20px; font-weight: 700; color: #333; }
-
-        .pending-container { background: #fff; border-radius: 16px; padding: 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 50px; }
+        .pending-container { background: #fff; border-radius: 16px; padding: 30px; text-align: center; margin-top: 50px; }
         .pending-title { font-size: 22px; font-weight: 900; color: #3b0a0a; margin-bottom: 10px; }
 
-        .btn-start-exam { background: #d4af37; color: #3b0a0a; padding: 10px 30px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; }
-        .btn-start-exam:hover { background: #c99e00; transform: scale(1.05); }
+        .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; }
+        .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
+        .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
+        .auth-sidebar h2 { font-size: 30px; font-weight: 900; color: #fff; }
+        .auth-sidebar p { color: #d4af37; font-size: 14px; }
+        .auth-main-content { width: 65%; background: #faf8f5; padding: 40px 20px; display: flex; justify-content: center; align-items: center; }
+        .auth-card-modern { background: #fff; width: 100%; max-width: 580px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
+        .auth-card-header { text-align: center; margin-bottom: 25px; }
+        .auth-card-header h3 { font-size: 28px; font-weight: 900; color: #3b0a0a; }
+        .gold-divider-line { width: 50px; height: 3px; background: #d4af37; margin: 10px auto; border-radius: 2px; }
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group-modern { margin-bottom: 15px; }
+        .form-group-modern label { display: block; font-size: 12px; font-weight: 700; color: #3b0a0a; margin-bottom: 6px; }
+        .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 12px; border: 1px solid #eadacc; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; }
+        .btn-submit-modern { width: 100%; background: #310606; color: #fff; padding: 14px; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 20px; }
+        .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee; }
+        .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; }
     </style>
 </head>
 <body>
@@ -115,19 +117,19 @@
     </header>
 
     <div id="homeSection">
-        <section class="hero">
-            <h2>نور تعليم الأزهر</h2>
-            <p>محتوى تعليمي يليق بتميز طالب الأزهر الشريف</p>
-        </section>
+        <div class="section-container">
+            <div class="card-grid">
+                <div class="card animate-fade"><h4>مرحباً بك في منصة نور تعليم الأزهر</h4><p>سجل الآن للوصول إلى المحاضرات والكتب والاختبارات الخاصة بصفك.</p></div>
+            </div>
+        </div>
     </div>
 
     <div id="studentDashboard" class="dashboard-section">
-        <a onclick="showHome()" class="back-home" style="color:#3b0a0a; text-decoration:none; font-weight:700; display:inline-block; margin-bottom:20px; cursor:pointer;">← العودة للرئيسية</a>
+        <a onclick="showHome()" style="color:#3b0a0a; text-decoration:none; font-weight:700; display:inline-block; margin-bottom:20px; cursor:pointer;">← العودة للرئيسية</a>
         
         <div id="pendingMessage" style="display:none;" class="pending-container animate-fade">
-            <div class="pending-icon">⏳</div>
             <h3 class="pending-title">حسابك قيد المراجعة</h3>
-            <p class="pending-text">شكراً لتسجيلك! سيتم تفعيل حسابك من قبل الإدارة خلال وقت قصير.</p>
+            <p>شكراً لتسجيلك! سيتم تفعيل حسابك من قبل الإدارة خلال وقت قصير.</p>
         </div>
 
         <div id="studentDashboardContent" style="display:none;">
@@ -136,9 +138,7 @@
                 <p>الصف: <span id="studentGradeDash" style="font-weight:700; color:#d4af37;"></span></p>
             </div>
 
-            <h1 class="main-dash-title">درجاتي</h1>
-            <p class="dash-subtitle">نتائج اختباراتك ودرجاتك في المنصة</p>
-            
+            <h2 style="color:#3b0a0a;">درجاتي</h2>
             <div class="attempts-grid" id="attemptsGrid"></div>
             <div class="pill-bar" id="pillsBar"></div>
 
@@ -147,18 +147,8 @@
                 <div id="studentExams"></div>
             </div>
 
-            <h1 class="main-dash-title">كورساتي</h1>
-            <p class="dash-subtitle">تابع تقدمك في المواد المسجلة</p>
-
             <div class="dash-block animate-fade">
-                <div class="progress-badge">
-                    <div class="progress-circle" id="progressCircle"><span id="progressPercent">0%</span></div>
-                    <div>
-                        <h5 style="font-size:18px; color:#3b0a0a;">الدروس</h5>
-                        <p style="color:#888;">عدد الدروس المكتملة من إجمالي الدروس</p>
-                    </div>
-                </div>
-                <h4 style="margin-top:20px;">📚 المواد المسجلة</h4>
+                <h4>📚 المواد المسجلة</h4>
                 <div id="studentRegisteredCourses"></div>
             </div>
 
@@ -172,65 +162,81 @@
                 <div id="studentBooks"></div>
             </div>
 
-            <h1 class="main-dash-title">مدرسينا</h1>
-            <p class="dash-subtitle">تعرف على المدرسين المتاحين في المنصة</p>
-
             <div class="dash-block animate-fade">
+                <h4>👨‍🏫 مدرسينا</h4>
                 <div class="card-grid" id="studentTeachersGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>
             </div>
         </div>
     </div>
 
-    <!-- صفحة الاختبار (مخفية حتى يضغط الطالب زر ابدأ) -->
     <div id="examPage">
         <div class="exam-header">
             <h2 id="examTitleHeader">عنوان الاختبار</h2>
             <p id="examProgressText">السؤال 1 من 10</p>
         </div>
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-        
         <div id="questionNav" class="question-nav"></div>
-
         <div class="question-box">
             <div class="q-text" id="qTextDisplay">السؤال هنا</div>
             <ul class="options-list" id="optionsList"></ul>
         </div>
-
         <div class="nav-btns">
             <button class="btn-nav btn-prev" onclick="prevQuestion()">السابق</button>
             <button class="btn-nav btn-next" onclick="nextQuestion()">التالي</button>
         </div>
-        
-        <button class="btn-finish" onclick="finishExam()">أجب عن جميع الأسئلة (0/0)</button>
+        <button class="btn-finish" onclick="finishExam()">أجب عن جميع الأسئلة</button>
         <div id="resultBox" style="display:none;" class="result-box">
             <h3 class="result-title" id="resultTitle">مبروك!</h3>
             <p class="result-details" id="resultDetails"></p>
-            <button onclick="exitExam()" class="btn-next" style="margin-top:20px;">العودة لصفحتي</button>
+            <button onclick="exitExam()" class="btn-next" style="margin-top:20px; padding: 10px 30px;">العودة لصفحتي</button>
         </div>
     </div>
 
     <div id="authSection" class="auth-page-section">
-        <!-- [نفس كود التسجيل السابق كما هو بدون تغيير] -->
         <div class="auth-layout-container">
             <div class="auth-sidebar">
-                <h2>نور تعليم الأزهر</h2>
-                <p>منصة الطالب والأدمن</p>
-                <p>محتوى تعليمي يليق بتميز طالب الأزهر</p>
-                <a onclick="showHome()">عودة للرئيسية</a>
+                <div>
+                    <h2>نور تعليم الأزهر</h2>
+                    <p>منصة الطالب والأدمن</p>
+                    <p style="margin-top:20px; color:#ccc;">محتوى تعليمي يليق بتميز طالب الأزهر</p>
+                </div>
+                <a onclick="showHome()" style="color:#d4af37; text-decoration:none; cursor:pointer; margin-top:20px;">عودة للرئيسية</a>
             </div>
             <div class="auth-main-content">
                 <div class="auth-card-modern">
                     <div id="registerFormContainer">
-                        <h3>انضم لمنصتنا</h3>
-                        <form id="registerForm"> [الحقول السابقة] </form>
+                        <div class="auth-card-header"><h3>انضم لمنصتنا</h3><p>أنشئ حسابك كطالب</p><div class="gold-divider-line"></div></div>
+                        <form id="registerForm">
+                            <div class="form-grid-2">
+                                <div class="form-group-modern"><label>اسم المستخدم</label><div class="input-wrapper"><input type="text" id="regName" placeholder="الاسم الكامل" required></div></div>
+                                <div class="form-group-modern"><label>البريد الإلكتروني</label><div class="input-wrapper"><input type="email" id="regEmail" placeholder="example@email.com" required></div></div>
+                            </div>
+                            <div class="form-grid-2">
+                                <div class="form-group-modern"><label>رقم الهاتف</label><div class="input-wrapper"><input type="tel" id="regPhone" placeholder="01xxxxxxxxx" required></div></div>
+                                <div class="form-group-modern"><label>رقم هاتف ولي الأمر</label><div class="input-wrapper"><input type="tel" id="regParentPhone" placeholder="01xxxxxxxxx"></div></div>
+                            </div>
+                            <div class="form-grid-2">
+                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper"><select id="regGovernorate" required><option value="" disabled selected>اختر المحافظة</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option></select></div></div>
+                                <div class="form-group-modern"><label>المركز</label><div class="input-wrapper"><input type="text" id="regCenter" placeholder="أدخل المركز"></div></div>
+                            </div>
+                            <div class="form-group-modern"><label>المرحلة</label><div class="input-wrapper"><select id="regStage" required><option value="" disabled selected>اختر المرحلة</option><option value="primary">ابتدائي أزهري</option><option value="preparatory">إعدادي أزهري</option><option value="secondary">ثانوي أزهري</option></select></div></div>
+                            <div class="form-group-modern"><label>الصف الدراسي</label><div class="input-wrapper"><select id="regGrade" required><option value="" disabled selected>اختر الصف</option></select></div></div>
+                            <div class="form-grid-2">
+                                <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="regPass" placeholder="كلمة المرور" required></div></div>
+                                <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" required></div></div>
+                            </div>
+                            <button type="submit" class="btn-submit-modern">إنشاء الحساب ←</button>
+                        </form>
+                        <div class="auth-toggle-footer"><p>لديك حساب بالفعل؟</p><button class="btn-outline-toggle" onclick="switchAuthView('login')">تسجيل الدخول</button></div>
                     </div>
                     <div id="loginFormContainer" style="display:none;">
-                        <h3>أهلاً بك مجدداً</h3>
+                        <div class="auth-card-header"><h3>أهلاً بك مجدداً</h3><p>سجل دخولك</p><div class="gold-divider-line"></div></div>
                         <form id="loginForm">
-                            <input type="text" id="loginEmailOrPhone" placeholder="البريد أو الهاتف" required>
-                            <input type="password" id="loginPass" placeholder="كلمة المرور" required>
-                            <button type="submit">تسجيل الدخول</button>
+                            <div class="form-group-modern"><label>رقم الهاتف أو البريد</label><div class="input-wrapper"><input type="text" id="loginEmailOrPhone" placeholder="أدخل البريد أو رقم الهاتف" required></div></div>
+                            <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="loginPass" placeholder="كلمة المرور" required></div></div>
+                            <button type="submit" class="btn-submit-modern">تسجيل الدخول ←</button>
                         </form>
+                        <div class="auth-toggle-footer"><p>ليس لديك حساب؟</p><button class="btn-outline-toggle" onclick="switchAuthView('register')">إنشاء حساب جديد</button></div>
                     </div>
                 </div>
             </div>
@@ -238,7 +244,10 @@
     </div>
 
     <script>
-        const ADMINS = [ {id: 'admin1', name: 'أدمن', email: 'admin1@example.com', phone: '011', password: 'admin123'} ];
+        const ADMINS = [
+            { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' }
+        ];
+
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -251,13 +260,28 @@
         function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
 
         function initData() {
-            if (!localStorage.getItem('users')) {
-                setUsers([...ADMINS, {id:'test_student', name:'طالب تجريبي', grade:'الصف الثالث الثانوي', role:'student', active: true, password:'123', attempts:{avg:80, solved:5, total:10, pending:5}, exams:[], registeredCourses:[], completedLessons:20, totalLessons:38}]);
-            }
+            let users = getUsers();
+            let needUpdate = false;
+
+            ADMINS.forEach(adminData => {
+                let existing = users.find(u => u.id === adminData.id && u.role === 'admin');
+                if (existing) {
+                    if (existing.email !== adminData.email || existing.password !== adminData.password) {
+                        existing.email = adminData.email;
+                        existing.password = adminData.password;
+                        needUpdate = true;
+                    }
+                } else {
+                    users.push({ ...adminData, role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
+                    needUpdate = true;
+                }
+            });
+
             if (!localStorage.getItem('courses')) setCourses([]);
             if (!localStorage.getItem('books')) setBooks([]);
-            if (!localStorage.getItem('teachers')) setTeachers([{id:'t1', name:'زينب محمد', specialty:'اللغة العربية', image:'https://via.placeholder.com/150'}]);
+            if (!localStorage.getItem('teachers')) setTeachers([{ id: 't1', name: 'زينب محمد', specialty: 'اللغة العربية', image: 'https://via.placeholder.com/150' }]);
             if (!localStorage.getItem('exams')) setExams([]);
+            if (needUpdate) setUsers(users);
         }
 
         function showHome() {
@@ -270,10 +294,18 @@
         function showAuthPage(mode) {
             document.getElementById('homeSection').style.display = 'none';
             document.getElementById('authSection').style.display = 'block';
-            // toggle login/register forms
+            switchAuthView(mode);
+        }
+
+        function switchAuthView(mode) {
             document.getElementById('registerFormContainer').style.display = (mode === 'register') ? 'block' : 'none';
             document.getElementById('loginFormContainer').style.display = (mode === 'login') ? 'block' : 'none';
         }
+
+        let currentUser = null;
+        let currentExam = null;
+        let currentQIndex = 0;
+        let answers = [];
 
         function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
@@ -288,7 +320,6 @@
                 document.getElementById('studentDashboardContent').style.display = 'block';
             }
 
-            // إحصائيات صحيحة
             const a = user.attempts || { avg:0, solved:0, total:0, pending:0 };
             document.getElementById('attemptsGrid').innerHTML = `
                 <div class="attempt-card"><div><div class="value">${Number(a.avg)||0}%</div><div class="label">متوسط الدرجات</div></div><div class="icon-circle">💯</div></div>
@@ -317,13 +348,11 @@
                 </div>
             `).join('') : '<p>لا توجد اختبارات لصفك بعد.</p>';
 
-            // المدرسين
             const teachers = getTeachers();
             document.getElementById('studentTeachersGrid').innerHTML = teachers.map(t => `
                 <div class="teacher-card">${t.image ? `<img src="${t.image}">` : ''}<h5>${t.name}</h5><p>${t.specialty}</p></div>
             `).join('');
             
-            // تقدم الطالب
             const completed = user.completedLessons || 0;
             const total = user.totalLessons || 1;
             const pct = Math.round((completed/total)*100);
@@ -334,18 +363,12 @@
         }
 
         // ========== منطق الاختبار ==========
-        let currentUser = null;
-        let currentExam = null;
-        let currentQIndex = 0;
-        let answers = [];
-
         function startExam(examId) {
             currentExam = getExams().find(e => e.id === examId);
             if (!currentExam) return;
             currentQIndex = 0;
             answers = new Array(currentExam.questions.length).fill(null);
             
-            // إخفاء لوحة التحكم وإظهار صفحة الاختبار
             document.getElementById('studentDashboard').classList.remove('active');
             document.getElementById('examPage').classList.add('active');
             
@@ -359,14 +382,12 @@
             document.getElementById('examProgressText').textContent = `السؤال ${currentQIndex + 1} من ${currentExam.questions.length}`;
             document.getElementById('progressFill').style.width = ((currentQIndex + 1) / currentExam.questions.length) * 100 + '%';
 
-            // بناء أزرار التنقل
             let navHTML = '';
             currentExam.questions.forEach((_, i) => {
                 navHTML += `<button class="q-btn ${i === currentQIndex ? 'current' : ''} ${answers[i] !== null ? 'answered' : ''}" onclick="goToQuestion(${i})">${i + 1}</button>`;
             });
             document.getElementById('questionNav').innerHTML = navHTML;
 
-            // بناء الخيارات
             let optionsHTML = '';
             q.options.forEach((opt, i) => {
                 const isChecked = answers[currentQIndex] === i;
@@ -378,7 +399,6 @@
             });
             document.getElementById('optionsList').innerHTML = optionsHTML;
             
-            // تحديث زر النتيجة
             const answeredCount = answers.filter(a => a !== null).length;
             const btnFinish = document.querySelector('.btn-finish');
             btnFinish.textContent = `أجب عن جميع الأسئلة (${answeredCount}/${currentExam.questions.length})`;
@@ -409,7 +429,6 @@
         }
 
         function finishExam() {
-            // حساب النتيجة
             let correctCount = 0;
             let wrongCount = 0;
             let unanswered = 0;
@@ -420,7 +439,6 @@
                 else wrongCount++;
             });
 
-            // تحديث بيانات الطالب في LocalStorage
             const users = getUsers();
             const userIdx = users.findIndex(u => u.id === currentUser.id);
             if (userIdx > -1) {
@@ -439,7 +457,6 @@
                 setUsers(users);
             }
 
-            // إظهار النتيجة
             document.getElementById('questionNav').style.display = 'none';
             document.getElementById('qTextDisplay').style.display = 'none';
             document.getElementById('optionsList').style.display = 'none';
@@ -467,6 +484,27 @@
         document.addEventListener('DOMContentLoaded', function() {
             initData();
             
+            // تجهيز قائمة الصفوف بناءً على المرحلة
+            const stageSelect = document.getElementById('regStage');
+            const gradeSelect = document.getElementById('regGrade');
+            const gradesMap = {
+                primary: ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي'],
+                preparatory: ['الأول إعدادي','الثاني إعدادي','الثالث إعدادي'],
+                secondary: ['الأول ثانوي','الثاني ثانوي','الثالث ثانوي']
+            };
+            stageSelect.addEventListener('change', function() {
+                gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف</option>';
+                const val = this.value;
+                if (val && gradesMap[val]) {
+                    gradesMap[val].forEach(g => {
+                        const opt = document.createElement('option');
+                        opt.value = 'الصف ' + g;
+                        opt.textContent = 'الصف ' + g;
+                        gradeSelect.appendChild(opt);
+                    });
+                }
+            });
+
             document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('regName').value.trim();
@@ -474,6 +512,9 @@
                 const phone = document.getElementById('regPhone').value.trim();
                 const grade = document.getElementById('regGrade').value;
                 const password = document.getElementById('regPass').value;
+                const confirm = document.getElementById('regConfirmPass').value;
+                
+                if (password !== confirm) { alert('كلمتا المرور غير متطابقتين.'); return; }
                 const users = getUsers();
                 
                 const newUser = {
@@ -485,7 +526,7 @@
                 };
                 users.push(newUser);
                 setUsers(users);
-                alert('تم إنشاء الحساب بنجاح!');
+                alert('تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل.');
                 switchAuthView('login');
             });
 
@@ -516,7 +557,6 @@
             const userJson = sessionStorage.getItem('currentUser');
             if (userJson) {
                 currentUser = JSON.parse(userJson);
-                // ... (نفس منطق الدخول التلقائي)
                 document.getElementById('navButtons').style.display = 'none';
                 document.getElementById('navUser').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = currentUser.name + ' 👋';
@@ -539,11 +579,6 @@
             document.getElementById('examPage').classList.remove('active');
             document.getElementById('homeSection').style.display = 'block';
             window.scrollTo(0,0);
-        }
-        
-        function switchAuthView(mode) {
-            document.getElementById('registerFormContainer').style.display = (mode === 'register') ? 'block' : 'none';
-            document.getElementById('loginFormContainer').style.display = (mode === 'login') ? 'block' : 'none';
         }
     </script>
 </body>
