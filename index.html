@@ -6,61 +6,86 @@
     <title>نور تعليم الأزهر</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* ====== RESET ====== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
-        
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .animate-fade { animation: fadeInUp 0.7s ease forwards; }
-        .animate-scale { animation: scaleIn 0.4s ease forwards; }
 
-        header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; }
-        .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        /* ====== أنيميشن ====== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade { animation: fadeInUp 0.7s ease forwards; }
+        .animate-slide { animation: slideInRight 0.5s ease forwards; }
+        .animate-scale { animation: scaleIn 0.4s ease forwards; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* ====== HEADER ====== */
+        header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; transition: all 0.3s; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
-        .nav-links { display: flex; gap: 25px; list-style: none; }
-        .nav-links a { text-decoration: none; color: #444; font-weight: 600; cursor: pointer; }
-        .nav-links a:hover { color: #d4af37; }
-        .nav-buttons { display: flex; gap: 10px; align-items: center; }
-        .btn-login { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-register { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .nav-links { display: flex; list-style: none; gap: 25px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: 600; font-size: 15px; transition: 0.3s; cursor: pointer; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -4px; right: 0; width: 0; height: 2px; background: #d4af37; transition: 0.4s; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: #3b0a0a; transform: translateY(-2px); }
+        .nav-buttons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .btn-login { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.3s; }
+        .btn-login:hover { background: #f4edd3; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .btn-register { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-register:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,10,10,0.2); }
+        .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-admin-panel:hover { background: #e0c060; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.3); }
 
-        .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; }
+        /* ====== HERO ====== */
+        .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; animation: fadeInUp 0.8s ease; }
         .hero h2 { font-size: 48px; font-weight: 900; color: #f7e1a0; margin-bottom: 15px; }
-        .hero p { font-size: 18px; margin-bottom: 30px; }
-        .hero-btns { display: flex; justify-content: center; gap: 15px; }
-        .btn-primary { background: #3b0a0a; color: #fff; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; border: 2px solid #d4af37; cursor: pointer; }
-        .btn-secondary { background: #fff; color: #3b0a0a; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; cursor: pointer; }
+        .hero p { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
+        .hero-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .btn-primary { background: #3b0a0a; color: #fff; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; border: 2px solid #d4af37; transition: 0.3s; }
+        .btn-primary:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .btn-secondary { background: #fff; color: #3b0a0a; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; transition: 0.3s; }
+        .btn-secondary:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
+        /* ====== SECTIONS ====== */
         .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
-        .section-header { margin-bottom: 40px; text-align: center; }
+        .section-header { margin-bottom: 40px; }
+        .section-header span { color: #d4af37; font-weight: 700; font-size: 14px; letter-spacing: 1px; }
         .section-header h3 { font-size: 32px; color: #3b0a0a; font-weight: 900; }
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .card { background: #fff; border-radius: 16px; padding: 25px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
-        .card h4 { font-size: 18px; color: #3b0a0a; margin-bottom: 10px; }
-        .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; display: inline-block; border: none; cursor: pointer; }
+        .section-header p { color: #666; font-size: 15px; margin-top: 5px; }
 
-        .dashboard-section { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f0ede8; padding: 25px 20px; text-align: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.08); border-color: #d4af37; }
+        .card h4 { font-size: 18px; color: #3b0a0a; margin-bottom: 10px; }
+        .card p { font-size: 13px; color: #666; line-height: 1.7; }
+        .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-card:hover { background: #520e0e; transform: scale(1.05) translateY(-2px); box-shadow: 0 8px 20px rgba(59,10,10,0.2); }
+
+        /* ====== STUDENT DASHBOARD ====== */
+        .dashboard-section { display: none; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
         .dashboard-section.active { display: block; animation: fadeInUp 0.6s ease; }
-        .student-header-card { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
-        .attempts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 25px; }
-        .attempt-card { background: #fff; padding: 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .attempt-card .value { font-size: 36px; font-weight: 900; color: #3b0a0a; }
-        .attempt-card .label { font-size: 13px; color: #888; }
-        .attempt-card .icon-circle { width: 50px; height: 50px; background: #f4edd3; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 22px; }
-        .pill-bar { display: flex; gap: 15px; justify-content: flex-end; margin-bottom: 30px; }
-        .pill { background: #fff; border: 1px solid #ddd; padding: 6px 18px; border-radius: 30px; font-weight: 700; font-size: 13px; }
-        .pill.gold { background: #3b0a0a; color: #d4af37; }
-        
+        .student-header-card { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
+        .attempts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .attempt-card { background: #fff; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #eee; text-align: center; transition: 0.3s; }
+        .attempt-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+        .attempt-card .value { font-size: 28px; font-weight: 900; color: #3b0a0a; }
+        .attempt-card .label { font-size: 13px; color: #888; margin-top: 5px; }
+
         .dash-block { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
         .dash-block h4 { color: #3b0a0a; border-bottom: 2px solid #f4edd3; padding-bottom: 12px; margin-bottom: 20px; }
-        .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f0ede8; border-radius: 12px; margin-bottom: 15px; background: #fcfaf8; }
-        .exam-name { font-weight: 700; color: #3b0a0a; }
-        .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
-        
-        /* ستايل الأكورديون للوحدات */
         .bundle-container { margin-top: 20px; }
         details.bundle { background: #fff; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid #eee; }
         details.bundle summary { background: #2d4a3d; color: #fff; padding: 20px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
@@ -71,7 +96,12 @@
         .bundle-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
         .bundle-item:last-child { border-bottom: none; }
         .bundle-item-title { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #444; }
-        
+        .btn-start-exam { background: #d4af37; color: #3b0a0a; padding: 10px 30px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; }
+
+        .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
+
+        /* ====== EXAM PAGE ====== */
         #examPage { display: none; max-width: 900px; margin: 20px auto; padding: 30px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         #examPage.active { display: block; }
         .exam-header { background: #2d4a3d; color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
@@ -92,39 +122,93 @@
         .btn-next { background: #3b0a0a; color: #d4af37; }
         .btn-prev { background: #eee; color: #333; }
         .btn-finish { width: 100%; background: #2a7a2a; color: #fff; padding: 15px; border-radius: 12px; border: none; font-weight: 900; font-size: 18px; cursor: pointer; margin-top: 15px; }
-        .btn-start-exam { background: #d4af37; color: #3b0a0a; padding: 10px 30px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; }
         .result-box { text-align: center; padding: 30px; background: #f0fdf4; border: 1px solid #c3e6cb; border-radius: 16px; }
-        
-        .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; }
+
+        /* ====== AUTH ====== */
+        .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; animation: fadeInUp 0.5s ease; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
-        .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
-        .auth-sidebar h2 { font-size: 30px; font-weight: 900; color: #fff; }
-        .auth-sidebar p { color: #d4af37; font-size: 14px; }
-        .auth-main-content { width: 65%; background: #faf8f5; padding: 40px 20px; display: flex; justify-content: center; align-items: center; }
-        .auth-card-modern { background: #fff; width: 100%; max-width: 580px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); }
+        .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
+        .auth-sidebar-top { width: 100%; display: flex; justify-content: flex-start; }
+        .btn-home-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); color: #e0e0e0; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; border: 1px solid rgba(255,255,255,0.15); transition: 0.3s; cursor: pointer; }
+        .btn-home-pill:hover { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-3px); }
+        .auth-sidebar-brand { margin: 40px 0; animation: scaleIn 1s ease; }
+        .auth-brand-logo { width: 70px; height: 70px; margin: 0 auto 15px; background: radial-gradient(circle, #d4af37 0%, #8a6f1d 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid #fff; }
+        .auth-sidebar-brand h2 { font-size: 30px; font-weight: 900; color: #fff; }
+        .auth-sidebar-brand p { color: #d4af37; font-size: 14px; font-weight: 600; }
+        .auth-features-list { list-style: none; text-align: right; width: 100%; max-width: 320px; margin: 20px 0; display: flex; flex-direction: column; gap: 20px; }
+        .auth-features-list li { display: flex; align-items: center; gap: 15px; font-size: 14px; color: #e0e0e0; font-weight: 600; transition: 0.3s; }
+        .auth-features-list li:hover { color: #fff; transform: translateX(-3px); }
+        .auth-features-list .icon-box { width: 36px; height: 36px; background: rgba(212,175,55,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 18px; flex-shrink: 0; }
+        .auth-main-content { width: 65%; background: #faf8f5; padding: 40px 20px; display: flex; justify-content: center; align-items: center; overflow-y: auto; }
+        .auth-card-modern { background: #fff; width: 100%; max-width: 580px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f0e6d6; animation: scaleIn 0.5s ease; }
         .auth-card-header { text-align: center; margin-bottom: 25px; }
         .auth-card-header h3 { font-size: 28px; font-weight: 900; color: #3b0a0a; }
+        .auth-card-header p { color: #777; font-size: 14px; }
         .gold-divider-line { width: 50px; height: 3px; background: #d4af37; margin: 10px auto; border-radius: 2px; }
+        .form-section-title { font-size: 14px; font-weight: 800; color: #3b0a0a; margin: 20px 0 15px; display: flex; align-items: center; gap: 6px; }
+        .form-section-title::before { content: ""; display: inline-block; width: 4px; height: 16px; background: #d4af37; border-radius: 2px; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group-modern { margin-bottom: 15px; }
         .form-group-modern label { display: block; font-size: 12px; font-weight: 700; color: #3b0a0a; margin-bottom: 6px; }
-        .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 12px; border: 1px solid #eadacc; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; }
-        .btn-submit-modern { width: 100%; background: #310606; color: #fff; padding: 14px; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 20px; }
-        .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; }
-        
-        .pending-container { background: #fff; border-radius: 16px; padding: 30px; text-align: center; margin-top: 50px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 38px 10px 12px; border: 1px solid #eadacc; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; background: #fff; color: #333; transition: 0.3s; }
+        .input-wrapper input:focus, .input-wrapper select:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212,175,55,0.1); transform: scale(1.01); }
+        .input-icon-right { position: absolute; right: 12px; color: #b09575; font-size: 15px; pointer-events: none; }
+        .input-icon-left { position: absolute; left: 12px; color: #b09575; font-size: 15px; cursor: pointer; }
+        .btn-submit-modern { width: 100%; background: #310606; color: #fff; padding: 14px; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-submit-modern:hover { background: #4d0a0a; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,10,10,0.2); }
+        .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee; }
+        .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); }
+
+        /* ====== FOOTER ====== */
+        footer { background: #2f0808; color: #fff; padding: 50px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
+        .footer-col h3 { color: #d4af37; font-size: 24px; font-weight: 900; }
+        .footer-col p { font-size: 14px; color: #ccc; line-height: 1.8; }
+        .footer-col h4 { color: #fff; font-size: 18px; margin-bottom: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: #ccc; text-decoration: none; font-size: 14px; transition: 0.3s; cursor: pointer; }
+        .footer-col ul li a:hover { color: #d4af37; padding-right: 5px; }
+        .social-icons { display: flex; gap: 12px; margin-top: 10px; }
+        .social-icon { width: 38px; height: 38px; background: #1a0404; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; font-size: 16px; border: 1px solid rgba(212,175,55,0.3); transition: 0.3s; }
+        .social-icon:hover { background: #d4af37; color: #3b0a0a; transform: translateY(-3px) scale(1.1); }
+        .footer-bottom { max-width: 1200px; margin: 30px auto 0; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; font-size: 13px; color: #aaa; }
+
+        .support-float-btn { position: fixed; bottom: 25px; left: 25px; background: #fff; color: #3b0a0a; padding: 12px 20px; border-radius: 14px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; z-index: 9999; text-decoration: none; border: 1px solid #e0d0a0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .support-float-btn:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+        .support-float-icon { background: #3b0a0a; color: #d4af37; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+        @media (max-width: 900px) {
+            .auth-layout-container { flex-direction: column; }
+            .auth-sidebar { width: 100%; padding: 30px 20px; }
+            .auth-main-content { width: 100%; padding: 30px 15px; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .nav-container { flex-direction: column; align-items: stretch; }
+            .nav-links { justify-content: center; }
+            .nav-buttons { justify-content: center; }
+            .hero h2 { font-size: 30px; }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="nav-container">
             <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>منصة الطالب والأدمن</span></div></div>
+            <ul class="nav-links">
+                <li><a onclick="showHome()">الرئيسية</a></li>
+                <li><a onclick="showHome()">الكورسات</a></li>
+                <li><a onclick="showHome()">المدرسون</a></li>
+                <li><a onclick="showHome()">الكتب</a></li>
+            </ul>
             <div class="nav-buttons" id="navButtons">
                 <a onclick="showAuthPage('login')" class="btn-login">دخول</a>
                 <a onclick="showAuthPage('register')" class="btn-register">سجل الآن</a>
             </div>
             <div class="nav-buttons" id="navUser" style="display:none;">
                 <span style="color:#3b0a0a; font-weight:700;" id="userNameDisplay"></span>
+                <a onclick="goToAdmin()" id="adminLinkBtn" style="display:none;" class="btn-admin-panel">لوحة الأدمن</a>
                 <a onclick="logout()" class="btn-login" style="margin-right:10px;">تسجيل خروج</a>
             </div>
         </div>
@@ -139,18 +223,40 @@
                 <a onclick="showAuthPage('login')" class="btn-secondary">تسجيل الدخول</a>
             </div>
         </section>
+
+        <div class="section-container animate-fade">
+            <div class="section-header"><span>لماذا نحن؟</span><h3>ليه نور تعليم الأزهر؟</h3><p>منصة متكاملة لطلاب الأزهر</p></div>
+            <div class="card-grid">
+                <div class="card animate-scale"><div style="font-size:40px;">📦</div><h4>منهج شامل</h4><p>باقات مخصصة للمراجعات.</p></div>
+                <div class="card animate-scale delay-1"><div style="font-size:40px;">⭐</div><h4>جودة عالية</h4><p>محتوى يليق بتميز الطالب.</p></div>
+                <div class="card animate-scale delay-2"><div style="font-size:40px;">👨‍🏫</div><h4>مدرسين خبراء</h4><p>خبرة أكثر من 10 سنوات.</p></div>
+                <div class="card animate-scale delay-3"><div style="font-size:40px;">⏱️</div><h4>تعلم في أي وقت</h4><p>من موبايلك أو لابتوبك.</p></div>
+            </div>
+        </div>
+
+        <div class="section-container animate-fade" id="teachersSection">
+            <div class="section-header"><span>المدرسون</span><h3>مدرسين نور تعليم الأزهر</h3></div>
+            <div class="card-grid" id="teachersGrid"></div>
+        </div>
+
+        <div class="section-container animate-fade" id="coursesSection">
+            <div class="section-header"><span>كورساتنا</span><h3>كورسات هتفرق معاك</h3></div>
+            <div class="card-grid" id="coursesGrid"></div>
+        </div>
+
+        <div class="section-container animate-fade" id="booksSection">
+            <div class="section-header"><span>مكتبة الطالب</span><h3>الكتب والملازم</h3></div>
+            <div class="card-grid" id="booksGrid"></div>
+        </div>
     </div>
 
-    <!-- لوحة تحكم الطالب -->
     <div id="studentDashboard" class="dashboard-section">
-        <a onclick="showHome()" style="color:#3b0a0a; text-decoration:none; font-weight:700; display:inline-block; margin-bottom:20px; cursor:pointer;">← العودة للرئيسية</a>
-        
-        <div id="pendingMessage" style="display:none;" class="pending-container animate-fade">
+        <a onclick="showHome()" class="back-home">← العودة للرئيسية</a>
+        <div id="pendingMessage" style="display:none;" class="student-header-card animate-fade">
             <h3 style="color:#3b0a0a; margin-bottom:10px;">حسابك قيد المراجعة</h3>
             <p>شكراً لتسجيلك! سيتم تفعيل حسابك من قبل الإدارة خلال وقت قصير.</p>
         </div>
-
-        <div id="studentDashboardContent" style="display:none;">
+        <div id="studentDashboardContent">
             <div class="student-header-card animate-fade">
                 <h2>مرحباً، <span id="studentNameDash"></span> 👋</h2>
                 <p>الصف: <span id="studentGradeDash" style="font-weight:700; color:#d4af37;"></span></p>
@@ -158,9 +264,7 @@
 
             <h2 style="color:#3b0a0a; margin-bottom:20px;">درجاتي</h2>
             <div class="attempts-grid" id="attemptsGrid"></div>
-            <div class="pill-bar" id="pillsBar"></div>
 
-            <!-- قسم الكورسات (عرض الحزم) -->
             <h2 style="color:#3b0a0a; margin-top:30px; margin-bottom:20px;">كورساتي</h2>
             <div class="dash-block">
                 <h4>📦 محتوى الوحدات (اضغط على الوحدة لفتحها)</h4>
@@ -201,35 +305,41 @@
     <div id="authSection" class="auth-page-section">
         <div class="auth-layout-container">
             <div class="auth-sidebar">
-                <div>
-                    <h2>نور تعليم الأزهر</h2>
-                    <p>منصة الطالب والأدمن</p>
-                    <p style="margin-top:20px; color:#ccc;">محتوى تعليمي يليق بتميز طالب الأزهر</p>
-                </div>
-                <a onclick="showHome()" style="color:#d4af37; text-decoration:none; cursor:pointer; margin-top:20px;">عودة للرئيسية</a>
+                <div class="auth-sidebar-top"><a onclick="showHome()" class="btn-home-pill">🏠 الرئيسية</a></div>
+                <div class="auth-sidebar-brand"><div class="auth-brand-logo">🕌</div><h2>نور تعليم الأزهر</h2><p>منصة الطالب والأدمن</p></div>
+                <ul class="auth-features-list">
+                    <li><div class="icon-box">📖</div><span>كورسات ومحاضرات</span></li>
+                    <li><div class="icon-box">🎓</div><span>متابعة التقدم</span></li>
+                    <li><div class="icon-box">🎧</div><span>دعم فني سريع</span></li>
+                </ul>
+                <div class="auth-sidebar-footer">محتوى تعليمي يليق بتميز طالب الأزهر</div>
             </div>
             <div class="auth-main-content">
                 <div class="auth-card-modern">
                     <div id="registerFormContainer">
                         <div class="auth-card-header"><h3>انضم لمنصتنا</h3><p>أنشئ حسابك كطالب</p><div class="gold-divider-line"></div></div>
                         <form id="registerForm">
+                            <div class="form-section-title">البيانات الشخصية</div>
                             <div class="form-grid-2">
-                                <div class="form-group-modern"><label>اسم المستخدم</label><div class="input-wrapper"><input type="text" id="regName" placeholder="الاسم الكامل" required></div></div>
-                                <div class="form-group-modern"><label>البريد الإلكتروني</label><div class="input-wrapper"><input type="email" id="regEmail" placeholder="example@email.com" required></div></div>
+                                <div class="form-group-modern"><label>اسم المستخدم</label><div class="input-wrapper"><input type="text" id="regName" placeholder="الاسم الكامل" required><span class="input-icon-right">👤</span></div></div>
+                                <div class="form-group-modern"><label>البريد الإلكتروني</label><div class="input-wrapper"><input type="email" id="regEmail" placeholder="example@email.com" required><span class="input-icon-right">✉️</span></div></div>
                             </div>
                             <div class="form-grid-2">
-                                <div class="form-group-modern"><label>رقم الهاتف</label><div class="input-wrapper"><input type="tel" id="regPhone" placeholder="01xxxxxxxxx" required></div></div>
-                                <div class="form-group-modern"><label>رقم هاتف ولي الأمر</label><div class="input-wrapper"><input type="tel" id="regParentPhone" placeholder="01xxxxxxxxx"></div></div>
+                                <div class="form-group-modern"><label>رقم الهاتف</label><div class="input-wrapper"><input type="tel" id="regPhone" placeholder="01xxxxxxxxx" required><span class="input-icon-right">📞</span></div></div>
+                                <div class="form-group-modern"><label>رقم هاتف ولي الأمر</label><div class="input-wrapper"><input type="tel" id="regParentPhone" placeholder="01xxxxxxxxx"><span class="input-icon-right">📞</span></div></div>
                             </div>
+                            <div class="form-section-title">الموقع والصف</div>
                             <div class="form-grid-2">
-                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper"><select id="regGovernorate" required><option value="">اختر المحافظة</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option></select></div></div>
+                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper"><select id="regGovernorate" required><option value="" disabled selected>اختر المحافظة</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>الشرقية</option><option>الغربية</option><option>المنوفية</option><option>البحيرة</option></select><span class="input-icon-right">📍</span></div></div>
                                 <div class="form-group-modern"><label>المركز</label><div class="input-wrapper"><input type="text" id="regCenter" placeholder="أدخل المركز"></div></div>
                             </div>
-                            <div class="form-group-modern"><label>المرحلة</label><div class="input-wrapper"><select id="regStage" required><option value="">اختر المرحلة</option><option value="primary">ابتدائي أزهري</option><option value="preparatory">إعدادي أزهري</option><option value="secondary">ثانوي أزهري</option></select></div></div>
-                            <div class="form-group-modern"><label>الصف الدراسي</label><div class="input-wrapper"><select id="regGrade" required><option value="">اختر الصف</option></select></div></div>
+                            <div class="form-section-title">المرحلة والصف</div>
+                            <div class="form-group-modern"><label>المرحلة</label><div class="input-wrapper"><select id="regStage" required><option value="" disabled selected>اختر المرحلة</option><option value="primary">ابتدائي أزهري</option><option value="preparatory">إعدادي أزهري</option><option value="secondary">ثانوي أزهري</option></select><span class="input-icon-right">🎓</span></div></div>
+                            <div class="form-group-modern"><label>الصف الدراسي</label><div class="input-wrapper"><select id="regGrade" required><option value="" disabled selected>اختر الصف</option></select><span class="input-icon-right">📚</span></div></div>
+                            <div class="form-section-title">بيانات الحساب</div>
                             <div class="form-grid-2">
-                                <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="regPass" placeholder="كلمة المرور" required></div></div>
-                                <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" required></div></div>
+                                <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="regPass" placeholder="كلمة المرور" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regPass')">👁️</span></div></div>
+                                <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regConfirmPass')">👁️</span></div></div>
                             </div>
                             <button type="submit" class="btn-submit-modern">إنشاء الحساب ←</button>
                         </form>
@@ -238,8 +348,8 @@
                     <div id="loginFormContainer" style="display:none;">
                         <div class="auth-card-header"><h3>أهلاً بك مجدداً</h3><p>سجل دخولك</p><div class="gold-divider-line"></div></div>
                         <form id="loginForm">
-                            <div class="form-group-modern"><label>رقم الهاتف أو البريد</label><div class="input-wrapper"><input type="text" id="loginEmailOrPhone" placeholder="أدخل البريد أو رقم الهاتف" required></div></div>
-                            <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="loginPass" placeholder="كلمة المرور" required></div></div>
+                            <div class="form-group-modern"><label>رقم الهاتف أو البريد</label><div class="input-wrapper"><input type="text" id="loginEmailOrPhone" placeholder="أدخل البريد أو رقم الهاتف" required><span class="input-icon-right">👤</span></div></div>
+                            <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="loginPass" placeholder="كلمة المرور" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('loginPass')">👁️</span></div></div>
                             <button type="submit" class="btn-submit-modern">تسجيل الدخول ←</button>
                         </form>
                         <div class="auth-toggle-footer"><p>ليس لديك حساب؟</p><button class="btn-outline-toggle" onclick="switchAuthView('register')">إنشاء حساب جديد</button></div>
@@ -249,9 +359,31 @@
         </div>
     </div>
 
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col"><h4>روابط سريعة</h4><ul><li><a onclick="showHome()">الرئيسية</a></li><li><a onclick="showHome()">المدرسون</a></li><li><a onclick="showHome()">الكورسات</a></li></ul></div>
+            <div class="footer-col"><h4>تواصل معنا</h4><div class="social-icons"><a href="https://wa.me/201113224591" target="_blank" class="social-icon">💬</a><a href="#" class="social-icon">🔵</a><a href="#" class="social-icon">▶</a></div><p style="margin-top:10px; color:#d4af37;" dir="ltr">01113224591</p></div>
+            <div class="footer-col" style="text-align:left;"><h3>نور تعليم الأزهر</h3><p>محتوى تعليمي يليق بتميز طالب الأزهر</p><p style="color:#d4af37; font-weight:700;">مستقبلك يبدأ من هنا</p></div>
+        </div>
+        <div class="footer-bottom"><p>© 2026 نور تعليم الأزهر</p></div>
+    </footer>
+
+    <a href="https://wa.me/201113224591" target="_blank" class="support-float-btn">
+        <div class="support-float-icon">🎧</div>
+        <div><h5 style="font-size:14px;">الدعم الفني</h5><p style="font-size:11px; color:#777;">01113224591</p></div>
+    </a>
+
     <script>
-        const ADMINS = [{ id: 'admin1', name: 'أدمن', email: 'admin1@example.com', password: 'admin123' }];
-        
+        // ========== بيانات الأدمنة ==========
+        const ADMINS = [
+            { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' },
+            { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', password: 'admin123' },
+            { id: 'admin3', name: 'أدمن 3 - سارة', email: 'admin3@example.com', phone: '01110000003', password: 'admin123' },
+            { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', password: 'admin123' },
+            { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', password: 'admin123' }
+        ];
+
+        // ========== دوال البيانات ==========
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
@@ -260,30 +392,116 @@
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
         function getExams() { return JSON.parse(localStorage.getItem('exams')) || []; }
         function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
+        function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
+        function setCourses(c) { localStorage.setItem('courses', JSON.stringify(c)); }
+        function getBooks() { return JSON.parse(localStorage.getItem('books')) || []; }
+        function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
 
+        // ========== تهيئة البيانات ==========
         function initData() {
-            if (!localStorage.getItem('users')) setUsers([...ADMINS]);
-            if (!localStorage.getItem('bundles')) setBundles([]);
-            if (!localStorage.getItem('teachers')) setTeachers([]);
-            if (!localStorage.getItem('exams')) setExams([]);
+            let users = getUsers();
+            let needUpdate = false;
+
+            ADMINS.forEach(adminData => {
+                let existing = users.find(u => u.id === adminData.id && u.role === 'admin');
+                if (existing) {
+                    if (existing.email !== adminData.email || existing.password !== adminData.password || existing.name !== adminData.name || existing.phone !== adminData.phone) {
+                        Object.assign(existing, adminData);
+                        needUpdate = true;
+                    }
+                } else {
+                    users.push({ ...adminData, parentPhone: '', governorate: 'القاهرة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
+                    needUpdate = true;
+                }
+            });
+
+            if (!localStorage.getItem('bundles')) setBundles([
+                { id: 'bundle1', title: 'الوحدة الأولى - النحو', grade: 'الصف الثالث الثانوي', items: [
+                    { type: 'pdf', title: 'مذكرة النحو', link: '#' },
+                    { type: 'video', title: 'شرح الدرس الأول', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { type: 'exam', title: 'اختبار الوحدة الأولى', examId: 'exam1' }
+                ]}
+            ]);
+            if (!localStorage.getItem('teachers')) setTeachers([
+                { id: 't1', name: 'زينب محمد حسان', specialty: 'اللغة العربية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=ز' },
+                { id: 't2', name: 'مستمر محمد', specialty: 'المواد الشرعية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=م' },
+                { id: 't3', name: 'محمود صبرى محمد', specialty: 'المواد البدنية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=ص' }
+            ]);
+            if (!localStorage.getItem('exams')) setExams([
+                { id: 'exam1', title: 'اختبار الوحدة الأولى', grade: 'الصف الثالث الثانوي', questions: [
+                    { q: 'ما هو جمع كلمة "كتاب"؟', options: ['كتب', 'كتابون', 'كتابات', 'مكتبة'], correct: 0 },
+                    { q: 'ما هو الفاعل في جملة "قرأ الطالب الدرس"؟', options: ['الدرس', 'قرأ', 'الطالب', 'لا يوجد'], correct: 2 }
+                ]}
+            ]);
+            if (!localStorage.getItem('courses')) setCourses([
+                { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', showInHome: true }
+            ]);
+            if (!localStorage.getItem('books')) setBooks([
+                { id: 'b1', title: 'ملزمة الفقه الشافعي', grade: 'الصف الثالث الثانوي', link: '#', showInHome: true }
+            ]);
+
+            if (needUpdate) setUsers(users);
         }
 
-        let currentUser = null;
-        let currentExam = null;
-        let currentQIndex = 0;
-        let answers = [];
+        // ========== عرض المدرسين/الكورسات/الكتب في الرئيسية ==========
+        function renderTeachers() {
+            const grid = document.getElementById('teachersGrid');
+            const teachers = getTeachers();
+            grid.innerHTML = teachers.length ? teachers.map((t, i) => `
+                <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
+                    <div style="font-size:60px;">${t.image ? `<img src="${t.image}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : '👨‍🏫'}</div>
+                    <h4>${t.name}</h4>
+                    <p>${t.specialty || 'مدرس'}</p>
+                    <a onclick="showAuthPage('login')" class="btn-card">شوف الكورسات</a>
+                </div>
+            `).join('') : '<p>لا يوجد مدرسون.</p>';
+        }
 
+        function renderCourses() {
+            const grid = document.getElementById('coursesGrid');
+            const homeCourses = getCourses().filter(c => c.showInHome === true);
+            grid.innerHTML = homeCourses.length ? homeCourses.map((c, i) => `
+                <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
+                    <h4>${c.title}</h4>
+                    <p><strong>الصف:</strong> ${c.grade}</p>
+                    <a href="${c.link}" target="_blank" class="btn-card">مشاهدة</a>
+                </div>
+            `).join('') : '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>';
+        }
+
+        function renderBooks() {
+            const grid = document.getElementById('booksGrid');
+            const homeBooks = getBooks().filter(b => b.showInHome === true);
+            grid.innerHTML = homeBooks.length ? homeBooks.map((b, i) => `
+                <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
+                    <div style="font-size:40px;">📖</div>
+                    <h4>${b.title}</h4>
+                    <p><strong>الصف:</strong> ${b.grade}</p>
+                    <a href="${b.link}" target="_blank" class="btn-card">تحميل</a>
+                </div>
+            `).join('') : '<p style="color:#888;">لا توجد كتب عامة حالياً.</p>';
+        }
+
+        // ========== التنقل ==========
         function showHome() {
             document.getElementById('homeSection').style.display = 'block';
+            document.getElementById('authSection').style.display = 'none';
             document.getElementById('studentDashboard').classList.remove('active');
             document.getElementById('examPage').classList.remove('active');
-            document.getElementById('authSection').style.display = 'none';
+            document.querySelector('header').style.display = 'block';
+            document.querySelector('footer').style.display = 'block';
+            document.querySelector('.support-float-btn').style.display = 'flex';
+            renderTeachers(); renderCourses(); renderBooks();
+            window.scrollTo(0,0);
         }
 
         function showAuthPage(mode) {
             document.getElementById('homeSection').style.display = 'none';
             document.getElementById('authSection').style.display = 'block';
+            document.getElementById('studentDashboard').classList.remove('active');
+            document.getElementById('examPage').classList.remove('active');
             switchAuthView(mode);
+            window.scrollTo(0,0);
         }
 
         function switchAuthView(mode) {
@@ -291,6 +509,12 @@
             document.getElementById('loginFormContainer').style.display = (mode === 'login') ? 'block' : 'none';
         }
 
+        function togglePassword(id) {
+            const el = document.getElementById(id);
+            el.type = (el.type === 'password') ? 'text' : 'password';
+        }
+
+        // ========== لوحة الطالب ==========
         function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
             document.getElementById('studentGradeDash').textContent = user.grade;
@@ -304,22 +528,17 @@
                 document.getElementById('studentDashboardContent').style.display = 'block';
             }
 
+            // عرض الدرجات
             const a = user.attempts || { avg:0, solved:0, total:0, pending:0 };
             document.getElementById('attemptsGrid').innerHTML = `
-                <div class="attempt-card"><div><div class="value">${Number(a.avg)||0}%</div><div class="label">متوسط الدرجات</div></div><div class="icon-circle">💯</div></div>
-                <div class="attempt-card"><div><div class="value">${Number(a.solved)||0}</div><div class="label">اختبارات محلولة</div></div><div class="icon-circle">✅</div></div>
-                <div class="attempt-card"><div><div class="value">${Number(a.total)||0}</div><div class="label">إجمالي الاختبارات</div></div><div class="icon-circle">📝</div></div>
-            `;
-            document.getElementById('pillsBar').innerHTML = `
-                <div class="pill gold">الحل (${Number(a.total)||0})</div>
-                <div class="pill">محاولة (${Number(a.solved)||0})</div>
-                <div class="pill">لم يحل (${Number(a.pending)||0})</div>
+                <div class="attempt-card"><div class="value">${Number(a.avg)||0}%</div><div class="label">متوسط الدرجات</div></div>
+                <div class="attempt-card"><div class="value">${Number(a.solved)||0}</div><div class="label">اختبارات محلولة</div></div>
+                <div class="attempt-card"><div class="value">${Number(a.total)||0}</div><div class="label">إجمالي الاختبارات</div></div>
             `;
 
-            // عرض الحزم/الوحدات الخاصة بالصف (الأكورديون)
+            // عرض الحزم/الوحدات
             const bundles = getBundles().filter(b => b.grade === user.grade);
             const bundlesDiv = document.getElementById('studentBundles');
-            
             if (bundles.length) {
                 bundlesDiv.innerHTML = bundles.map((b, idx) => `
                     <details class="bundle">
@@ -350,22 +569,26 @@
                 bundlesDiv.innerHTML = '<p style="color:#888;">لا توجد وحدات مضافة لصفك بعد.</p>';
             }
 
+            // عرض المدرسين
             const teachers = getTeachers();
             document.getElementById('studentTeachersGrid').innerHTML = teachers.map(t => `
                 <div class="teacher-card">${t.image ? `<img src="${t.image}">` : ''}<h5>${t.name}</h5><p>${t.specialty}</p></div>
             `).join('');
         }
 
-        // منطق الاختبار
+        // ========== منطق الاختبار ==========
+        let currentUser = null;
+        let currentExam = null;
+        let currentQIndex = 0;
+        let answers = [];
+
         function startExam(examId) {
             currentExam = getExams().find(e => e.id === examId);
-            if (!currentExam) return;
+            if (!currentExam || !currentExam.questions.length) return;
             currentQIndex = 0;
             answers = new Array(currentExam.questions.length).fill(null);
-            
             document.getElementById('studentDashboard').classList.remove('active');
             document.getElementById('examPage').classList.add('active');
-            
             document.getElementById('examTitleHeader').textContent = currentExam.title;
             renderQuestion();
         }
@@ -392,7 +615,6 @@
                     </li>`;
             });
             document.getElementById('optionsList').innerHTML = optionsHTML;
-            
             const answeredCount = answers.filter(a => a !== null).length;
             document.querySelector('.btn-finish').textContent = `أجب عن جميع الأسئلة (${answeredCount}/${currentExam.questions.length})`;
         }
@@ -414,6 +636,7 @@
                 else wrongCount++;
             });
 
+            // تحديث محاولات الطالب
             const users = getUsers();
             const userIdx = users.findIndex(u => u.id === currentUser.id);
             if (userIdx > -1) {
@@ -422,7 +645,6 @@
                 const newTotal = (Number(oldAttempts.total) || 0) + currentExam.questions.length;
                 const newSolved = (Number(oldAttempts.solved) || 0) + 1;
                 const newAvg = Math.round(((Number(oldAttempts.avg) * Number(oldAttempts.solved)) + (correctCount / currentExam.questions.length * 100)) / newSolved);
-                
                 user.attempts = { avg: newAvg, solved: newSolved, total: newTotal, pending: Math.max(0, (Number(oldAttempts.pending) || 0) - currentExam.questions.length) };
                 setUsers(users);
             }
@@ -447,19 +669,38 @@
         function exitExam() {
             document.getElementById('examPage').classList.remove('active');
             document.getElementById('studentDashboard').classList.add('active');
+            // استرجاع عناصر الاختبار المخفية
+            document.getElementById('questionNav').style.display = '';
+            document.getElementById('qTextDisplay').style.display = '';
+            document.getElementById('optionsList').style.display = '';
+            document.querySelector('.nav-btns').style.display = '';
+            document.querySelector('.btn-finish').style.display = '';
+            document.getElementById('resultBox').style.display = 'none';
             loadStudentDashboard(currentUser);
         }
 
+        // ========== أحداث التسجيل والدخول ==========
         document.addEventListener('DOMContentLoaded', function() {
             initData();
+            renderTeachers(); renderCourses(); renderBooks();
+
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
-            const gradesMap = { primary: ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي'], preparatory: ['الأول إعدادي','الثاني إعدادي','الثالث إعدادي'], secondary: ['الأول ثانوي','الثاني ثانوي','الثالث ثانوي'] };
+            const gradesMap = {
+                primary: ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي'],
+                preparatory: ['الأول إعدادي','الثاني إعدادي','الثالث إعدادي'],
+                secondary: ['الأول ثانوي','الثاني ثانوي','الثالث ثانوي']
+            };
             stageSelect.addEventListener('change', function() {
-                gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف</option>';
                 const val = this.value;
+                gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف</option>';
                 if (val && gradesMap[val]) {
-                    gradesMap[val].forEach(g => { const opt = document.createElement('option'); opt.value = 'الصف ' + g; opt.textContent = 'الصف ' + g; gradeSelect.appendChild(opt); });
+                    gradesMap[val].forEach(g => {
+                        const opt = document.createElement('option');
+                        opt.value = 'الصف ' + g;
+                        opt.textContent = 'الصف ' + g;
+                        gradeSelect.appendChild(opt);
+                    });
                 }
             });
 
@@ -468,16 +709,31 @@
                 const name = document.getElementById('regName').value.trim();
                 const email = document.getElementById('regEmail').value.trim();
                 const phone = document.getElementById('regPhone').value.trim();
+                const parentPhone = document.getElementById('regParentPhone').value.trim();
+                const governorate = document.getElementById('regGovernorate').value;
+                const center = document.getElementById('regCenter').value.trim();
+                const stage = document.getElementById('regStage').value;
                 const grade = document.getElementById('regGrade').value;
                 const password = document.getElementById('regPass').value;
                 const confirm = document.getElementById('regConfirmPass').value;
-                
+
                 if (password !== confirm) { alert('كلمتا المرور غير متطابقتين.'); return; }
+                if (!name || !email || !phone || !grade || !password) { alert('املأ جميع الحقول.'); return; }
                 const users = getUsers();
-                const newUser = { id: 'user_' + Date.now(), name, email, phone, grade, password, role: 'student', active: false, attempts: { avg: 0, solved: 0, total: 0, pending: 0 }, exams: [], registeredCourses: [], completedLessons: 0, totalLessons: 38 };
+                if (users.find(u => u.email === email || u.phone === phone)) { alert('مسجل بالفعل.'); return; }
+                
+                const newUser = {
+                    id: 'user_' + Date.now(), name, email, phone, parentPhone, governorate, center, stage, grade, password,
+                    role: 'student',
+                    active: true,
+                    attempts: { avg: 0, solved: 0, total: 0, pending: 0 },
+                    exams: [],
+                    completedLessons: 0,
+                    totalLessons: 38
+                };
                 users.push(newUser);
                 setUsers(users);
-                alert('تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل من الأدمن.');
+                alert('تم إنشاء الحساب!');
                 switchAuthView('login');
             });
 
@@ -488,6 +744,7 @@
                 const users = getUsers();
                 const user = users.find(u => (u.email === loginId || u.phone === loginId) && u.password === password);
                 if (!user) { alert('بيانات غير صحيحة.'); return; }
+                if (!user.active) { alert('الحساب غير مفعّل. يرجى التواصل مع الأدمن.'); return; }
 
                 currentUser = user;
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
@@ -497,18 +754,34 @@
                 document.getElementById('navUser').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
 
-                if (user.role === 'admin') { window.location.href = 'admin.html'; }
-                else { document.getElementById('studentDashboard').classList.add('active'); loadStudentDashboard(user); }
+                if (user.role === 'admin') {
+                    document.getElementById('adminLinkBtn').style.display = 'inline-block';
+                    window.location.href = 'admin.html';
+                } else {
+                    document.getElementById('adminLinkBtn').style.display = 'none';
+                    document.getElementById('studentDashboard').classList.add('active');
+                    loadStudentDashboard(user);
+                }
+                window.scrollTo(0,0);
             });
 
             const userJson = sessionStorage.getItem('currentUser');
             if (userJson) {
-                currentUser = JSON.parse(userJson);
+                const user = JSON.parse(userJson);
+                currentUser = user;
                 document.getElementById('navButtons').style.display = 'none';
                 document.getElementById('navUser').style.display = 'flex';
-                document.getElementById('userNameDisplay').textContent = currentUser.name + ' 👋';
-                if (currentUser.role === 'admin') { window.location.href = 'admin.html'; }
-                else { document.getElementById('homeSection').style.display = 'none'; document.getElementById('studentDashboard').classList.add('active'); loadStudentDashboard(currentUser); }
+                document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
+                if (user.role === 'admin') {
+                    document.getElementById('adminLinkBtn').style.display = 'inline-block';
+                    window.location.href = 'admin.html';
+                } else {
+                    document.getElementById('adminLinkBtn').style.display = 'none';
+                    document.getElementById('homeSection').style.display = 'none';
+                    document.getElementById('authSection').style.display = 'none';
+                    document.getElementById('studentDashboard').classList.add('active');
+                    loadStudentDashboard(user);
+                }
             }
         });
 
@@ -520,8 +793,11 @@
             document.getElementById('studentDashboard').classList.remove('active');
             document.getElementById('examPage').classList.remove('active');
             document.getElementById('homeSection').style.display = 'block';
+            document.getElementById('authSection').style.display = 'none';
             window.scrollTo(0,0);
         }
+
+        function goToAdmin() { window.location.href = 'admin.html'; }
     </script>
 </body>
 </html>
