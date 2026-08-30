@@ -7,57 +7,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background: #f8f6f2; color: #333; overflow-x: hidden; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .animate-fade { animation: fadeInUp 0.6s ease forwards; }
-        .animate-slide { animation: slideIn 0.5s ease forwards; }
-        .animate-scale { animation: scaleIn 0.4s ease forwards; }
-
+        body { background: #f8f6f2; color: #333; }
         header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); border-bottom: 3px solid #d4af37; padding: 12px 20px; }
         .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
-        .logo-text span { font-size: 11px; color: #888; }
-        .nav-buttons { display: flex; gap: 10px; align-items: center; }
+        .nav-buttons { display: flex; gap: 10px; }
         .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; }
 
-        .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; animation: fadeInUp 0.6s ease; }
+        .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
-        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-        .admin-tabs button:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
-
-        .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); animation: fadeInUp 0.5s ease; }
+        .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .tab-content.active { display: block; }
-
         .admin-table { width: 100%; border-collapse: collapse; }
         .admin-table th { background: #3b0a0a; color: #d4af37; padding: 14px; text-align: center; }
         .admin-table td { padding: 14px; text-align: center; border-bottom: 1px solid #f0ede8; }
-        .admin-table tr:hover { background: #f9f6f0; }
-
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
         .btn-danger { background: #a00; color: #fff; }
         .btn-success { background: #2a7a2a; color: #fff; }
-
         .add-form { margin-top: 20px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-width { grid-column: 1 / -1; }
         .add-form label { display: block; font-weight: 700; font-size: 14px; color: #3b0a0a; margin-bottom: 5px; }
         .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; }
-        .add-form input:focus, .add-form select:focus { border-color: #d4af37; outline: none; }
-
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
-
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-
-        @media (max-width: 600px) {
-            .admin-tabs { flex-direction: column; }
-            .form-grid { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body>
@@ -73,7 +51,7 @@
 
     <div class="dashboard-container">
         <h2 style="color:#3b0a0a; margin-bottom:5px;">⚙️ لوحة تحكم الأدمن</h2>
-        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب، المحاضرات، الكتب، المدرسين، والاختبارات.</p>
+        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب والمحتوى والاختبارات.</p>
 
         <div class="admin-tabs">
             <button class="active" onclick="showTab('students')">👥 الطلاب</button>
@@ -86,138 +64,114 @@
             <button onclick="showTab('addExam')">➕ إضافة اختبار</button>
         </div>
 
-        <!-- تبويب الطلاب -->
         <div id="tabStudents" class="tab-content active">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">قائمة الطلاب (اضغط تفعيل ليظهر المحتوى للطالب)</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
             </table>
         </div>
 
-        <!-- تبويب المحاضرات -->
         <div id="tabCourses" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 قائمة المحاضرات</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>ظهور عام</th><th>إجراءات</th></tr></thead>
                 <tbody id="coursesTableBody"></tbody>
             </table>
         </div>
 
-        <!-- تبويب الكتب -->
         <div id="tabBooks" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 قائمة الكتب</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>ظهور عام</th><th>إجراءات</th></tr></thead>
                 <tbody id="booksTableBody"></tbody>
             </table>
         </div>
 
-        <!-- تبويب المدرسين -->
         <div id="tabTeachers" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 قائمة المدرسين</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
                 <tbody id="teachersTableBody"></tbody>
             </table>
         </div>
 
-        <!-- تبويب إضافة محاضرة -->
         <div id="tabAddCourse" class="tab-content">
-            <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
-                <form id="addCourseForm">
-                    <div class="form-grid">
-                        <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
-                        <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink" required></div>
-                        <div class="full-width" style="display:flex; align-items:center; gap:10px;">
-                            <input type="checkbox" id="courseShowInHome">
-                            <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
-                        </div>
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
+            <form id="addCourseForm">
+                <div class="form-grid">
+                    <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
+                    <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
+                    <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink" required></div>
+                    <div class="full-width" style="display:flex; align-items:center; gap:10px;">
+                        <input type="checkbox" id="courseShowInHome">
+                        <label for="courseShowInHome">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
                     </div>
-                    <button type="submit" class="btn-submit">إضافة المحاضرة</button>
-                </form>
-                <div id="courseAddMsg" style="margin-top:15px;"></div>
-            </div>
+                </div>
+                <button type="submit" class="btn-submit">إضافة المحاضرة</button>
+            </form>
+            <div id="courseAddMsg" style="margin-top:15px;"></div>
         </div>
 
-        <!-- تبويب إضافة كتاب -->
         <div id="tabAddBook" class="tab-content">
-            <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
-                <form id="addBookForm">
-                    <div class="form-grid">
-                        <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
-                        <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink" required></div>
-                        <div class="full-width" style="display:flex; align-items:center; gap:10px;">
-                            <input type="checkbox" id="bookShowInHome">
-                            <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
-                        </div>
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
+            <form id="addBookForm">
+                <div class="form-grid">
+                    <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
+                    <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
+                    <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink" required></div>
+                    <div class="full-width" style="display:flex; align-items:center; gap:10px;">
+                        <input type="checkbox" id="bookShowInHome">
+                        <label for="bookShowInHome">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
                     </div>
-                    <button type="submit" class="btn-submit">إضافة الكتاب</button>
-                </form>
-                <div id="bookAddMsg" style="margin-top:15px;"></div>
-            </div>
+                </div>
+                <button type="submit" class="btn-submit">إضافة الكتاب</button>
+            </form>
+            <div id="bookAddMsg" style="margin-top:15px;"></div>
         </div>
 
-        <!-- تبويب إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
-            <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
-                <form id="addTeacherForm">
-                    <div class="form-grid">
-                        <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
-                        <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
-                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage"></div>
-                    </div>
-                    <button type="submit" class="btn-submit">إضافة المدرس</button>
-                </form>
-                <div id="teacherAddMsg" style="margin-top:15px;"></div>
-            </div>
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
+            <form id="addTeacherForm">
+                <div class="form-grid">
+                    <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
+                    <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
+                    <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage"></div>
+                </div>
+                <button type="submit" class="btn-submit">إضافة المدرس</button>
+            </form>
+            <div id="teacherAddMsg" style="margin-top:15px;"></div>
         </div>
 
-        <!-- تبويب إضافة اختبار (جديد) -->
         <div id="tabAddExam" class="tab-content">
-            <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إنشاء اختبار جديد (سؤال وجواب)</h4>
-                <form id="addExamForm">
-                    <div class="form-grid">
-                        <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required placeholder="مثال: اختبار النحو - الوحدة الأولى"></div>
-                        <div><label>الصف الدراسي</label><select id="examGrade" required><option value="">اختر الصف</option></select></div>
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إنشاء اختبار جديد</h4>
+            <form id="addExamForm">
+                <div class="form-grid">
+                    <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required placeholder="مثال: اختبار النحو - الوحدة الأولى"></div>
+                    <div><label>الصف الدراسي</label><select id="examGrade" required><option value="">اختر الصف</option></select></div>
+                </div>
+                <div class="form-grid" style="margin-top:20px;">
+                    <div class="full-width"><label>نص السؤال</label><input type="text" id="qText" required placeholder="اكتب السؤال هنا"></div>
+                    <div><label>الخيار الأول</label><input type="text" id="opt1" required></div>
+                    <div><label>الخيار الثاني</label><input type="text" id="opt2" required></div>
+                    <div><label>الخيار الثالث</label><input type="text" id="opt3" required></div>
+                    <div><label>الخيار الرابع</label><input type="text" id="opt4" required></div>
+                    <div><label>الإجابة الصحيحة</label>
+                        <select id="correctOpt" required>
+                            <option value="">اختر الإجابة الصحيحة</option>
+                            <option value="1">الخيار الأول</option>
+                            <option value="2">الخيار الثاني</option>
+                            <option value="3">الخيار الثالث</option>
+                            <option value="4">الخيار الرابع</option>
+                        </select>
                     </div>
-                    
-                    <div class="form-grid" style="margin-top:20px;">
-                        <div class="full-width"><label>نص السؤال</label><input type="text" id="qText" required placeholder="اكتب السؤال هنا"></div>
-                        <div><label>الخيار الأول</label><input type="text" id="opt1" required></div>
-                        <div><label>الخيار الثاني</label><input type="text" id="opt2" required></div>
-                        <div><label>الخيار الثالث</label><input type="text" id="opt3" required></div>
-                        <div><label>الخيار الرابع</label><input type="text" id="opt4" required></div>
-                        <div><label>الإجابة الصحيحة</label>
-                            <select id="correctOpt" required>
-                                <option value="">اختر الإجابة الصحيحة</option>
-                                <option value="1">الخيار الأول</option>
-                                <option value="2">الخيار الثاني</option>
-                                <option value="3">الخيار الثالث</option>
-                                <option value="4">الخيار الرابع</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top:15px; display:flex; gap:10px;">
-                        <button type="submit" class="btn-submit">حفظ السؤال</button>
-                        <button type="button" onclick="finishExamCreation()" class="btn-submit" style="background: #2a7a2a;">إنهاء الاختبار</button>
-                    </div>
-                </form>
-                <div id="examAddMsg" style="margin-top:15px;"></div>
-            </div>
+                </div>
+                <div style="margin-top:15px; display:flex; gap:10px;">
+                    <button type="submit" class="btn-submit">حفظ السؤال</button>
+                    <button type="button" onclick="finishExamCreation()" class="btn-submit" style="background: #2a7a2a;">إنهاء الاختبار</button>
+                </div>
+            </form>
+            <div id="examAddMsg" style="margin-top:15px;"></div>
         </div>
-
     </div>
 
     <script>
-        // ========== دوال البيانات ==========
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -229,7 +183,6 @@
         function getExams() { return JSON.parse(localStorage.getItem('exams')) || []; }
         function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
 
-        // ========== عرض التبويبات ==========
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
@@ -243,14 +196,9 @@
             if (tabId === 'teachers') loadTeachersTable();
         }
 
-        // ========== تهيئة الصفوف ==========
         function initGrades() {
-            const grades = [
-                'الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي',
-                'الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'
-            ];
-            const selects = ['courseGrade', 'bookGrade', 'examGrade'];
-            selects.forEach(id => {
+            const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
+            ['courseGrade', 'bookGrade', 'examGrade'].forEach(id => {
                 const select = document.getElementById(id);
                 grades.forEach(g => {
                     const opt = document.createElement('option');
@@ -270,22 +218,17 @@
             setupForms();
         });
 
-        // ========== جدول الطلاب (مع زر التفعيل) ==========
         function loadStudentsTable() {
             const users = getUsers().filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
             if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="color:#888;">لا يوجد طلاب مسجلين.</td></tr>'; return; }
             tbody.innerHTML = users.map((u, idx) => `
-                <tr class="animate-slide" style="animation-delay:${idx*0.05}s;">
+                <tr>
                     <td>${idx+1}</td>
                     <td><strong>${u.name}</strong></td>
                     <td>${u.grade}</td>
                     <td style="color:${u.active ? '#2a7a2a' : '#a00'}; font-weight:700;">${u.active ? '✅ مفعل' : '❌ غير مفعل'}</td>
-                    <td>
-                        <button onclick="toggleStudentActive('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}" style="padding:4px 14px; font-size:12px;">
-                            ${u.active ? 'إلغاء التفعيل' : 'تفعيل'}
-                        </button>
-                    </td>
+                    <td><button onclick="toggleStudentActive('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">${u.active ? 'إلغاء التفعيل' : 'تفعيل'}</button></td>
                 </tr>
             `).join('');
         }
@@ -300,18 +243,11 @@
             }
         }
 
-        // ========== جدول المحاضرات ==========
         function loadCoursesTable() {
             const courses = getCourses();
             const tbody = document.getElementById('coursesTableBody');
             tbody.innerHTML = courses.length ? courses.map((c, idx) => `
-                <tr>
-                    <td>${idx+1}</td>
-                    <td><strong>${c.title}</strong></td>
-                    <td>${c.grade}</td>
-                    <td>${c.showInHome ? '✅ نعم' : '❌ لا'}</td>
-                    <td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️ حذف</button></td>
-                </tr>
+                <tr><td>${idx+1}</td><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.showInHome ? '✅' : '❌'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
             `).join('') : '<tr><td colspan="5" style="color:#888;">لا توجد محاضرات.</td></tr>';
         }
 
@@ -322,18 +258,11 @@
             loadCoursesTable();
         }
 
-        // ========== جدول الكتب ==========
         function loadBooksTable() {
             const books = getBooks();
             const tbody = document.getElementById('booksTableBody');
             tbody.innerHTML = books.length ? books.map((b, idx) => `
-                <tr>
-                    <td>${idx+1}</td>
-                    <td><strong>${b.title}</strong></td>
-                    <td>${b.grade}</td>
-                    <td>${b.showInHome ? '✅ نعم' : '❌ لا'}</td>
-                    <td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️ حذف</button></td>
-                </tr>
+                <tr><td>${idx+1}</td><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.showInHome ? '✅' : '❌'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
             `).join('') : '<tr><td colspan="5" style="color:#888;">لا توجد كتب.</td></tr>';
         }
 
@@ -344,17 +273,11 @@
             loadBooksTable();
         }
 
-        // ========== جدول المدرسين ==========
         function loadTeachersTable() {
             const teachers = getTeachers();
             const tbody = document.getElementById('teachersTableBody');
             tbody.innerHTML = teachers.length ? teachers.map((t, idx) => `
-                <tr>
-                    <td>${idx+1}</td>
-                    <td><strong>${t.name}</strong></td>
-                    <td>${t.image ? '<img src="'+t.image+'" style="width:40px;height:40px;border-radius:50%;">' : 'لا توجد'}</td>
-                    <td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️ حذف</button></td>
-                </tr>
+                <tr><td>${idx+1}</td><td><strong>${t.name}</strong></td><td>${t.image ? '<img src="'+t.image+'" style="width:40px;height:40px;border-radius:50%;">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
             `).join('') : '<tr><td colspan="4" style="color:#888;">لا يوجد مدرسون.</td></tr>';
         }
 
@@ -365,9 +288,7 @@
             loadTeachersTable();
         }
 
-        // ========== نماذج الإضافة ==========
         function setupForms() {
-            // إضافة محاضرة
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
@@ -380,11 +301,9 @@
                 setCourses(courses);
                 document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
                 this.reset();
-                document.getElementById('courseShowInHome').checked = false;
                 loadCoursesTable();
             });
 
-            // إضافة كتاب
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
@@ -397,11 +316,9 @@
                 setBooks(books);
                 document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
                 this.reset();
-                document.getElementById('bookShowInHome').checked = false;
                 loadBooksTable();
             });
 
-            // إضافة مدرس
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
@@ -409,46 +326,32 @@
                 const image = document.getElementById('teacherImage').value.trim();
                 if (!name) { document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-danger">أدخل اسم المدرس.</div>'; return; }
                 const teachers = getTeachers();
-                teachers.push({ id: 't_' + Date.now(), name, specialty: specialty || 'مدرس', image: image || 'https://via.placeholder.com/150/3b0a0a/d4af37?text=مدرس' });
+                teachers.push({ id: 't_' + Date.now(), name, specialty: specialty || 'مدرس', image: image || 'https://via.placeholder.com/150' });
                 setTeachers(teachers);
                 document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
                 this.reset();
                 loadTeachersTable();
             });
 
-            // إضافة اختبار (جديد)
             document.getElementById('addExamForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('examTitle').value.trim();
                 const grade = document.getElementById('examGrade').value;
                 const qText = document.getElementById('qText').value.trim();
-                const opts = [
-                    document.getElementById('opt1').value.trim(),
-                    document.getElementById('opt2').value.trim(),
-                    document.getElementById('opt3').value.trim(),
-                    document.getElementById('opt4').value.trim()
-                ];
+                const opts = [document.getElementById('opt1').value.trim(), document.getElementById('opt2').value.trim(), document.getElementById('opt3').value.trim(), document.getElementById('opt4').value.trim()];
                 const correct = document.getElementById('correctOpt').value;
-
-                if (!title || !grade || !qText || opts.includes('') || !correct) {
-                    document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-danger">املأ جميع الحقول.</div>';
-                    return;
-                }
+                if (!title || !grade || !qText || opts.includes('') || !correct) { document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-danger">املأ جميع الحقول.</div>'; return; }
 
                 let exams = getExams();
-                // البحث عن اختبار موجود بنفس العنوان والصف
                 let exam = exams.find(e => e.title === title && e.grade === grade);
                 if (!exam) {
                     exam = { id: 'exam_' + Date.now(), title, grade, questions: [] };
                     exams.push(exam);
                 }
-                
                 exam.questions.push({ q: qText, options: opts, correct: parseInt(correct) });
                 setExams(exams);
 
-                document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ السؤال! يمكنك إضافة سؤال آخر أو الضغط على "إنهاء الاختبار".</div>';
-                
-                // تفريغ حقول السؤال فقط
+                document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ السؤال! أضف سؤالاً آخر أو اضغط "إنهاء الاختبار".</div>';
                 document.getElementById('qText').value = '';
                 document.getElementById('opt1').value = '';
                 document.getElementById('opt2').value = '';
@@ -458,9 +361,8 @@
             });
         }
 
-        // إنهاء الاختبار (فقط رسالة تنبيه)
         function finishExamCreation() {
-            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار وحفظه بنجاح! أصبح متاحاً للطلاب في هذا الصف.</div>';
+            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح! أصبح متاحاً للطلاب في هذا الصف.</div>';
             document.getElementById('addExamForm').reset();
         }
 
