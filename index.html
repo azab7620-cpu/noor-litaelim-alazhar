@@ -334,7 +334,7 @@
         // ✏️ بيانات الأدمنة (عدل الإيميلات وكلمات المرور هنا)
         // 🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
         const ADMINS = [
-            { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'azab7620@gmail.com', phone: '01110000001', password: 'r11a6r10' },
+            { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' },
             { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', password: 'admin123' },
             { id: 'admin3', name: 'أدمن 3 - سارة', email: 'admin3@example.com', phone: '01110000003', password: 'admin123' },
             { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', password: 'admin123' },
@@ -361,7 +361,6 @@
             ADMINS.forEach(adminData => {
                 let existing = users.find(u => u.id === adminData.id && u.role === 'admin');
                 if (existing) {
-                    // تحديث البيانات إذا تغيرت
                     if (existing.email !== adminData.email ||
                         existing.password !== adminData.password ||
                         existing.name !== adminData.name ||
@@ -373,7 +372,6 @@
                         needUpdate = true;
                     }
                 } else {
-                    // إضافة أدمن جديد
                     users.push({
                         ...adminData,
                         parentPhone: '',
@@ -431,17 +429,17 @@
                 console.log('✅ تم تحديث بيانات الأدمنة تلقائياً');
             }
 
-            // 3. تهيئة باقي البيانات إذا لم تكن موجودة
+            // 3. تهيئة باقي البيانات إذا لم تكن موجودة (مع showInHome)
             if (!localStorage.getItem('courses')) {
                 setCourses([
-                    { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-                    { id: 'c2', title: 'شرح ألفية ابن مالك', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }
+                    { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', showInHome: false },
+                    { id: 'c2', title: 'شرح ألفية ابن مالك', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', showInHome: false }
                 ]);
             }
             if (!localStorage.getItem('books')) {
                 setBooks([
-                    { id: 'b1', title: 'ملزمة الفقه الشافعي', grade: 'الصف الثالث الثانوي', link: '#' },
-                    { id: 'b2', title: 'كتاب النحو والصرف', grade: 'الصف الثالث الثانوي', link: '#' }
+                    { id: 'b1', title: 'ملزمة الفقه الشافعي', grade: 'الصف الثالث الثانوي', link: '#', showInHome: false },
+                    { id: 'b2', title: 'كتاب النحو والصرف', grade: 'الصف الثالث الثانوي', link: '#', showInHome: false }
                 ]);
             }
             if (!localStorage.getItem('teachers')) {
@@ -453,7 +451,7 @@
             }
         }
 
-        // ========== دوال العرض (مع أنيميشن) ==========
+        // ========== دوال العرض (مع أنيميشن + فلترة showInHome) ==========
         function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
             const teachers = getTeachers();
@@ -468,11 +466,13 @@
             `).join('');
         }
 
+        // 🔹🔹 تم التعديل هنا: عرض المحاضرات التي showInHome = true فقط
         function renderCourses() {
             const grid = document.getElementById('coursesGrid');
             const courses = getCourses();
-            if (!courses.length) { grid.innerHTML = '<p>لا توجد محاضرات.</p>'; return; }
-            grid.innerHTML = courses.map((c, i) => `
+            const homeCourses = courses.filter(c => c.showInHome === true);
+            if (!homeCourses.length) { grid.innerHTML = '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>'; return; }
+            grid.innerHTML = homeCourses.map((c, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <h4>${c.title}</h4>
                     <p><strong>الصف:</strong> ${c.grade}</p>
@@ -481,11 +481,13 @@
             `).join('');
         }
 
+        // 🔹🔹 تم التعديل هنا: عرض الكتب التي showInHome = true فقط
         function renderBooks() {
             const grid = document.getElementById('booksGrid');
             const books = getBooks();
-            if (!books.length) { grid.innerHTML = '<p>لا توجد كتب.</p>'; return; }
-            grid.innerHTML = books.map((b, i) => `
+            const homeBooks = books.filter(b => b.showInHome === true);
+            if (!homeBooks.length) { grid.innerHTML = '<p style="color:#888;">لا توجد كتب عامة حالياً.</p>'; return; }
+            grid.innerHTML = homeBooks.map((b, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <div style="font-size:40px;">📖</div>
                     <h4>${b.title}</h4>
@@ -525,7 +527,7 @@
             el.type = (el.type === 'password') ? 'text' : 'password';
         }
 
-        // ========== لوحة الطالب ==========
+        // ========== لوحة الطالب (تعرض المحاضرات حسب الصف فقط للمفعلين) ==========
         function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
             const examsDiv = document.getElementById('studentExams');
@@ -559,12 +561,14 @@
                 regDiv.innerHTML = '<p>لا توجد مواد مسجلة.</p>';
             }
 
-            const courses = getCourses().filter(c => c.grade === user.grade);
+            // 🔹🔹 هنا يظهر للطالب فقط المحاضرات الخاصة بصفه (بغض النظر عن showInHome)
+            const allCourses = getCourses();
+            const studentCourses = allCourses.filter(c => c.grade === user.grade);
             const studentCoursesDiv = document.getElementById('studentCourses');
-            if (!courses.length) {
-                studentCoursesDiv.innerHTML = '<p>لا توجد محاضرات لصفك.</p>';
+            if (!studentCourses.length) {
+                studentCoursesDiv.innerHTML = '<p>لا توجد محاضرات مخصصة لصفك.</p>';
             } else {
-                studentCoursesDiv.innerHTML = courses.map(c => `
+                studentCoursesDiv.innerHTML = studentCourses.map(c => `
                     <div class="exam-item animate-slide">
                         <span class="exam-name">${c.title}</span>
                         <a href="${c.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">مشاهدة</a>
@@ -575,7 +579,6 @@
 
         // ========== أحداث التسجيل والدخول ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // تهيئة البيانات (مع تحديث الأدمنة)
             initData();
             renderTeachers(); renderCourses(); renderBooks();
 
@@ -645,7 +648,7 @@
                 const users = getUsers();
                 const user = users.find(u => (u.email === loginId || u.phone === loginId) && u.password === password);
                 if (!user) { alert('بيانات غير صحيحة.'); return; }
-                if (!user.active) { alert('الحساب غير مفعّل.'); return; }
+                if (!user.active) { alert('الحساب غير مفعّل. يرجى التواصل مع الأدمن.'); return; }
 
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
                 document.getElementById('authSection').style.display = 'none';
