@@ -6,6 +6,7 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* نفس التنسيقات السابقة (محذوفة للاختصار، لكن ضعها كاملة) */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -300,6 +301,16 @@
     </a>
 
     <script>
+        // ============================================================
+        //  🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
+        //  ✏️ غيّر بيانات الأدمن هنا (الإيميل وكلمة المرور)
+        //  🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
+        const ADMIN_EMAIL = 'admin@example.com';      // ← غيّر للإيميل الجديد
+        const ADMIN_PASSWORD = 'admin123';            // ← غيّر لكلمة المرور الجديدة
+        const ADMIN_NAME = 'أدمن النظام';              // ← غيّر للاسم الجديد
+        const ADMIN_PHONE = '01113224591';            // ← غيّر لرقم الهاتف الجديد
+        // ============================================================
+
         // ========== دوال البيانات ==========
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
@@ -310,123 +321,93 @@
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        // ========== تهيئة البيانات مع تحديث تلقائي للأدمن ==========
+        // ========== تهيئة البيانات مع تحديث الأدمن تلقائياً ==========
         function initData() {
             let users = getUsers();
             let needUpdate = false;
 
-            // تعريف بيانات الأدمن الافتراضية (عدلها هنا حسب رغبتك)
-            const defaultAdmins = [
-                { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'azab7620@gmail.com', phone: '01110000001', password: 'r11a6r10' },
-                { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', password: 'admin123' },
-                { id: 'admin3', name: 'أدمن 3 - سارة', email: 'admin3@example.com', phone: '01110000003', password: 'admin123' },
-                { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', password: 'admin123' },
-                { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', password: 'admin123' }
-            ];
-
-            // تعريف بيانات الطالب الافتراضي
-            const defaultStudent = {
-                id: 'student1',
-                name: 'أحمد عماد أحمد',
-                email: 'ahmed@example.com',
-                phone: '01234567890',
-                parentPhone: '01123456789',
-                governorate: 'القاهرة',
-                center: 'المركز',
-                stage: 'secondary',
-                grade: 'الصف الثالث الثانوي',
-                password: 'student123',
-                role: 'student',
-                active: true,
-                attempts: { current: '7', score: '93%', total: '150', pending: '143' },
-                exams: [
-                    { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
-                    { name: 'اختبار النحو', status: 'لم يُحل', fullMark: 50, wait: true },
-                    { name: 'اختبار البلاغة', status: 'لم يُحل', fullMark: 30, wait: true },
-                    { name: 'الامتحان الشامل على كورس التأسيس', status: 'لم يُحل', fullMark: '--', wait: false }
-                ],
-                registeredCourses: [
-                    { title: 'اللغة العربية - الصف الثالث الثانوي', teacher: 'زينب محمد حسان بن علي', date: 'أغسطس ٢٠٢٣ م' },
-                    { title: 'اللغة العربية - الصيف الأول الثانوي', teacher: 'مستمر محمد', date: 'أغسطس ٢٠٢٣ م' },
-                    { title: 'اللغة العربية - الصف الثالث الثانوي (بدني)', teacher: 'محمود صبرى محمد', date: 'أغسطس ٢٠٢٣ م' }
-                ],
-                completedLessons: 22,
-                totalLessons: 38
-            };
-
-            // إذا لم يكن هناك مستخدمين، أنشئ الكل
-            if (users.length === 0) {
-                users = [];
-                // أضف الأدمنة
-                defaultAdmins.forEach(admin => {
-                    users.push({
-                        ...admin,
-                        parentPhone: '',
-                        governorate: 'القاهرة',
-                        center: 'المركز',
-                        stage: 'secondary',
-                        grade: 'الصف الثالث الثانوي',
-                        role: 'admin',
-                        active: true,
-                        exams: [],
-                        completedLessons: 0,
-                        totalLessons: 0
-                    });
-                });
-                // أضف الطالب
-                users.push(defaultStudent);
-                setUsers(users);
-                needUpdate = false;
-            } else {
-                // تحديث بيانات الأدمنة إذا تغيرت في الكود
-                defaultAdmins.forEach((defaultAdmin, index) => {
-                    // البحث عن أدمن بنفس الـ id
-                    let existingAdmin = users.find(u => u.id === defaultAdmin.id && u.role === 'admin');
-                    if (existingAdmin) {
-                        // تحديث الحقول التي قد تتغير (الإيميل، الاسم، رقم الهاتف، كلمة المرور)
-                        if (existingAdmin.email !== defaultAdmin.email ||
-                            existingAdmin.name !== defaultAdmin.name ||
-                            existingAdmin.phone !== defaultAdmin.phone ||
-                            existingAdmin.password !== defaultAdmin.password) {
-                            existingAdmin.email = defaultAdmin.email;
-                            existingAdmin.name = defaultAdmin.name;
-                            existingAdmin.phone = defaultAdmin.phone;
-                            existingAdmin.password = defaultAdmin.password;
-                            needUpdate = true;
-                        }
-                    } else {
-                        // إذا لم يكن موجوداً، أضفه
-                        users.push({
-                            ...defaultAdmin,
-                            parentPhone: '',
-                            governorate: 'القاهرة',
-                            center: 'المركز',
-                            stage: 'secondary',
-                            grade: 'الصف الثالث الثانوي',
-                            role: 'admin',
-                            active: true,
-                            exams: [],
-                            completedLessons: 0,
-                            totalLessons: 0
-                        });
-                        needUpdate = true;
-                    }
-                });
-
-                // التأكد من وجود الطالب الافتراضي
-                let existingStudent = users.find(u => u.id === 'student1' && u.role === 'student');
-                if (!existingStudent) {
-                    users.push(defaultStudent);
+            // البحث عن الأدمن الحالي (باستخدام id ثابت)
+            let admin = users.find(u => u.id === 'admin1' && u.role === 'admin');
+            
+            if (admin) {
+                // تحديث بيانات الأدمن بالقيم الجديدة من المتغيرات
+                if (admin.email !== ADMIN_EMAIL || 
+                    admin.password !== ADMIN_PASSWORD || 
+                    admin.name !== ADMIN_NAME || 
+                    admin.phone !== ADMIN_PHONE) {
+                    
+                    admin.email = ADMIN_EMAIL;
+                    admin.password = ADMIN_PASSWORD;
+                    admin.name = ADMIN_NAME;
+                    admin.phone = ADMIN_PHONE;
                     needUpdate = true;
+                    console.log('✅ تم تحديث بيانات الأدمن تلقائياً');
                 }
-
-                if (needUpdate) {
-                    setUsers(users);
-                    console.log('✅ تم تحديث بيانات المستخدمين تلقائياً');
-                }
+            } else {
+                // إذا لم يكن الأدمن موجوداً (أول مرة)، أنشئه
+                admin = {
+                    id: 'admin1',
+                    name: ADMIN_NAME,
+                    email: ADMIN_EMAIL,
+                    phone: ADMIN_PHONE,
+                    parentPhone: '',
+                    governorate: 'القاهرة',
+                    center: 'المركز',
+                    stage: 'secondary',
+                    grade: 'الصف الثالث الثانوي',
+                    password: ADMIN_PASSWORD,
+                    role: 'admin',
+                    active: true,
+                    exams: [],
+                    completedLessons: 0,
+                    totalLessons: 0
+                };
+                users.push(admin);
+                needUpdate = true;
+                console.log('✅ تم إنشاء الأدمن لأول مرة');
             }
 
-            // تهيئة باقي البيانات (كورسات، كتب، مدرسين) إذا لم تكن موجودة
+            // التأكد من وجود طالب افتراضي (إذا لم يكن موجوداً)
+            let student = users.find(u => u.id === 'student1' && u.role === 'student');
+            if (!student) {
+                student = {
+                    id: 'student1',
+                    name: 'أحمد عماد أحمد',
+                    email: 'ahmed@example.com',
+                    phone: '01234567890',
+                    parentPhone: '01123456789',
+                    governorate: 'القاهرة',
+                    center: 'المركز',
+                    stage: 'secondary',
+                    grade: 'الصف الثالث الثانوي',
+                    password: 'student123',
+                    role: 'student',
+                    active: true,
+                    attempts: { current: '7', score: '93%', total: '150', pending: '143' },
+                    exams: [
+                        { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
+                        { name: 'اختبار النحو', status: 'لم يُحل', fullMark: 50, wait: true },
+                        { name: 'اختبار البلاغة', status: 'لم يُحل', fullMark: 30, wait: true },
+                        { name: 'الامتحان الشامل على كورس التأسيس', status: 'لم يُحل', fullMark: '--', wait: false }
+                    ],
+                    registeredCourses: [
+                        { title: 'اللغة العربية - الصف الثالث الثانوي', teacher: 'زينب محمد حسان بن علي', date: 'أغسطس ٢٠٢٣ م' },
+                        { title: 'اللغة العربية - الصيف الأول الثانوي', teacher: 'مستمر محمد', date: 'أغسطس ٢٠٢٣ م' },
+                        { title: 'اللغة العربية - الصف الثالث الثانوي (بدني)', teacher: 'محمود صبرى محمد', date: 'أغسطس ٢٠٢٣ م' }
+                    ],
+                    completedLessons: 22,
+                    totalLessons: 38
+                };
+                users.push(student);
+                needUpdate = true;
+                console.log('✅ تم إنشاء الطالب الافتراضي');
+            }
+
+            if (needUpdate) {
+                setUsers(users);
+            }
+
+            // تهيئة باقي البيانات إذا لم تكن موجودة
             if (!localStorage.getItem('courses')) {
                 setCourses([
                     { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
@@ -448,7 +429,7 @@
             }
         }
 
-        // ========== دوال العرض ==========
+        // ========== دوال العرض (نفس السابق) ==========
         function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
             const teachers = getTeachers();
@@ -570,7 +551,7 @@
 
         // ========== أحداث التسجيل والدخول ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // تهيئة البيانات مع التحديث التلقائي
+            // تهيئة البيانات (مع تحديث الأدمن)
             initData();
             renderTeachers(); renderCourses(); renderBooks();
 
