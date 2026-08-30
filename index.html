@@ -6,9 +6,11 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* نفس التنسيقات السابقة، أحتفظ بها كما هي */
+        /* ====== RESET & BASE ====== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; }
+
+        /* ====== أنيميشن عام ====== */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -20,7 +22,8 @@
         .animate-fade { animation: fadeInUp 0.6s ease forwards; }
         .animate-scale { animation: scaleIn 0.4s ease forwards; }
 
-        header { background: #fff; box-shadow: 0 2px 15px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; transition: 0.3s; }
+        /* ====== HEADER ====== */
+        header { background: #fff; box-shadow: 0 2px 15px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; transition: all 0.3s; }
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
@@ -37,6 +40,7 @@
         .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-admin-panel:hover { background: #e0c060; transform: translateY(-2px); }
 
+        /* ====== HERO ====== */
         .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; animation: fadeInUp 0.8s ease; }
         .hero h2 { font-size: 48px; font-weight: 900; color: #f7e1a0; margin-bottom: 15px; }
         .hero p { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
@@ -46,6 +50,7 @@
         .btn-secondary { background: #fff; color: #3b0a0a; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; transition: 0.3s; }
         .btn-secondary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
 
+        /* ====== SECTIONS ====== */
         .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; animation: fadeInUp 0.7s ease; }
         .section-header { margin-bottom: 40px; }
         .section-header span { color: #d4af37; font-weight: 700; font-size: 14px; letter-spacing: 1px; }
@@ -60,9 +65,10 @@
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; }
         .btn-card:hover { background: #520e0e; transform: scale(1.05); }
 
-        /* Student Dashboard */
+        /* ====== DASHBOARD STUDENT ====== */
         .dashboard-section { display: none; padding: 40px 20px; max-width: 1200px; margin: 0 auto; animation: fadeInUp 0.6s ease; }
         .dashboard-section.active { display: block; }
+
         .student-header-card { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
         .student-header-card h2 { color: #3b0a0a; font-size: 24px; }
         .student-header-card p { color: #777; font-size: 14px; margin-top: 5px; }
@@ -93,7 +99,7 @@
         .course-reg-item .course-teacher { font-size: 13px; color: #888; }
         .course-reg-item .course-date { font-size: 12px; color: #aaa; }
 
-        /* Auth Page */
+        /* ====== AUTH PAGE ====== */
         .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; animation: fadeInUp 0.5s ease; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
         .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
@@ -131,7 +137,7 @@
         .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); }
 
-        /* Footer */
+        /* ====== FOOTER ====== */
         footer { background: #2f0808; color: #fff; padding: 50px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .footer-col h3 { color: #d4af37; font-size: 24px; font-weight: 900; }
@@ -146,17 +152,12 @@
         .social-icon:hover { background: #d4af37; color: #3b0a0a; transform: translateY(-3px); }
         .footer-bottom { max-width: 1200px; margin: 30px auto 0; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; font-size: 13px; color: #aaa; }
 
+        /* ====== SUPPORT BUTTON ====== */
         .support-float-btn { position: fixed; bottom: 25px; left: 25px; background: #fff; color: #3b0a0a; padding: 12px 20px; border-radius: 14px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; z-index: 9999; text-decoration: none; border: 1px solid #e0d0a0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .support-float-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .support-float-icon { background: #3b0a0a; color: #d4af37; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
-        .back-home { display: inline-block; margin-bottom: 20px; color: #3b0a0a; text-decoration: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .back-home:hover { color: #d4af37; padding-right: 5px; }
-
-        .alert { padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-weight: 600; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-
+        /* ====== RESPONSIVE ====== */
         @media (max-width: 900px) {
             .auth-layout-container { flex-direction: column; }
             .auth-sidebar { width: 100%; padding: 30px 20px; }
@@ -167,6 +168,12 @@
             .nav-buttons { justify-content: center; }
             .hero h2 { font-size: 30px; }
         }
+        .back-home { display: inline-block; margin-bottom: 20px; color: #3b0a0a; text-decoration: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .back-home:hover { color: #d4af37; padding-right: 5px; }
+
+        .alert { padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-weight: 600; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     </style>
 </head>
 <body>
@@ -300,7 +307,7 @@
                                 <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="regPass" placeholder="كلمة المرور" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regPass')">👁️</span></div></div>
                                 <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regConfirmPass')">👁️</span></div></div>
                             </div>
-                            <!-- تم حذف حقل نوع الحساب نهائياً -->
+                            <!-- تم إزالة حقل نوع الحساب نهائياً -->
                             <button type="submit" class="btn-submit-modern">إنشاء الحساب ←</button>
                         </form>
                         <div class="auth-toggle-footer"><p>لديك حساب بالفعل؟</p><button class="btn-outline-toggle" onclick="switchAuthView('login')">تسجيل الدخول</button></div>
@@ -347,74 +354,107 @@
         // ========== INIT ==========
         function initData() {
             if (!localStorage.getItem('users')) {
-                // الأدمن الأول (أنت)
-                const admin1 = {
-                    id: 'admin1',
-                    name: 'أدمن النظام',
-                    email: 'admin@example.com',
-                    phone: '01113224591',
-                    parentPhone: '',
-                    governorate: 'القاهرة',
-                    center: 'المركز',
-                    stage: 'secondary',
-                    grade: 'الصف الثالث الثانوي',
-                    password: 'admin123',
-                    role: 'admin',
-                    active: true,
-                    exams: [],
-                    completedLessons: 0,
-                    totalLessons: 0
+                // === 5 أدمن ===
+                const admin1 = { 
+                    id: 'admin1', 
+                    name: 'أدمن رئيسي', 
+                    email: 'admin@example.com', 
+                    phone: '01113224591', 
+                    parentPhone: '', 
+                    governorate: 'القاهرة', 
+                    center: 'المركز', 
+                    stage: 'secondary', 
+                    grade: 'الصف الثالث الثانوي', 
+                    password: 'admin123', 
+                    role: 'admin', 
+                    active: true, 
+                    exams: [], 
+                    completedLessons: 0, 
+                    totalLessons: 0 
                 };
-                // الأدمن الثاني (صديقك)
-                const admin2 = {
-                    id: 'admin2',
-                    name: 'صديقك أدمن',
-                    email: 'friend@example.com',
-                    phone: '01113224592',
-                    parentPhone: '',
-                    governorate: 'الجيزة',
-                    center: 'المركز',
-                    stage: 'secondary',
-                    grade: 'الصف الثالث الثانوي',
-                    password: 'friend123',
-                    role: 'admin',
-                    active: true,
-                    exams: [],
-                    completedLessons: 0,
-                    totalLessons: 0
+                const admin2 = { 
+                    id: 'admin2', 
+                    name: 'أدمن مساعد 1', 
+                    email: 'admin2@example.com', 
+                    phone: '01113224592', 
+                    parentPhone: '', 
+                    governorate: 'الجيزة', 
+                    center: 'المركز', 
+                    stage: 'secondary', 
+                    grade: 'الصف الثالث الثانوي', 
+                    password: 'admin456', 
+                    role: 'admin', 
+                    active: true, 
+                    exams: [], 
+                    completedLessons: 0, 
+                    totalLessons: 0 
                 };
-                // الأدمن تالت (صديقك)
-                const admin3 = {
-                    id: 'admin2',
-                    name: 'صديقك أدمن',
-                    email: 'fried@example.com',
-                    phone: '0113224592',
-                    parentPhone: '',
-                    governorate: 'الجيزة',
-                    center: 'المركز',
-                    stage: 'secondary',
-                    grade: 'الصف الثالث الثانوي',
-                    password: 'fried123',
-                    role: 'admin',
-                    active: true,
-                    exams: [],
-                    completedLessons: 0,
-                    totalLessons: 0
+                const admin3 = { 
+                    id: 'admin3', 
+                    name: 'أدمن مساعد 2', 
+                    email: 'admin3@example.com', 
+                    phone: '01113224593', 
+                    parentPhone: '', 
+                    governorate: 'الإسكندرية', 
+                    center: 'المركز', 
+                    stage: 'secondary', 
+                    grade: 'الصف الثالث الثانوي', 
+                    password: 'admin789', 
+                    role: 'admin', 
+                    active: true, 
+                    exams: [], 
+                    completedLessons: 0, 
+                    totalLessons: 0 
                 };
-                // طالب افتراضي
-                const student = {
-                    id: 'student1',
-                    name: 'أحمد عماد أحمد',
-                    email: 'ahmed@example.com',
-                    phone: '01234567890',
-                    parentPhone: '01123456789',
-                    governorate: 'القاهرة',
-                    center: 'المركز',
-                    stage: 'secondary',
-                    grade: 'الصف الثالث الثانوي',
-                    password: 'student123',
-                    role: 'student',
-                    active: true,
+                const admin4 = { 
+                    id: 'admin4', 
+                    name: 'أدمن مساعد 3', 
+                    email: 'admin4@example.com', 
+                    phone: '01113224594', 
+                    parentPhone: '', 
+                    governorate: 'الدقهلية', 
+                    center: 'المركز', 
+                    stage: 'secondary', 
+                    grade: 'الصف الثالث الثانوي', 
+                    password: 'admin101', 
+                    role: 'admin', 
+                    active: true, 
+                    exams: [], 
+                    completedLessons: 0, 
+                    totalLessons: 0 
+                };
+                const admin5 = { 
+                    id: 'admin5', 
+                    name: 'أدمن مساعد 4', 
+                    email: 'admin5@example.com', 
+                    phone: '01113224595', 
+                    parentPhone: '', 
+                    governorate: 'الشرقية', 
+                    center: 'المركز', 
+                    stage: 'secondary', 
+                    grade: 'الصف الثالث الثانوي', 
+                    password: 'admin202', 
+                    role: 'admin', 
+                    active: true, 
+                    exams: [], 
+                    completedLessons: 0, 
+                    totalLessons: 0 
+                };
+
+                // === طالب افتراضي (أحمد عماد أحمد) ===
+                const student = { 
+                    id: 'student1', 
+                    name: 'أحمد عماد أحمد', 
+                    email: 'ahmed@example.com', 
+                    phone: '01234567890', 
+                    parentPhone: '01123456789', 
+                    governorate: 'القاهرة', 
+                    center: 'المركز', 
+                    stage: 'secondary', 
+                    grade: 'الصف الثالث الثانوي', 
+                    password: 'student123', 
+                    role: 'student', 
+                    active: true, 
                     attempts: { current: '7', score: '93%', total: '150', pending: '143' },
                     exams: [
                         { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
@@ -427,10 +467,11 @@
                         { title: 'اللغة العربية - الصيف الأول الثانوي', teacher: 'مستمر محمد', date: 'أغسطس ٢٠٢٣ م' },
                         { title: 'اللغة العربية - الصف الثالث الثانوي (بدني)', teacher: 'محمود صبرى محمد', date: 'أغسطس ٢٠٢٣ م' }
                     ],
-                    completedLessons: 22,
-                    totalLessons: 38
+                    completedLessons: 22, 
+                    totalLessons: 38 
                 };
-                setUsers([admin1, admin2, student]);
+
+                setUsers([admin1, admin2, admin3, admin4, admin5, student]);
             }
             if (!localStorage.getItem('courses')) {
                 setCourses([
@@ -582,7 +623,7 @@
             initData();
             renderTeachers(); renderCourses(); renderBooks();
 
-            // تحديث قائمة الصفوف حسب المرحلة
+            // تحديث قائمة الصفوف
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
             const gradesMap = {
@@ -603,7 +644,7 @@
                 }
             });
 
-            // Register
+            // تسجيل طالب جديد
             document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('regName').value.trim();
@@ -631,8 +672,7 @@
                     exams: [
                         { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
                         { name: 'اختبار النحو', status: 'لم يُحل', fullMark: 50, wait: true },
-                        { name: 'اختبار البلاغة', status: 'لم يُحل', fullMark: 30, wait: true },
-                        { name: 'الامتحان الشامل', status: 'لم يُحل', fullMark: '--', wait: false }
+                        { name: 'اختبار البلاغة', status: 'لم يُحل', fullMark: 30, wait: true }
                     ],
                     registeredCourses: [],
                     completedLessons: 0,
@@ -644,7 +684,7 @@
                 switchAuthView('login');
             });
 
-            // Login
+            // تسجيل الدخول
             document.getElementById('loginForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const loginId = document.getElementById('loginEmailOrPhone').value.trim();
@@ -664,7 +704,6 @@
                 if (user.role === 'admin') {
                     document.getElementById('adminLinkBtn').style.display = 'inline-block';
                     document.getElementById('studentDashboard').classList.remove('active');
-                    // نوجهه لصفحة الأدمن
                     window.location.href = 'admin.html';
                 } else {
                     document.getElementById('adminLinkBtn').style.display = 'none';
@@ -674,7 +713,7 @@
                 window.scrollTo(0,0);
             });
 
-            // Session check
+            // التحقق من جلسة مفتوحة
             const userJson = sessionStorage.getItem('currentUser');
             if (userJson) {
                 const user = JSON.parse(userJson);
