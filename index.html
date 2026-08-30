@@ -6,12 +6,23 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* -------------------- STYLES -------------------- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* Animate */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
         .animate-fade { animation: fadeInUp 0.6s ease forwards; }
         .animate-scale { animation: scaleIn 0.4s ease forwards; }
+
+        /* Header */
         header { background: #fff; box-shadow: 0 2px 15px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; }
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
@@ -28,6 +39,8 @@
         .btn-register:hover { background: #520e0e; transform: translateY(-2px); }
         .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-admin-panel:hover { background: #e0c060; transform: translateY(-2px); }
+
+        /* Hero */
         .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; }
         .hero h2 { font-size: 48px; font-weight: 900; color: #f7e1a0; margin-bottom: 15px; }
         .hero p { font-size: 18px; margin-bottom: 30px; }
@@ -36,6 +49,8 @@
         .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
         .btn-secondary { background: #fff; color: #3b0a0a; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; transition: 0.3s; }
         .btn-secondary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+
+        /* Sections */
         .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
         .section-header { margin-bottom: 40px; }
         .section-header span { color: #d4af37; font-weight: 700; font-size: 14px; }
@@ -49,6 +64,7 @@
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; }
         .btn-card:hover { background: #520e0e; transform: scale(1.05); }
 
+        /* Student Dashboard */
         .dashboard-section { display: none; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
         .dashboard-section.active { display: block; }
         .student-header-card { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
@@ -57,6 +73,8 @@
         .attempt-card:hover { transform: translateY(-3px); }
         .attempt-card .value { font-size: 28px; font-weight: 900; color: #3b0a0a; }
         .attempt-card .label { font-size: 13px; color: #888; margin-top: 5px; }
+        .attempt-card .sub { font-size: 12px; color: #aaa; margin-top: 3px; }
+
         .exam-block { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-top: 25px; }
         .exam-block h4 { color: #3b0a0a; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f4edd3; padding-bottom: 10px; }
         .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #f5f0ea; transition: 0.2s; }
@@ -66,21 +84,26 @@
         .exam-status.pending { color: #d4af37; }
         .exam-status.done { color: #2a7a2a; }
         .exam-status.not-solved { color: #a00; }
+        .exam-full-mark { font-size: 12px; color: #888; margin-right: 10px; }
+
         .courses-registered { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-top: 25px; }
         .courses-registered h4 { color: #3b0a0a; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f4edd3; padding-bottom: 10px; }
         .course-reg-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid #f5f0ea; }
         .course-reg-item:last-child { border: none; }
         .course-reg-item .course-title { font-weight: 600; color: #3b0a0a; }
         .course-reg-item .course-teacher { font-size: 13px; color: #888; }
+        .course-reg-item .course-date { font-size: 12px; color: #aaa; margin-right: 15px; }
+
         .back-home { display: inline-block; margin-bottom: 20px; color: #3b0a0a; text-decoration: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .back-home:hover { color: #d4af37; padding-right: 5px; }
 
+        /* Auth */
         .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
         .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
         .auth-sidebar-top { width: 100%; display: flex; justify-content: flex-start; }
         .btn-home-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.08); color: #e0e0e0; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; border: 1px solid rgba(255,255,255,0.15); transition: 0.3s; cursor: pointer; }
-        .btn-home-pill:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .btn-home-pill:hover { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-3px); }
         .auth-sidebar-brand { margin: 40px 0; }
         .auth-brand-logo { width: 70px; height: 70px; margin: 0 auto 15px; background: radial-gradient(circle, #d4af37 0%, #8a6f1d 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid #fff; }
         .auth-sidebar-brand h2 { font-size: 30px; font-weight: 900; color: #fff; }
@@ -88,13 +111,14 @@
         .auth-features-list { list-style: none; text-align: right; width: 100%; max-width: 320px; margin: 20px 0; display: flex; flex-direction: column; gap: 20px; }
         .auth-features-list li { display: flex; align-items: center; gap: 15px; font-size: 14px; color: #e0e0e0; font-weight: 600; transition: 0.3s; }
         .auth-features-list li:hover { color: #fff; }
-        .auth-features-list .icon-box { width: 36px; height: 36px; background: rgba(212,175,55,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 18px; }
+        .auth-features-list .icon-box { width: 36px; height: 36px; background: rgba(212,175,55,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 18px; flex-shrink: 0; }
+        .auth-sidebar-footer { font-size: 12px; color: #aaa; margin-top: 30px; }
         .auth-main-content { width: 65%; background: #faf8f5; padding: 40px 20px; display: flex; justify-content: center; align-items: center; overflow-y: auto; }
         .auth-card-modern { background: #fff; width: 100%; max-width: 580px; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.04); border: 1px solid #f0e6d6; }
         .auth-card-header { text-align: center; margin-bottom: 25px; }
         .auth-card-header h3 { font-size: 28px; font-weight: 900; color: #3b0a0a; }
         .auth-card-header p { color: #777; font-size: 14px; }
-        .gold-divider-line { width: 50px; height: 3px; background: #d4af37; margin: 10px auto; }
+        .gold-divider-line { width: 50px; height: 3px; background: #d4af37; margin: 10px auto; border-radius: 2px; }
         .form-section-title { font-size: 14px; font-weight: 800; color: #3b0a0a; margin: 20px 0 15px; display: flex; align-items: center; gap: 6px; }
         .form-section-title::before { content: ""; display: inline-block; width: 4px; height: 16px; background: #d4af37; border-radius: 2px; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -106,11 +130,12 @@
         .input-icon-right { position: absolute; right: 12px; color: #b09575; font-size: 15px; pointer-events: none; }
         .input-icon-left { position: absolute; left: 12px; color: #b09575; font-size: 15px; cursor: pointer; }
         .btn-submit-modern { width: 100%; background: #310606; color: #fff; padding: 14px; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .btn-submit-modern:hover { background: #4d0a0a; transform: translateY(-2px); }
+        .btn-submit-modern:hover { background: #4d0a0a; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,10,10,0.2); }
         .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee; }
         .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; }
+        .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); }
 
+        /* Footer */
         footer { background: #2f0808; color: #fff; padding: 50px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .footer-col h3 { color: #d4af37; font-size: 24px; font-weight: 900; }
@@ -125,14 +150,16 @@
         .social-icon:hover { background: #d4af37; color: #3b0a0a; transform: translateY(-3px); }
         .footer-bottom { max-width: 1200px; margin: 30px auto 0; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; font-size: 13px; color: #aaa; }
 
+        /* Support button */
         .support-float-btn { position: fixed; bottom: 25px; left: 25px; background: #fff; color: #3b0a0a; padding: 12px 20px; border-radius: 14px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; z-index: 9999; text-decoration: none; border: 1px solid #e0d0a0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .support-float-btn:hover { transform: translateY(-5px) scale(1.02); }
+        .support-float-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .support-float-icon { background: #3b0a0a; color: #d4af37; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
         .alert { padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
+        /* Responsive */
         @media (max-width: 900px) {
             .auth-layout-container { flex-direction: column; }
             .auth-sidebar { width: 100%; padding: 30px 20px; }
@@ -146,6 +173,7 @@
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="nav-container">
             <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>منصة الطالب والأدمن</span></div></div>
@@ -167,6 +195,7 @@
         </div>
     </header>
 
+    <!-- Home Section -->
     <div id="homeSection">
         <section class="hero">
             <h2>نور تعليم الأزهر</h2>
@@ -203,6 +232,7 @@
         </div>
     </div>
 
+    <!-- Student Dashboard -->
     <div id="studentDashboard" class="dashboard-section">
         <a onclick="showHome()" class="back-home">← العودة للرئيسية</a>
         <div class="student-header-card animate-fade">
@@ -228,6 +258,7 @@
         </div>
     </div>
 
+    <!-- Auth Section -->
     <div id="authSection" class="auth-page-section">
         <div class="auth-layout-container">
             <div class="auth-sidebar">
@@ -242,6 +273,7 @@
             </div>
             <div class="auth-main-content">
                 <div class="auth-card-modern">
+                    <!-- Register -->
                     <div id="registerFormContainer">
                         <div class="auth-card-header"><h3>انضم لمنصتنا</h3><p>أنشئ حسابك كطالب</p><div class="gold-divider-line"></div></div>
                         <form id="registerForm">
@@ -271,6 +303,7 @@
                         </form>
                         <div class="auth-toggle-footer"><p>لديك حساب بالفعل؟</p><button class="btn-outline-toggle" onclick="switchAuthView('login')">تسجيل الدخول</button></div>
                     </div>
+                    <!-- Login -->
                     <div id="loginFormContainer" style="display:none;">
                         <div class="auth-card-header"><h3>أهلاً بك مجدداً</h3><p>سجل دخولك</p><div class="gold-divider-line"></div></div>
                         <form id="loginForm">
@@ -300,7 +333,7 @@
     </a>
 
     <script>
-        // ========== دوال البيانات ==========
+        // -------------------- DATA HELPERS --------------------
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -310,10 +343,10 @@
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        // ========== تهيئة البيانات (5 أدمنة) ==========
+        // -------------------- INIT DATA (5 admins) --------------------
         function initData() {
             if (!localStorage.getItem('users')) {
-                const admin1 = { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'azab7620@gmail.com', phone: '01110000001', parentPhone: '', governorate: 'القاهرة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'r11a6r10', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
+                const admin1 = { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', parentPhone: '', governorate: 'القاهرة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
                 const admin2 = { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', parentPhone: '', governorate: 'الجيزة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
                 const admin3 = { id: 'admin3', name: 'أدمن 3 - سارة', email: 'admin3@example.com', phone: '01110000003', parentPhone: '', governorate: 'الإسكندرية', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
                 const admin4 = { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', parentPhone: '', governorate: 'الدقهلية', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
@@ -369,7 +402,7 @@
             }
         }
 
-        // ========== دوال العرض ==========
+        // -------------------- RENDER FUNCTIONS --------------------
         function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
             const teachers = getTeachers();
@@ -411,7 +444,7 @@
             `).join('');
         }
 
-        // ========== التنقل ==========
+        // -------------------- NAVIGATION --------------------
         function showHome() {
             document.getElementById('homeSection').style.display = 'block';
             document.getElementById('authSection').style.display = 'none';
@@ -441,9 +474,11 @@
             el.type = (el.type === 'password') ? 'text' : 'password';
         }
 
-        // ========== لوحة الطالب ==========
+        // -------------------- STUDENT DASHBOARD --------------------
         function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
+
+            // Exams
             const examsDiv = document.getElementById('studentExams');
             if (user.exams && user.exams.length) {
                 examsDiv.innerHTML = user.exams.map(ex => `
@@ -460,6 +495,7 @@
                 examsDiv.innerHTML = '<p>لا توجد اختبارات.</p>';
             }
 
+            // Registered courses
             const regDiv = document.getElementById('studentRegisteredCourses');
             if (user.registeredCourses && user.registeredCourses.length) {
                 regDiv.innerHTML = user.registeredCourses.map(c => `
@@ -467,7 +503,7 @@
                         <span class="course-title">${c.title}</span>
                         <span>
                             <span class="course-teacher">${c.teacher}</span>
-                            <span class="course-date" style="margin-right:15px;">${c.date || ''}</span>
+                            <span class="course-date">${c.date || ''}</span>
                         </span>
                     </div>
                 `).join('');
@@ -475,6 +511,7 @@
                 regDiv.innerHTML = '<p>لا توجد مواد مسجلة.</p>';
             }
 
+            // Lectures by grade
             const courses = getCourses().filter(c => c.grade === user.grade);
             const studentCoursesDiv = document.getElementById('studentCourses');
             if (!courses.length) {
@@ -489,11 +526,12 @@
             }
         }
 
-        // ========== أحداث التسجيل والدخول ==========
+        // -------------------- AUTH EVENTS --------------------
         document.addEventListener('DOMContentLoaded', function() {
             initData();
             renderTeachers(); renderCourses(); renderBooks();
 
+            // Populate grades based on stage
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
             const gradesMap = {
@@ -514,6 +552,7 @@
                 }
             });
 
+            // Register
             document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('regName').value.trim();
@@ -533,7 +572,8 @@
                 if (users.find(u => u.email === email || u.phone === phone)) { alert('مسجل بالفعل.'); return; }
                 
                 const newUser = {
-                    id: 'user_' + Date.now(), name, email, phone, parentPhone, governorate, center, stage, grade, password,
+                    id: 'user_' + Date.now(),
+                    name, email, phone, parentPhone, governorate, center, stage, grade, password,
                     role: 'student',
                     active: true,
                     attempts: { current: '1', score: '0%', total: '0', pending: '0' },
@@ -553,6 +593,7 @@
                 switchAuthView('login');
             });
 
+            // Login
             document.getElementById('loginForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const loginId = document.getElementById('loginEmailOrPhone').value.trim();
@@ -581,6 +622,7 @@
                 window.scrollTo(0,0);
             });
 
+            // Check session
             const userJson = sessionStorage.getItem('currentUser');
             if (userJson) {
                 const user = JSON.parse(userJson);
