@@ -6,7 +6,7 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* [نفس الـ CSS السابق بالكامل، لا حاجة لتغييره] */
+        /* [نفس الـ CSS السابق ولكن مع تعديلات بسيطة] */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
 
@@ -25,11 +25,8 @@
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
-        .nav-links { display: flex; list-style: none; gap: 25px; align-items: center; flex-wrap: wrap; }
-        .nav-links a { text-decoration: none; color: #444; font-weight: 600; font-size: 15px; transition: 0.3s; cursor: pointer; position: relative; }
-        .nav-links a::after { content: ''; position: absolute; bottom: -4px; right: 0; width: 0; height: 2px; background: #d4af37; transition: 0.4s; }
-        .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: #3b0a0a; transform: translateY(-2px); }
+        /* إخفاء روابط القائمة للطالب كما طلبت */
+        .nav-links { display: none !important; } 
         .nav-buttons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .btn-login { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.3s; }
         .btn-login:hover { background: #f4edd3; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
@@ -172,7 +169,6 @@
             .auth-main-content { width: 100%; padding: 30px 15px; }
             .form-grid-2 { grid-template-columns: 1fr; }
             .nav-container { flex-direction: column; align-items: stretch; }
-            .nav-links { justify-content: center; }
             .nav-buttons { justify-content: center; }
             .hero h2 { font-size: 30px; }
         }
@@ -182,6 +178,7 @@
     <header>
         <div class="nav-container">
             <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>منصة الطالب والأدمن</span></div></div>
+            <!-- تم إخفاء روابط الرئيسية والكورسات والمدرسون والكتب كما طلبت -->
             <ul class="nav-links">
                 <li><a onclick="showHome()">الرئيسية</a></li>
                 <li><a onclick="showHome()">الكورسات</a></li>
@@ -236,6 +233,7 @@
         </div>
     </div>
 
+    <!-- ====== لوحة تحكم الطالب (الجديدة) ====== -->
     <div id="studentDashboard" class="dashboard-section">
         <a onclick="showHome()" class="back-home" style="color:#3b0a0a; text-decoration:none; font-weight:700; display:inline-block; margin-bottom:20px; cursor:pointer;">← العودة للرئيسية</a>
         
@@ -275,6 +273,18 @@
                 </div>
                 <h4 style="margin-top:20px;">📚 المواد المسجلة</h4>
                 <div id="studentRegisteredCourses"></div>
+            </div>
+
+            <!-- قسم المحاضرات الخاصة بالصف -->
+            <div class="dash-block animate-fade">
+                <h4>🎥 المحاضرات (خاصة بصفك)</h4>
+                <div id="studentCourses"></div>
+            </div>
+
+            <!-- قسم الكتب الخاصة بالصف (تمت إضافته هنا) -->
+            <div class="dash-block animate-fade">
+                <h4>📖 الكتب والملازم (خاصة بصفك)</h4>
+                <div id="studentBooks"></div>
             </div>
 
             <h1 class="main-dash-title">مدرسينا</h1>
@@ -358,7 +368,7 @@
     </a>
 
     <script>
-        // [نفس الـ JS السابق بالكامل، بدون تعديل على الدوال!]
+        // [نفس الـ JS السابق مع تعديلات إصلاح الـ undefined وإضافة الكتب]
         const ADMINS = [
             { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' },
             { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', password: 'admin123' },
@@ -500,26 +510,32 @@
                 document.getElementById('studentDashboardContent').style.display = 'block';
             }
 
+            // [إصلاح الـ undefined]: التأكد من أن القيم أرقام
             const attempts = user.attempts || { avg: 0, solved: 0, total: 0, pending: 0 };
+            const avg = Number(attempts.avg) || 0;
+            const solved = Number(attempts.solved) || 0;
+            const total = Number(attempts.total) || 0;
+            const pending = Number(attempts.pending) || 0;
+
             document.getElementById('attemptsGrid').innerHTML = `
                 <div class="attempt-card animate-fade">
-                    <div><div class="value">${attempts.avg}%</div><div class="label">متوسط الدرجات</div></div>
+                    <div><div class="value">${avg}%</div><div class="label">متوسط الدرجات</div></div>
                     <div class="icon-circle">💯</div>
                 </div>
                 <div class="attempt-card animate-fade delay-1">
-                    <div><div class="value">${attempts.solved}</div><div class="label">اختبارات محلولة</div></div>
+                    <div><div class="value">${solved}</div><div class="label">اختبارات محلولة</div></div>
                     <div class="icon-circle">✅</div>
                 </div>
                 <div class="attempt-card animate-fade delay-2">
-                    <div><div class="value">${attempts.total}</div><div class="label">إجمالي الاختبارات</div></div>
+                    <div><div class="value">${total}</div><div class="label">إجمالي الاختبارات</div></div>
                     <div class="icon-circle">📝</div>
                 </div>
             `;
 
             document.getElementById('pillsBar').innerHTML = `
-                <div class="pill gold">الحل (${attempts.total})</div>
-                <div class="pill">محاولة (${attempts.solved})</div>
-                <div class="pill">لم يحل (${attempts.pending})</div>
+                <div class="pill gold">الحل (${total})</div>
+                <div class="pill">محاولة (${solved})</div>
+                <div class="pill">لم يحل (${pending})</div>
             `;
 
             const examsDiv = document.getElementById('studentExams');
@@ -546,10 +562,30 @@
             `).join('') : '<p style="color:#888;">لا توجد مواد مسجلة.</p>';
 
             const completed = user.completedLessons || 0;
-            const total = user.totalLessons || 1;
-            const percent = Math.round((completed / total) * 100);
+            const totalLessons = user.totalLessons || 1;
+            const percent = Math.round((completed / totalLessons) * 100);
             document.getElementById('progressPercent').textContent = percent + '%';
             document.getElementById('progressCircle').style.background = `conic-gradient(#d4af37 ${percent}%, #f0ede8 0)`;
+
+            // [تعديل مهم]: عرض المحاضرات الخاصة بالصف فقط
+            const allCourses = getCourses();
+            const userCourses = allCourses.filter(c => c.grade === user.grade);
+            document.getElementById('studentCourses').innerHTML = userCourses.length ? userCourses.map(c => `
+                <div class="exam-item animate-slide">
+                    <span class="exam-name">${c.title}</span>
+                    <a href="${c.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">مشاهدة</a>
+                </div>
+            `).join('') : '<p style="color:#888;">لا توجد محاضرات مضافة لصفك بعد.</p>';
+
+            // [إضافة جديدة]: عرض الكتب الخاصة بالصف فقط
+            const allBooks = getBooks();
+            const userBooks = allBooks.filter(b => b.grade === user.grade);
+            document.getElementById('studentBooks').innerHTML = userBooks.length ? userBooks.map(b => `
+                <div class="exam-item animate-slide">
+                    <span class="exam-name">${b.title}</span>
+                    <a href="${b.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">تحميل</a>
+                </div>
+            `).join('') : '<p style="color:#888;">لا توجد كتب مضافة لصفك بعد.</p>';
 
             const teachersGrid = document.getElementById('studentTeachersGrid');
             const teachers = getTeachers();
@@ -604,11 +640,17 @@
                 const users = getUsers();
                 if (users.find(u => u.email === email || u.phone === phone)) { alert('مسجل بالفعل.'); return; }
                 
+                // [إصلاح الـ undefined]: التأكد من أن قيم الإحصائيات أرقام صحيحة
                 const newUser = {
                     id: 'user_' + Date.now(), name, email, phone, parentPhone, governorate, center, stage, grade, password,
                     role: 'student',
                     active: false,
-                    attempts: { avg: Math.floor(Math.random() * 30 + 60) + '%', solved: Math.floor(Math.random() * 10) + 1, total: 150, pending: 150 - (Math.floor(Math.random() * 10) + 1) },
+                    attempts: { 
+                        avg: Math.floor(Math.random() * 30 + 60), // رقم صحيح (بدون %)
+                        solved: Math.floor(Math.random() * 10) + 1,
+                        total: 150,
+                        pending: 150 - (Math.floor(Math.random() * 10) + 1)
+                    },
                     exams: [
                         { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
                         { name: 'اختبار النحو', status: 'لم يُحل', fullMark: 50, wait: true },
