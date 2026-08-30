@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نور تعليم الأزهر - الرئيسية</title>
+    <title>نور تعليم الأزهر</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
-
+        
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         .animate-fade { animation: fadeInUp 0.7s ease forwards; }
@@ -18,12 +18,24 @@
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
-        .nav-links { display: none !important; } /* إخفاء روابط الرئيسية والكورسات والمدرسون والكتب كما طلبت */
+        .nav-links { display: flex; gap: 25px; list-style: none; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: 600; cursor: pointer; }
+        .nav-links a:hover { color: #d4af37; }
         .nav-buttons { display: flex; gap: 10px; align-items: center; }
         .btn-login { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-register { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; }
+        .hero h2 { font-size: 48px; font-weight: 900; color: #f7e1a0; margin-bottom: 15px; }
+        .hero p { font-size: 18px; margin-bottom: 30px; }
+        .hero-btns { display: flex; justify-content: center; gap: 15px; }
+        .btn-primary { background: #3b0a0a; color: #fff; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; border: 2px solid #d4af37; cursor: pointer; }
+        .btn-secondary { background: #fff; color: #3b0a0a; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; cursor: pointer; }
 
         .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+        .section-header { margin-bottom: 40px; text-align: center; }
+        .section-header h3 { font-size: 32px; color: #3b0a0a; font-weight: 900; }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
         .card { background: #fff; border-radius: 16px; padding: 25px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
         .card h4 { font-size: 18px; color: #3b0a0a; margin-bottom: 10px; }
@@ -31,29 +43,37 @@
 
         .dashboard-section { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
         .dashboard-section.active { display: block; animation: fadeInUp 0.6s ease; }
-
         .student-header-card { background: #fff; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
         .attempts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 25px; }
         .attempt-card { background: #fff; padding: 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .attempt-card .value { font-size: 36px; font-weight: 900; color: #3b0a0a; }
         .attempt-card .label { font-size: 13px; color: #888; }
         .attempt-card .icon-circle { width: 50px; height: 50px; background: #f4edd3; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 22px; }
-
-        .dash-block { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
-        .dash-block h4 { color: #3b0a0a; border-bottom: 2px solid #f4edd3; padding-bottom: 12px; margin-bottom: 20px; }
-
-        .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f0ede8; border-radius: 12px; margin-bottom: 15px; background: #fcfaf8; }
-        .exam-name { font-weight: 700; color: #3b0a0a; }
         .pill-bar { display: flex; gap: 15px; justify-content: flex-end; margin-bottom: 30px; }
         .pill { background: #fff; border: 1px solid #ddd; padding: 6px 18px; border-radius: 30px; font-weight: 700; font-size: 13px; }
-        .pill.gold { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
-
-        .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .pill.gold { background: #3b0a0a; color: #d4af37; }
+        
+        .dash-block { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
+        .dash-block h4 { color: #3b0a0a; border-bottom: 2px solid #f4edd3; padding-bottom: 12px; margin-bottom: 20px; }
+        .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f0ede8; border-radius: 12px; margin-bottom: 15px; background: #fcfaf8; }
+        .exam-name { font-weight: 700; color: #3b0a0a; }
+        .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
-        .teacher-card h5 { color: #3b0a0a; font-size: 16px; }
-
+        
+        /* ستايل الأكورديون للوحدات */
+        .bundle-container { margin-top: 20px; }
+        details.bundle { background: #fff; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid #eee; }
+        details.bundle summary { background: #2d4a3d; color: #fff; padding: 20px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
+        details.bundle summary::-webkit-details-marker { display: none; }
+        details.bundle[open] summary { border-bottom: 2px solid #d4af37; }
+        .bundle-number { background: #d4af37; color: #3b0a0a; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; margin-left: 15px; }
+        .bundle-content { padding: 20px; background: #fcfaf8; }
+        .bundle-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+        .bundle-item:last-child { border-bottom: none; }
+        .bundle-item-title { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #444; }
+        
         #examPage { display: none; max-width: 900px; margin: 20px auto; padding: 30px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        #examPage.active { display: block; animation: fadeInUp 0.5s ease; }
+        #examPage.active { display: block; }
         .exam-header { background: #2d4a3d; color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
         .exam-header h2 { color: #d4af37; font-size: 24px; }
         .progress-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; margin: 15px 0; overflow: hidden; }
@@ -63,11 +83,10 @@
         .q-btn.current { background: #3b0a0a; color: #d4af37; }
         .q-btn.answered { background: #d4af37; color: #fff; }
         .question-box { border: 1px solid #f0ede8; border-radius: 16px; padding: 25px; margin-bottom: 20px; }
-        .q-text { font-size: 20px; font-weight: 800; color: #3b0a0a; margin-bottom: 20px; text-align: right; }
+        .q-text { font-size: 20px; font-weight: 800; color: #3b0a0a; margin-bottom: 20px; }
         .options-list { list-style: none; }
         .option-item { display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; cursor: pointer; }
         .option-item.selected { border-color: #d4af37; background: #fff9e6; }
-        .option-item input { width: 18px; height: 18px; }
         .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; }
         .btn-nav { padding: 12px 30px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
         .btn-next { background: #3b0a0a; color: #d4af37; }
@@ -75,14 +94,10 @@
         .btn-finish { width: 100%; background: #2a7a2a; color: #fff; padding: 15px; border-radius: 12px; border: none; font-weight: 900; font-size: 18px; cursor: pointer; margin-top: 15px; }
         .btn-start-exam { background: #d4af37; color: #3b0a0a; padding: 10px 30px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; }
         .result-box { text-align: center; padding: 30px; background: #f0fdf4; border: 1px solid #c3e6cb; border-radius: 16px; }
-        .result-title { font-size: 32px; font-weight: 900; color: #2a7a2a; margin-bottom: 10px; }
-        .result-details { font-size: 20px; font-weight: 700; color: #333; }
-        .pending-container { background: #fff; border-radius: 16px; padding: 30px; text-align: center; margin-top: 50px; }
-        .pending-title { font-size: 22px; font-weight: 900; color: #3b0a0a; margin-bottom: 10px; }
-
+        
         .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
-        .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
+        .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; text-align: center; }
         .auth-sidebar h2 { font-size: 30px; font-weight: 900; color: #fff; }
         .auth-sidebar p { color: #d4af37; font-size: 14px; }
         .auth-main-content { width: 65%; background: #faf8f5; padding: 40px 20px; display: flex; justify-content: center; align-items: center; }
@@ -95,9 +110,9 @@
         .form-group-modern label { display: block; font-size: 12px; font-weight: 700; color: #3b0a0a; margin-bottom: 6px; }
         .input-wrapper input, .input-wrapper select { width: 100%; padding: 10px 12px; border: 1px solid #eadacc; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 13px; outline: none; }
         .btn-submit-modern { width: 100%; background: #310606; color: #fff; padding: 14px; border: none; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 20px; }
-        .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee; }
         .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; }
-        .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; }
+        
+        .pending-container { background: #fff; border-radius: 16px; padding: 30px; text-align: center; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -116,18 +131,22 @@
     </header>
 
     <div id="homeSection">
-        <div class="section-container">
-            <div class="card-grid">
-                <div class="card animate-fade"><h4>مرحباً بك في منصة نور تعليم الأزهر</h4><p>سجل الآن للوصول إلى المحاضرات والكتب والاختبارات الخاصة بصفك.</p></div>
+        <section class="hero">
+            <h2>نور تعليم الأزهر</h2>
+            <p>محتوى تعليمي يليق بتميز طالب الأزهر الشريف</p>
+            <div class="hero-btns">
+                <a onclick="showAuthPage('register')" class="btn-primary">ابدأ الآن</a>
+                <a onclick="showAuthPage('login')" class="btn-secondary">تسجيل الدخول</a>
             </div>
-        </div>
+        </section>
     </div>
 
+    <!-- لوحة تحكم الطالب -->
     <div id="studentDashboard" class="dashboard-section">
         <a onclick="showHome()" style="color:#3b0a0a; text-decoration:none; font-weight:700; display:inline-block; margin-bottom:20px; cursor:pointer;">← العودة للرئيسية</a>
         
         <div id="pendingMessage" style="display:none;" class="pending-container animate-fade">
-            <h3 class="pending-title">حسابك قيد المراجعة</h3>
+            <h3 style="color:#3b0a0a; margin-bottom:10px;">حسابك قيد المراجعة</h3>
             <p>شكراً لتسجيلك! سيتم تفعيل حسابك من قبل الإدارة خلال وقت قصير.</p>
         </div>
 
@@ -137,37 +156,25 @@
                 <p>الصف: <span id="studentGradeDash" style="font-weight:700; color:#d4af37;"></span></p>
             </div>
 
-            <h2 style="color:#3b0a0a;">درجاتي</h2>
+            <h2 style="color:#3b0a0a; margin-bottom:20px;">درجاتي</h2>
             <div class="attempts-grid" id="attemptsGrid"></div>
             <div class="pill-bar" id="pillsBar"></div>
 
-            <div class="dash-block animate-fade">
-                <h4>📝 اختباراتي</h4>
-                <div id="studentExams"></div>
+            <!-- قسم الكورسات (عرض الحزم) -->
+            <h2 style="color:#3b0a0a; margin-top:30px; margin-bottom:20px;">كورساتي</h2>
+            <div class="dash-block">
+                <h4>📦 محتوى الوحدات (اضغط على الوحدة لفتحها)</h4>
+                <div id="studentBundles" class="bundle-container"></div>
             </div>
-
-            <div class="dash-block animate-fade">
-                <h4>📚 المواد المسجلة</h4>
-                <div id="studentRegisteredCourses"></div>
-            </div>
-
-            <div class="dash-block animate-fade">
-                <h4>🎥 المحاضرات (خاصة بصفك)</h4>
-                <div id="studentCourses"></div>
-            </div>
-
-            <div class="dash-block animate-fade">
-                <h4>📖 الكتب والملازم (خاصة بصفك)</h4>
-                <div id="studentBooks"></div>
-            </div>
-
-            <div class="dash-block animate-fade">
+            
+            <div class="dash-block">
                 <h4>👨‍🏫 مدرسينا</h4>
                 <div class="card-grid" id="studentTeachersGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>
             </div>
         </div>
     </div>
 
+    <!-- صفحة الامتحان -->
     <div id="examPage">
         <div class="exam-header">
             <h2 id="examTitleHeader">عنوان الاختبار</h2>
@@ -215,11 +222,11 @@
                                 <div class="form-group-modern"><label>رقم هاتف ولي الأمر</label><div class="input-wrapper"><input type="tel" id="regParentPhone" placeholder="01xxxxxxxxx"></div></div>
                             </div>
                             <div class="form-grid-2">
-                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper"><select id="regGovernorate" required><option value="" disabled selected>اختر المحافظة</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option></select></div></div>
+                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper"><select id="regGovernorate" required><option value="">اختر المحافظة</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option></select></div></div>
                                 <div class="form-group-modern"><label>المركز</label><div class="input-wrapper"><input type="text" id="regCenter" placeholder="أدخل المركز"></div></div>
                             </div>
-                            <div class="form-group-modern"><label>المرحلة</label><div class="input-wrapper"><select id="regStage" required><option value="" disabled selected>اختر المرحلة</option><option value="primary">ابتدائي أزهري</option><option value="preparatory">إعدادي أزهري</option><option value="secondary">ثانوي أزهري</option></select></div></div>
-                            <div class="form-group-modern"><label>الصف الدراسي</label><div class="input-wrapper"><select id="regGrade" required><option value="" disabled selected>اختر الصف</option></select></div></div>
+                            <div class="form-group-modern"><label>المرحلة</label><div class="input-wrapper"><select id="regStage" required><option value="">اختر المرحلة</option><option value="primary">ابتدائي أزهري</option><option value="preparatory">إعدادي أزهري</option><option value="secondary">ثانوي أزهري</option></select></div></div>
+                            <div class="form-group-modern"><label>الصف الدراسي</label><div class="input-wrapper"><select id="regGrade" required><option value="">اختر الصف</option></select></div></div>
                             <div class="form-grid-2">
                                 <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="regPass" placeholder="كلمة المرور" required></div></div>
                                 <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" required></div></div>
@@ -243,45 +250,28 @@
     </div>
 
     <script>
-        const ADMINS = [
-            { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' }
-        ];
-
+        const ADMINS = [{ id: 'admin1', name: 'أدمن', email: 'admin1@example.com', password: 'admin123' }];
+        
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
-        function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
-        function setCourses(c) { localStorage.setItem('courses', JSON.stringify(c)); }
-        function getBooks() { return JSON.parse(localStorage.getItem('books')) || []; }
-        function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
+        function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
+        function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
         function getExams() { return JSON.parse(localStorage.getItem('exams')) || []; }
         function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
 
         function initData() {
-            let users = getUsers();
-            let needUpdate = false;
-
-            ADMINS.forEach(adminData => {
-                let existing = users.find(u => u.id === adminData.id && u.role === 'admin');
-                if (existing) {
-                    if (existing.email !== adminData.email || existing.password !== adminData.password) {
-                        existing.email = adminData.email;
-                        existing.password = adminData.password;
-                        needUpdate = true;
-                    }
-                } else {
-                    users.push({ ...adminData, role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
-                    needUpdate = true;
-                }
-            });
-
-            if (!localStorage.getItem('courses')) setCourses([]);
-            if (!localStorage.getItem('books')) setBooks([]);
-            if (!localStorage.getItem('teachers')) setTeachers([{ id: 't1', name: 'زينب محمد', specialty: 'اللغة العربية', image: 'https://via.placeholder.com/150' }]);
+            if (!localStorage.getItem('users')) setUsers([...ADMINS]);
+            if (!localStorage.getItem('bundles')) setBundles([]);
+            if (!localStorage.getItem('teachers')) setTeachers([]);
             if (!localStorage.getItem('exams')) setExams([]);
-            if (needUpdate) setUsers(users);
         }
+
+        let currentUser = null;
+        let currentExam = null;
+        let currentQIndex = 0;
+        let answers = [];
 
         function showHome() {
             document.getElementById('homeSection').style.display = 'block';
@@ -300,11 +290,6 @@
             document.getElementById('registerFormContainer').style.display = (mode === 'register') ? 'block' : 'none';
             document.getElementById('loginFormContainer').style.display = (mode === 'login') ? 'block' : 'none';
         }
-
-        let currentUser = null;
-        let currentExam = null;
-        let currentQIndex = 0;
-        let answers = [];
 
         function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
@@ -331,34 +316,47 @@
                 <div class="pill">لم يحل (${Number(a.pending)||0})</div>
             `;
 
-            const courses = getCourses().filter(c => c.grade === user.grade);
-            document.getElementById('studentCourses').innerHTML = courses.length ? courses.map(c => `<div class="exam-item"><span class="exam-name">${c.title}</span><a href="${c.link}" target="_blank" class="btn-card">مشاهدة</a></div>`).join('') : '<p>لا توجد محاضرات لصفك بعد.</p>';
-
-            const books = getBooks().filter(b => b.grade === user.grade);
-            document.getElementById('studentBooks').innerHTML = books.length ? books.map(b => `<div class="exam-item"><span class="exam-name">${b.title}</span><a href="${b.link}" target="_blank" class="btn-card">تحميل</a></div>`).join('') : '<p>لا توجد كتب لصفك بعد.</p>';
-
-            const exams = getExams().filter(e => e.grade === user.grade);
-            document.getElementById('studentExams').innerHTML = exams.length ? exams.map(ex => `
-                <div class="exam-item">
-                    <span class="exam-name">${ex.title}</span>
-                    <button class="btn-start-exam" onclick="startExam('${ex.id}')">ابدأ الاختبار</button>
-                </div>
-            `).join('') : '<p>لا توجد اختبارات لصفك بعد.</p>';
+            // عرض الحزم/الوحدات الخاصة بالصف (الأكورديون)
+            const bundles = getBundles().filter(b => b.grade === user.grade);
+            const bundlesDiv = document.getElementById('studentBundles');
+            
+            if (bundles.length) {
+                bundlesDiv.innerHTML = bundles.map((b, idx) => `
+                    <details class="bundle">
+                        <summary>
+                            <div style="display:flex; align-items:center;">
+                                <div class="bundle-number">${idx + 1}</div>
+                                <div>
+                                    <div>${b.title}</div>
+                                    <div style="font-size:12px; color:#ccc;">ملفات ودروس واختبارات ${b.items.length}</div>
+                                </div>
+                            </div>
+                            <span style="font-size:20px;">▼</span>
+                        </summary>
+                        <div class="bundle-content">
+                            ${b.items.map(item => {
+                                if (item.type === 'exam') {
+                                    return `<div class="bundle-item"><span class="bundle-item-title">📝 ${item.title}</span><button class="btn-start-exam" onclick="startExam('${item.examId}')">ابدأ</button></div>`;
+                                } else if (item.type === 'video') {
+                                    return `<div class="bundle-item"><span class="bundle-item-title">🎬 ${item.title}</span><a href="${item.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">مشاهدة</a></div>`;
+                                } else {
+                                    return `<div class="bundle-item"><span class="bundle-item-title">📄 ${item.title}</span><a href="${item.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">تحميل</a></div>`;
+                                }
+                            }).join('')}
+                        </div>
+                    </details>
+                `).join('');
+            } else {
+                bundlesDiv.innerHTML = '<p style="color:#888;">لا توجد وحدات مضافة لصفك بعد.</p>';
+            }
 
             const teachers = getTeachers();
             document.getElementById('studentTeachersGrid').innerHTML = teachers.map(t => `
                 <div class="teacher-card">${t.image ? `<img src="${t.image}">` : ''}<h5>${t.name}</h5><p>${t.specialty}</p></div>
             `).join('');
-            
-            const completed = user.completedLessons || 0;
-            const total = user.totalLessons || 1;
-            const pct = Math.round((completed/total)*100);
-            document.getElementById('progressPercent').textContent = pct + '%';
-            document.getElementById('progressCircle').style.background = `conic-gradient(#d4af37 ${pct}%, #f0ede8 0)`;
-
-            document.getElementById('studentRegisteredCourses').innerHTML = (user.registeredCourses || []).length ? user.registeredCourses.map(c => `<div class="exam-item"><span class="exam-name">${c.title}</span><span>${c.teacher}</span></div>`).join('') : '<p>لا توجد مواد مسجلة.</p>';
         }
 
+        // منطق الاختبار
         function startExam(examId) {
             currentExam = getExams().find(e => e.id === examId);
             if (!currentExam) return;
@@ -396,8 +394,7 @@
             document.getElementById('optionsList').innerHTML = optionsHTML;
             
             const answeredCount = answers.filter(a => a !== null).length;
-            const btnFinish = document.querySelector('.btn-finish');
-            btnFinish.textContent = `أجب عن جميع الأسئلة (${answeredCount}/${currentExam.questions.length})`;
+            document.querySelector('.btn-finish').textContent = `أجب عن جميع الأسئلة (${answeredCount}/${currentExam.questions.length})`;
         }
 
         function selectOption(optIndex) {
@@ -405,30 +402,12 @@
             renderQuestion();
         }
 
-        function goToQuestion(index) {
-            currentQIndex = index;
-            renderQuestion();
-        }
-
-        function nextQuestion() {
-            if (currentQIndex < currentExam.questions.length - 1) {
-                currentQIndex++;
-                renderQuestion();
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQIndex > 0) {
-                currentQIndex--;
-                renderQuestion();
-            }
-        }
+        function goToQuestion(index) { currentQIndex = index; renderQuestion(); }
+        function nextQuestion() { if (currentQIndex < currentExam.questions.length - 1) { currentQIndex++; renderQuestion(); } }
+        function prevQuestion() { if (currentQIndex > 0) { currentQIndex--; renderQuestion(); } }
 
         function finishExam() {
-            let correctCount = 0;
-            let wrongCount = 0;
-            let unanswered = 0;
-
+            let correctCount = 0, wrongCount = 0, unanswered = 0;
             currentExam.questions.forEach((q, i) => {
                 if (answers[i] === null) unanswered++;
                 else if (answers[i] === q.correct) correctCount++;
@@ -444,12 +423,7 @@
                 const newSolved = (Number(oldAttempts.solved) || 0) + 1;
                 const newAvg = Math.round(((Number(oldAttempts.avg) * Number(oldAttempts.solved)) + (correctCount / currentExam.questions.length * 100)) / newSolved);
                 
-                user.attempts = {
-                    avg: newAvg,
-                    solved: newSolved,
-                    total: newTotal,
-                    pending: Math.max(0, (Number(oldAttempts.pending) || 0) - currentExam.questions.length)
-                };
+                user.attempts = { avg: newAvg, solved: newSolved, total: newTotal, pending: Math.max(0, (Number(oldAttempts.pending) || 0) - currentExam.questions.length) };
                 setUsers(users);
             }
 
@@ -478,24 +452,14 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initData();
-            
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
-            const gradesMap = {
-                primary: ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي'],
-                preparatory: ['الأول إعدادي','الثاني إعدادي','الثالث إعدادي'],
-                secondary: ['الأول ثانوي','الثاني ثانوي','الثالث ثانوي']
-            };
+            const gradesMap = { primary: ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي'], preparatory: ['الأول إعدادي','الثاني إعدادي','الثالث إعدادي'], secondary: ['الأول ثانوي','الثاني ثانوي','الثالث ثانوي'] };
             stageSelect.addEventListener('change', function() {
                 gradeSelect.innerHTML = '<option value="" disabled selected>اختر الصف</option>';
                 const val = this.value;
                 if (val && gradesMap[val]) {
-                    gradesMap[val].forEach(g => {
-                        const opt = document.createElement('option');
-                        opt.value = 'الصف ' + g;
-                        opt.textContent = 'الصف ' + g;
-                        gradeSelect.appendChild(opt);
-                    });
+                    gradesMap[val].forEach(g => { const opt = document.createElement('option'); opt.value = 'الصف ' + g; opt.textContent = 'الصف ' + g; gradeSelect.appendChild(opt); });
                 }
             });
 
@@ -510,17 +474,10 @@
                 
                 if (password !== confirm) { alert('كلمتا المرور غير متطابقتين.'); return; }
                 const users = getUsers();
-                
-                const newUser = {
-                    id: 'user_' + Date.now(), name, email, phone, grade, password,
-                    role: 'student',
-                    active: false,
-                    attempts: { avg: 0, solved: 0, total: 0, pending: 0 },
-                    exams: [], registeredCourses: [], completedLessons: 0, totalLessons: 38
-                };
+                const newUser = { id: 'user_' + Date.now(), name, email, phone, grade, password, role: 'student', active: false, attempts: { avg: 0, solved: 0, total: 0, pending: 0 }, exams: [], registeredCourses: [], completedLessons: 0, totalLessons: 38 };
                 users.push(newUser);
                 setUsers(users);
-                alert('تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل.');
+                alert('تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل من الأدمن.');
                 switchAuthView('login');
             });
 
@@ -540,12 +497,8 @@
                 document.getElementById('navUser').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
 
-                if (user.role === 'admin') {
-                    window.location.href = 'admin.html';
-                } else {
-                    document.getElementById('studentDashboard').classList.add('active');
-                    loadStudentDashboard(user);
-                }
+                if (user.role === 'admin') { window.location.href = 'admin.html'; }
+                else { document.getElementById('studentDashboard').classList.add('active'); loadStudentDashboard(user); }
             });
 
             const userJson = sessionStorage.getItem('currentUser');
@@ -554,13 +507,8 @@
                 document.getElementById('navButtons').style.display = 'none';
                 document.getElementById('navUser').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = currentUser.name + ' 👋';
-                
                 if (currentUser.role === 'admin') { window.location.href = 'admin.html'; }
-                else {
-                    document.getElementById('homeSection').style.display = 'none';
-                    document.getElementById('studentDashboard').classList.add('active');
-                    loadStudentDashboard(currentUser);
-                }
+                else { document.getElementById('homeSection').style.display = 'none'; document.getElementById('studentDashboard').classList.add('active'); loadStudentDashboard(currentUser); }
             }
         });
 
