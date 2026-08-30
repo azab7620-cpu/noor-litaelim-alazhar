@@ -58,6 +58,7 @@
         .add-form label { display: block; font-weight: 700; font-size: 14px; color: #3b0a0a; margin-bottom: 5px; }
         .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; transition: 0.3s; }
         .add-form input:focus, .add-form select:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212,175,55,0.1); transform: scale(1.01); }
+        .add-form input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); }
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 15px; }
         .btn-submit:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,10,10,0.15); }
 
@@ -85,13 +86,14 @@
 
     <div class="dashboard-container">
         <h2 style="color:#3b0a0a; margin-bottom:5px;">⚙️ لوحة تحكم الأدمن</h2>
-        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب، المحاضرات، الكتب، والمدرسين.</p>
+        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب، المحاضرات، الكتب، المدرسين، والأدمنة.</p>
 
         <div class="admin-tabs">
             <button class="active" onclick="showTab('students')">👥 الطلاب</button>
             <button onclick="showTab('courses')">📹 المحاضرات</button>
             <button onclick="showTab('books')">📚 الكتب</button>
             <button onclick="showTab('teachers')">👨‍🏫 المدرسون</button>
+            <button onclick="showTab('admins')">👑 الأدمنة</button>
             <button onclick="showTab('addCourse')">➕ إضافة محاضرة</button>
             <button onclick="showTab('addBook')">➕ إضافة كتاب</button>
             <button onclick="showTab('addTeacher')">➕ إضافة مدرس</button>
@@ -113,7 +115,7 @@
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 قائمة المحاضرات</h4>
             <div style="overflow-x:auto;">
                 <table class="admin-table">
-                    <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
+                    <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>ظهور عام</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                     <tbody id="coursesTableBody"></tbody>
                 </table>
             </div>
@@ -124,7 +126,7 @@
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 قائمة الكتب</h4>
             <div style="overflow-x:auto;">
                 <table class="admin-table">
-                    <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
+                    <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>ظهور عام</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                     <tbody id="booksTableBody"></tbody>
                 </table>
             </div>
@@ -141,7 +143,32 @@
             </div>
         </div>
 
-        <!-- تبويب إضافة محاضرة -->
+        <!-- تبويب الأدمنة -->
+        <div id="tabAdmins" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">👑 إدارة الأدمنة</h4>
+            <div class="add-form animate-fade">
+                <h5 style="color:#3b0a0a; margin-bottom:10px;">➕ إضافة أدمن جديد</h5>
+                <form id="addAdminForm">
+                    <div class="form-grid">
+                        <div><label>الاسم</label><input type="text" id="adminName" required placeholder="مثال: أحمد علي"></div>
+                        <div><label>البريد الإلكتروني</label><input type="email" id="adminEmail" required placeholder="admin@example.com"></div>
+                        <div><label>رقم الهاتف</label><input type="tel" id="adminPhone" required placeholder="01xxxxxxxxx"></div>
+                        <div><label>كلمة المرور</label><input type="password" id="adminPassword" required placeholder="كلمة المرور"></div>
+                    </div>
+                    <button type="submit" class="btn-submit">إضافة الأدمن</button>
+                </form>
+                <div id="adminAddMsg" style="margin-top:15px;"></div>
+            </div>
+            <h5 style="color:#3b0a0a; margin-top:30px; margin-bottom:15px;">📋 الأدمنة المسجلين</h5>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead><tr><th>#</th><th>الاسم</th><th>البريد</th><th>رقم الهاتف</th><th>إجراءات</th></tr></thead>
+                    <tbody id="adminsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- تبويب إضافة محاضرة (مع خيار ظهور عام) -->
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
@@ -162,6 +189,10 @@
                         </div>
                         <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink" placeholder="https://example.com/lecture.mp4"></div>
                         <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                        <div class="full-width" style="display:flex; align-items:center; gap:10px;">
+                            <input type="checkbox" id="courseShowInHome" style="width:20px; height:20px; margin:0;">
+                            <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
+                        </div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المحاضرة</button>
                 </form>
@@ -169,7 +200,7 @@
             </div>
         </div>
 
-        <!-- تبويب إضافة كتاب -->
+        <!-- تبويب إضافة كتاب (مع خيار ظهور عام) -->
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
@@ -190,6 +221,10 @@
                         </div>
                         <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink" placeholder="https://drive.google.com/..."></div>
                         <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
+                        <div class="full-width" style="display:flex; align-items:center; gap:10px;">
+                            <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
+                            <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
+                        </div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة الكتاب</button>
                 </form>
@@ -236,6 +271,7 @@
             loadCoursesTable();
             loadBooksTable();
             loadTeachersTable();
+            loadAdminsTable();
             setupForms();
         });
 
@@ -249,6 +285,7 @@
                 else if (btn.textContent.includes('المحاضرات') && tabId === 'courses') btn.classList.add('active');
                 else if (btn.textContent.includes('الكتب') && tabId === 'books') btn.classList.add('active');
                 else if (btn.textContent.includes('المدرسون') && tabId === 'teachers') btn.classList.add('active');
+                else if (btn.textContent.includes('الأدمنة') && tabId === 'admins') btn.classList.add('active');
                 else if (btn.textContent.includes('إضافة محاضرة') && tabId === 'addCourse') btn.classList.add('active');
                 else if (btn.textContent.includes('إضافة كتاب') && tabId === 'addBook') btn.classList.add('active');
                 else if (btn.textContent.includes('إضافة مدرس') && tabId === 'addTeacher') btn.classList.add('active');
@@ -257,6 +294,7 @@
             if (tabId === 'courses') loadCoursesTable();
             if (tabId === 'books') loadBooksTable();
             if (tabId === 'teachers') loadTeachersTable();
+            if (tabId === 'admins') loadAdminsTable();
         }
 
         // ========== جدول الطلاب ==========
@@ -293,12 +331,12 @@
             }
         }
 
-        // ========== جدول المحاضرات ==========
+        // ========== جدول المحاضرات (مع showInHome) ==========
         function loadCoursesTable() {
             const courses = getCourses();
             const tbody = document.getElementById('coursesTableBody');
             if (!courses.length) {
-                tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">لا توجد محاضرات.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="color:#888;">لا توجد محاضرات.</td></tr>';
                 return;
             }
             tbody.innerHTML = courses.map((c, idx) => `
@@ -306,6 +344,7 @@
                     <td>${idx+1}</td>
                     <td><strong>${c.title}</strong></td>
                     <td>${c.grade}</td>
+                    <td>${c.showInHome ? '✅ نعم' : '❌ لا'}</td>
                     <td><a href="${c.link}" target="_blank" style="color:#3b0a0a;">رابط</a></td>
                     <td>
                         <button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger" style="padding:4px 14px; font-size:12px;">🗑️ حذف</button>
@@ -322,12 +361,12 @@
             loadCoursesTable();
         }
 
-        // ========== جدول الكتب ==========
+        // ========== جدول الكتب (مع showInHome) ==========
         function loadBooksTable() {
             const books = getBooks();
             const tbody = document.getElementById('booksTableBody');
             if (!books.length) {
-                tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">لا توجد كتب.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="color:#888;">لا توجد كتب.</td></tr>';
                 return;
             }
             tbody.innerHTML = books.map((b, idx) => `
@@ -335,6 +374,7 @@
                     <td>${idx+1}</td>
                     <td><strong>${b.title}</strong></td>
                     <td>${b.grade}</td>
+                    <td>${b.showInHome ? '✅ نعم' : '❌ لا'}</td>
                     <td><a href="${b.link}" target="_blank" style="color:#3b0a0a;">رابط</a></td>
                     <td>
                         <button onclick="deleteBook('${b.id}')" class="btn-card btn-danger" style="padding:4px 14px; font-size:12px;">🗑️ حذف</button>
@@ -380,15 +420,91 @@
             loadTeachersTable();
         }
 
+        // ========== إدارة الأدمنة ==========
+        function loadAdminsTable() {
+            const users = getUsers().filter(u => u.role === 'admin');
+            const tbody = document.getElementById('adminsTableBody');
+            if (!users.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">لا يوجد أدمنة مسجلين.</td></tr>';
+                return;
+            }
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            tbody.innerHTML = users.map((u, idx) => `
+                <tr class="animate-slide" style="animation-delay:${idx*0.05}s;">
+                    <td>${idx+1}</td>
+                    <td><strong>${u.name}</strong></td>
+                    <td>${u.email}</td>
+                    <td>${u.phone}</td>
+                    <td>
+                        ${u.id !== currentUser.id ? 
+                            `<button onclick="deleteAdmin('${u.id}')" class="btn-card btn-danger" style="padding:4px 14px; font-size:12px;">🗑️ حذف</button>` 
+                            : 
+                            `<span style="color:#888; font-size:12px;">(أنت)</span>`
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteAdmin(adminId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الأدمن؟')) return;
+            let users = getUsers();
+            users = users.filter(u => u.id !== adminId);
+            setUsers(users);
+            loadAdminsTable();
+        }
+
         // ========== نماذج الإضافة ==========
         function setupForms() {
-            // إضافة محاضرة
+            // إضافة أدمن
+            document.getElementById('addAdminForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('adminName').value.trim();
+                const email = document.getElementById('adminEmail').value.trim();
+                const phone = document.getElementById('adminPhone').value.trim();
+                const password = document.getElementById('adminPassword').value.trim();
+
+                if (!name || !email || !phone || !password) {
+                    document.getElementById('adminAddMsg').innerHTML = '<div class="alert alert-danger">يرجى ملء جميع الحقول.</div>';
+                    return;
+                }
+                const users = getUsers();
+                if (users.find(u => u.email === email || u.phone === phone)) {
+                    document.getElementById('adminAddMsg').innerHTML = '<div class="alert alert-danger">البريد أو رقم الهاتف مسجل بالفعل.</div>';
+                    return;
+                }
+                const newAdmin = {
+                    id: 'admin_' + Date.now(),
+                    name,
+                    email,
+                    phone,
+                    parentPhone: '',
+                    governorate: 'القاهرة',
+                    center: 'المركز',
+                    stage: 'secondary',
+                    grade: 'الصف الثالث الثانوي',
+                    password,
+                    role: 'admin',
+                    active: true,
+                    exams: [],
+                    completedLessons: 0,
+                    totalLessons: 0
+                };
+                users.push(newAdmin);
+                setUsers(users);
+                document.getElementById('adminAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إضافة الأدمن بنجاح.</div>';
+                document.getElementById('addAdminForm').reset();
+                loadAdminsTable();
+            });
+
+            // إضافة محاضرة (مع showInHome)
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
                 const grade = document.getElementById('courseGrade').value;
                 const link = document.getElementById('courseLink').value.trim();
                 const fileInput = document.getElementById('courseFile');
+                const showInHome = document.getElementById('courseShowInHome').checked;
                 let finalLink = link;
                 if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
                 if (!title || !grade || !finalLink) {
@@ -396,20 +512,22 @@
                     return;
                 }
                 const courses = getCourses();
-                courses.push({ id: 'c_' + Date.now(), title, grade, link: finalLink });
+                courses.push({ id: 'c_' + Date.now(), title, grade, link: finalLink, showInHome });
                 setCourses(courses);
                 document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
                 this.reset();
+                document.getElementById('courseShowInHome').checked = false;
                 loadCoursesTable();
             });
 
-            // إضافة كتاب
+            // إضافة كتاب (مع showInHome)
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
                 const grade = document.getElementById('bookGrade').value;
                 const link = document.getElementById('bookLink').value.trim();
                 const fileInput = document.getElementById('bookFile');
+                const showInHome = document.getElementById('bookShowInHome').checked;
                 let finalLink = link;
                 if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
                 if (!title || !grade || !finalLink) {
@@ -417,10 +535,11 @@
                     return;
                 }
                 const books = getBooks();
-                books.push({ id: 'b_' + Date.now(), title, grade, link: finalLink });
+                books.push({ id: 'b_' + Date.now(), title, grade, link: finalLink, showInHome });
                 setBooks(books);
                 document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
                 this.reset();
+                document.getElementById('bookShowInHome').checked = false;
                 loadBooksTable();
             });
 
