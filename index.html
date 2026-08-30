@@ -6,6 +6,7 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* ... نفس الـ CSS السابق ... */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
 
@@ -630,7 +631,7 @@
                 };
                 users.push(newUser);
                 setUsers(users);
-                alert('تم إنشاء الحساب بنجاح! سيتم تفعيل حسابك من قبل الإدارة.');
+                alert('تم إنشاء الحساب بنجاح!');
                 switchAuthView('login');
             });
 
@@ -642,11 +643,7 @@
                 const user = users.find(u => (u.email === loginId || u.phone === loginId) && u.password === password);
                 if (!user) { alert('بيانات غير صحيحة.'); return; }
                 
-                if (!user.active) { 
-                    alert('حسابك قيد المراجعة من قبل الإدارة. يرجى المحاولة لاحقاً.'); 
-                    return; 
-                }
-
+                // السماح للطالب غير المفعّل بالدخول لعرض رسالة "قيد المراجعة"
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('homeSection').style.display = 'none';
