@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <!-- تبويب المحاضرات (مع حذف) -->
+        <!-- تبويب المحاضرات مع حذف -->
         <div id="tabCourses" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 قائمة المحاضرات</h4>
             <div style="overflow-x:auto;">
@@ -113,7 +113,7 @@
             </div>
         </div>
 
-        <!-- تبويب الكتب (مع حذف) -->
+        <!-- تبويب الكتب مع حذف -->
         <div id="tabBooks" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 قائمة الكتب</h4>
             <div style="overflow-x:auto;">
@@ -124,7 +124,7 @@
             </div>
         </div>
 
-        <!-- تبويب المدرسين (مع حذف) -->
+        <!-- تبويب المدرسين مع حذف -->
         <div id="tabTeachers" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 قائمة المدرسين</h4>
             <div style="overflow-x:auto;">
@@ -287,7 +287,7 @@
             }
         }
 
-        // ========== جدول المحاضرات مع حذف ==========
+        // ========== جدول المحاضرات مع زر حذف ==========
         function loadCoursesTable() {
             const courses = getCourses();
             const tbody = document.getElementById('coursesTableBody');
@@ -314,10 +314,9 @@
             courses = courses.filter(c => c.id !== courseId);
             setCourses(courses);
             loadCoursesTable();
-            // تحديث الصفحة الرئيسية (ستتغير عند العودة)
         }
 
-        // ========== جدول الكتب مع حذف ==========
+        // ========== جدول الكتب مع زر حذف ==========
         function loadBooksTable() {
             const books = getBooks();
             const tbody = document.getElementById('booksTableBody');
@@ -346,7 +345,7 @@
             loadBooksTable();
         }
 
-        // ========== جدول المدرسين مع حذف ==========
+        // ========== جدول المدرسين مع زر حذف ==========
         function loadTeachersTable() {
             const teachers = getTeachers();
             const tbody = document.getElementById('teachersTableBody');
