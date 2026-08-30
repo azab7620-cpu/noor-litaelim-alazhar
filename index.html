@@ -6,7 +6,6 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* === نفس التنسيقات السابقة === */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -50,7 +49,6 @@
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; }
         .btn-card:hover { background: #520e0e; transform: scale(1.05); }
 
-        /* لوحة الطالب */
         .dashboard-section { display: none; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
         .dashboard-section.active { display: block; }
         .student-header-card { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
@@ -77,7 +75,6 @@
         .back-home { display: inline-block; margin-bottom: 20px; color: #3b0a0a; text-decoration: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .back-home:hover { color: #d4af37; padding-right: 5px; }
 
-        /* نموذج التوثيق */
         .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
         .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
@@ -149,7 +146,6 @@
     </style>
 </head>
 <body>
-    <!-- الهيدر -->
     <header>
         <div class="nav-container">
             <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>منصة الطالب والأدمن</span></div></div>
@@ -171,7 +167,6 @@
         </div>
     </header>
 
-    <!-- الصفحة الرئيسية -->
     <div id="homeSection">
         <section class="hero">
             <h2>نور تعليم الأزهر</h2>
@@ -208,7 +203,6 @@
         </div>
     </div>
 
-    <!-- لوحة الطالب -->
     <div id="studentDashboard" class="dashboard-section">
         <a onclick="showHome()" class="back-home">← العودة للرئيسية</a>
         <div class="student-header-card animate-fade">
@@ -234,7 +228,6 @@
         </div>
     </div>
 
-    <!-- صفحة التوثيق -->
     <div id="authSection" class="auth-page-section">
         <div class="auth-layout-container">
             <div class="auth-sidebar">
@@ -317,39 +310,27 @@
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        // ========== تهيئة البيانات (أدمن واحد فقط) ==========
+        // ========== تهيئة البيانات (5 أدمنة) ==========
         function initData() {
             if (!localStorage.getItem('users')) {
-                const admin = { 
-                    id: 'admin1', 
-                    name: 'أدمن النظام', 
-                    email: 'admin@example.com', 
-                    phone: '01113224591', 
-                    parentPhone: '', 
-                    governorate: 'القاهرة', 
-                    center: 'المركز', 
-                    stage: 'secondary', 
-                    grade: 'الصف الثالث الثانوي', 
-                    password: 'admin123', 
-                    role: 'admin', 
-                    active: true, 
-                    exams: [], 
-                    completedLessons: 0, 
-                    totalLessons: 0 
-                };
-                const student = { 
-                    id: 'student1', 
-                    name: 'أحمد عماد أحمد', 
-                    email: 'ahmed@example.com', 
-                    phone: '01234567890', 
-                    parentPhone: '01123456789', 
-                    governorate: 'القاهرة', 
-                    center: 'المركز', 
-                    stage: 'secondary', 
-                    grade: 'الصف الثالث الثانوي', 
-                    password: 'student123', 
-                    role: 'student', 
-                    active: true, 
+                const admin1 = { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'azab7620@gmail.com', phone: '01110000001', parentPhone: '', governorate: 'القاهرة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'r11a6r10', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
+                const admin2 = { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', parentPhone: '', governorate: 'الجيزة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
+                const admin3 = { id: 'admin3', name: 'أدمن 3 - سارة', email: 'admin3@example.com', phone: '01110000003', parentPhone: '', governorate: 'الإسكندرية', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
+                const admin4 = { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', parentPhone: '', governorate: 'الدقهلية', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
+                const admin5 = { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', parentPhone: '', governorate: 'الشرقية', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', password: 'admin123', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 };
+                const student = {
+                    id: 'student1',
+                    name: 'أحمد عماد أحمد',
+                    email: 'ahmed@example.com',
+                    phone: '01234567890',
+                    parentPhone: '01123456789',
+                    governorate: 'القاهرة',
+                    center: 'المركز',
+                    stage: 'secondary',
+                    grade: 'الصف الثالث الثانوي',
+                    password: 'student123',
+                    role: 'student',
+                    active: true,
                     attempts: { current: '7', score: '93%', total: '150', pending: '143' },
                     exams: [
                         { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
@@ -362,10 +343,10 @@
                         { title: 'اللغة العربية - الصيف الأول الثانوي', teacher: 'مستمر محمد', date: 'أغسطس ٢٠٢٣ م' },
                         { title: 'اللغة العربية - الصف الثالث الثانوي (بدني)', teacher: 'محمود صبرى محمد', date: 'أغسطس ٢٠٢٣ م' }
                     ],
-                    completedLessons: 22, 
-                    totalLessons: 38 
+                    completedLessons: 22,
+                    totalLessons: 38
                 };
-                setUsers([admin, student]);
+                setUsers([admin1, admin2, admin3, admin4, admin5, student]);
             }
             if (!localStorage.getItem('courses')) {
                 setCourses([
@@ -533,7 +514,6 @@
                 }
             });
 
-            // تسجيل طالب جديد
             document.getElementById('registerForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('regName').value.trim();
@@ -573,7 +553,6 @@
                 switchAuthView('login');
             });
 
-            // تسجيل الدخول
             document.getElementById('loginForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const loginId = document.getElementById('loginEmailOrPhone').value.trim();
@@ -602,7 +581,6 @@
                 window.scrollTo(0,0);
             });
 
-            // التحقق من الجلسة
             const userJson = sessionStorage.getItem('currentUser');
             if (userJson) {
                 const user = JSON.parse(userJson);
