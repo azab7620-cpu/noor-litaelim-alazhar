@@ -6,7 +6,7 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ... نفس الـ CSS السابق ... */
+        /* [نفس الـ CSS السابق بالكامل، لا حاجة لتغييره] */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
 
@@ -358,7 +358,7 @@
     </a>
 
     <script>
-        // ========== بيانات الأدمنة ==========
+        // [نفس الـ JS السابق بالكامل، بدون تعديل على الدوال!]
         const ADMINS = [
             { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' },
             { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', password: 'admin123' },
@@ -367,7 +367,6 @@
             { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', password: 'admin123' }
         ];
 
-        // ========== دوال البيانات ==========
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -377,7 +376,6 @@
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        // ========== تهيئة البيانات ==========
         function initData() {
             let users = getUsers();
             let needUpdate = false;
@@ -420,7 +418,6 @@
             if (needUpdate) { setUsers(users); }
         }
 
-        // ========== دوال العرض (فلترة showInHome) ==========
         function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
             const teachers = getTeachers();
@@ -461,7 +458,6 @@
             `).join('') : '<p style="color:#888;">لا توجد كتب عامة حالياً.</p>';
         }
 
-        // ========== التنقل ==========
         function showHome() {
             document.getElementById('homeSection').style.display = 'block';
             document.getElementById('authSection').style.display = 'none';
@@ -491,7 +487,6 @@
             el.type = (el.type === 'password') ? 'text' : 'password';
         }
 
-        // ========== لوحة الطالب ==========
         function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
             document.getElementById('studentGradeDash').textContent = user.grade;
@@ -567,7 +562,6 @@
             `).join('');
         }
 
-        // ========== أحداث التسجيل والدخول ==========
         document.addEventListener('DOMContentLoaded', function() {
             initData();
             renderTeachers(); renderCourses(); renderBooks();
@@ -643,7 +637,6 @@
                 const user = users.find(u => (u.email === loginId || u.phone === loginId) && u.password === password);
                 if (!user) { alert('بيانات غير صحيحة.'); return; }
                 
-                // السماح للطالب غير المفعّل بالدخول لعرض رسالة "قيد المراجعة"
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('homeSection').style.display = 'none';
