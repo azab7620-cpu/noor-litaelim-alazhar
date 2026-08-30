@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الأدمن - نور تعليم الأزهر</title>
+    <title>لوحة الأدمن</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; }
-        header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); border-bottom: 3px solid #d4af37; padding: 12px 20px; }
+        header { background: #fff; border-bottom: 3px solid #d4af37; padding: 12px 20px; }
         .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .nav-buttons { display: flex; gap: 10px; }
@@ -19,20 +19,24 @@
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
         .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
+        
         .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .tab-content.active { display: block; }
+        
         .admin-table { width: 100%; border-collapse: collapse; }
         .admin-table th { background: #3b0a0a; color: #d4af37; padding: 14px; text-align: center; }
         .admin-table td { padding: 14px; text-align: center; border-bottom: 1px solid #f0ede8; }
-        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; }
         .btn-danger { background: #a00; color: #fff; }
         .btn-success { background: #2a7a2a; color: #fff; }
+
         .add-form { margin-top: 20px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-width { grid-column: 1 / -1; }
         .add-form label { display: block; font-weight: 700; font-size: 14px; color: #3b0a0a; margin-bottom: 5px; }
         .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; }
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
@@ -41,7 +45,7 @@
 <body>
     <header>
         <div class="nav-container">
-            <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>لوحة الأدمن</span></div></div>
+            <div class="logo-text"><h1>نور تعليم الأزهر</h1><span>لوحة الأدمن</span></div>
             <div class="nav-buttons">
                 <a href="index.html" class="btn-home">🏠 الرئيسية</a>
                 <button onclick="logout()" class="btn-logout">تسجيل خروج</button>
@@ -50,41 +54,46 @@
     </header>
 
     <div class="dashboard-container">
-        <h2 style="color:#3b0a0a; margin-bottom:5px;">⚙️ لوحة تحكم الأدمن</h2>
-        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب والمحتوى والاختبارات.</p>
+        <h2 style="color:#3b0a0a; margin-bottom:20px;">⚙️ لوحة تحكم الأدمن</h2>
 
         <div class="admin-tabs">
             <button class="active" onclick="showTab('students')">👥 الطلاب</button>
-            <button onclick="showTab('courses')">📹 المحاضرات</button>
+            <button onclick="showTab('bundles')">📦 الحزم والوحدات</button>
             <button onclick="showTab('books')">📚 الكتب</button>
             <button onclick="showTab('teachers')">👨‍🏫 المدرسون</button>
-            <button onclick="showTab('addCourse')">➕ إضافة محاضرة</button>
+            <button onclick="showTab('addBundle')">➕ إنشاء وحدة</button>
             <button onclick="showTab('addBook')">➕ إضافة كتاب</button>
             <button onclick="showTab('addTeacher')">➕ إضافة مدرس</button>
             <button onclick="showTab('addExam')">➕ إضافة اختبار</button>
         </div>
 
+        <!-- إدارة الطلاب -->
         <div id="tabStudents" class="tab-content active">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">قائمة الطلاب</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
             </table>
         </div>
 
-        <div id="tabCourses" class="tab-content">
+        <!-- عرض الحزم -->
+        <div id="tabBundles" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📦 قائمة الحزم والوحدات</h4>
             <table class="admin-table">
-                <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>ظهور عام</th><th>إجراءات</th></tr></thead>
-                <tbody id="coursesTableBody"></tbody>
+                <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
+                <tbody id="bundlesTableBody"></tbody>
             </table>
         </div>
 
+        <!-- الكتب -->
         <div id="tabBooks" class="tab-content">
             <table class="admin-table">
-                <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>ظهور عام</th><th>إجراءات</th></tr></thead>
+                <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>إجراءات</th></tr></thead>
                 <tbody id="booksTableBody"></tbody>
             </table>
         </div>
 
+        <!-- المدرسين -->
         <div id="tabTeachers" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
@@ -92,80 +101,91 @@
             </table>
         </div>
 
-        <div id="tabAddCourse" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
-            <form id="addCourseForm">
+        <!-- إنشاء وحدة -->
+        <div id="tabAddBundle" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">➕ إنشاء وحدة / حزمة جديدة</h4>
+            <form id="addBundleForm">
                 <div class="form-grid">
-                    <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
-                    <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
-                    <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink" required></div>
-                    <div class="full-width" style="display:flex; align-items:center; gap:10px;">
-                        <input type="checkbox" id="courseShowInHome">
-                        <label for="courseShowInHome">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
-                    </div>
+                    <div><label>اسم الوحدة (مثال: المحاضرة الأولى - نحو)</label><input type="text" id="bundleTitle" required></div>
+                    <div><label>الصف الدراسي</label><select id="bundleGrade" required><option value="">اختر الصف</option></select></div>
                 </div>
-                <button type="submit" class="btn-submit">إضافة المحاضرة</button>
+                <button type="submit" class="btn-submit">إنشاء الوحدة</button>
             </form>
-            <div id="courseAddMsg" style="margin-top:15px;"></div>
+            
+            <div class="add-form" style="margin-top:30px; border-top:1px dashed #ddd; padding-top:20px;">
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">➕ إضافة عنصر إلى وحدة موجودة</h4>
+                <form id="addItemForm">
+                    <div class="form-grid">
+                        <div><label>اختر الوحدة</label><select id="itemBundleSelect" required></select></div>
+                        <div><label>نوع العنصر</label>
+                            <select id="itemType" onchange="toggleItemFields()">
+                                <option value="pdf">ملف PDF</option>
+                                <option value="video">فيديو</option>
+                                <option value="exam">اختبار</option>
+                            </select>
+                        </div>
+                        <div id="pdfVideoFields" class="full-width">
+                            <div class="form-grid">
+                                <div><label>عنوان العنصر</label><input type="text" id="itemTitle" placeholder="مثال: ملف المحاضرة الأولى"></div>
+                                <div><label>الرابط</label><input type="url" id="itemLink" placeholder="https://..."></div>
+                            </div>
+                        </div>
+                        <div id="examFields" class="full-width" style="display:none;">
+                            <div class="form-grid">
+                                <div><label>عنوان الاختبار</label><input type="text" id="examItemTitle" placeholder="مثال: اختبار المحاضرة الأولى"></div>
+                                <div><label>اختر الاختبار</label><select id="itemExamSelect"></select></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">إضافة العنصر للوحدة</button>
+                </form>
+            </div>
+            <div id="bundleAddMsg" style="margin-top:15px;"></div>
         </div>
 
+        <!-- إضافة كتاب -->
         <div id="tabAddBook" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب</h4>
             <form id="addBookForm">
                 <div class="form-grid">
                     <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
-                    <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
+                    <div><label>الصف</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
                     <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink" required></div>
-                    <div class="full-width" style="display:flex; align-items:center; gap:10px;">
-                        <input type="checkbox" id="bookShowInHome">
-                        <label for="bookShowInHome">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
-                    </div>
                 </div>
                 <button type="submit" class="btn-submit">إضافة الكتاب</button>
             </form>
-            <div id="bookAddMsg" style="margin-top:15px;"></div>
         </div>
 
+        <!-- إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس</h4>
             <form id="addTeacherForm">
                 <div class="form-grid">
                     <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
                     <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
-                    <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage"></div>
+                    <div class="full-width"><label>رابط الصورة</label><input type="url" id="teacherImage"></div>
                 </div>
                 <button type="submit" class="btn-submit">إضافة المدرس</button>
             </form>
-            <div id="teacherAddMsg" style="margin-top:15px;"></div>
         </div>
 
+        <!-- إضافة اختبار -->
         <div id="tabAddExam" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إنشاء اختبار جديد</h4>
             <form id="addExamForm">
                 <div class="form-grid">
-                    <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required placeholder="مثال: اختبار النحو - الوحدة الأولى"></div>
-                    <div><label>الصف الدراسي</label><select id="examGrade" required><option value="">اختر الصف</option></select></div>
+                    <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required></div>
+                    <div><label>الصف</label><select id="examGrade" required><option value="">اختر الصف</option></select></div>
                 </div>
                 <div class="form-grid" style="margin-top:20px;">
-                    <div class="full-width"><label>نص السؤال</label><input type="text" id="qText" required placeholder="اكتب السؤال هنا"></div>
-                    <div><label>الخيار الأول</label><input type="text" id="opt1" required></div>
-                    <div><label>الخيار الثاني</label><input type="text" id="opt2" required></div>
-                    <div><label>الخيار الثالث</label><input type="text" id="opt3" required></div>
-                    <div><label>الخيار الرابع</label><input type="text" id="opt4" required></div>
-                    <div><label>الإجابة الصحيحة</label>
-                        <select id="correctOpt" required>
-                            <option value="">اختر الإجابة الصحيحة</option>
-                            <option value="1">الخيار الأول</option>
-                            <option value="2">الخيار الثاني</option>
-                            <option value="3">الخيار الثالث</option>
-                            <option value="4">الخيار الرابع</option>
-                        </select>
-                    </div>
+                    <div class="full-width"><label>نص السؤال</label><input type="text" id="qText" required></div>
+                    <div><label>الخيار 1</label><input type="text" id="opt1" required></div>
+                    <div><label>الخيار 2</label><input type="text" id="opt2" required></div>
+                    <div><label>الخيار 3</label><input type="text" id="opt3" required></div>
+                    <div><label>الخيار 4</label><input type="text" id="opt4" required></div>
+                    <div><label>الإجابة الصحيحة</label><select id="correctOpt"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
                 </div>
-                <div style="margin-top:15px; display:flex; gap:10px;">
-                    <button type="submit" class="btn-submit">حفظ السؤال</button>
-                    <button type="button" onclick="finishExamCreation()" class="btn-submit" style="background: #2a7a2a;">إنهاء الاختبار</button>
-                </div>
+                <button type="submit" class="btn-submit">حفظ السؤال</button>
             </form>
             <div id="examAddMsg" style="margin-top:15px;"></div>
         </div>
@@ -174,8 +194,8 @@
     <script>
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
-        function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
-        function setCourses(c) { localStorage.setItem('courses', JSON.stringify(c)); }
+        function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
+        function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
         function getBooks() { return JSON.parse(localStorage.getItem('books')) || []; }
         function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
@@ -190,15 +210,17 @@
             document.querySelectorAll('.admin-tabs button').forEach(btn => {
                 if (btn.textContent.includes(tabId)) btn.classList.add('active');
             });
-            if (tabId === 'students') loadStudentsTable();
-            if (tabId === 'courses') loadCoursesTable();
-            if (tabId === 'books') loadBooksTable();
-            if (tabId === 'teachers') loadTeachersTable();
+            if (tabId === 'students') loadStudents();
+            if (tabId === 'bundles') loadBundlesTable();
+            if (tabId === 'books') loadBooks();
+            if (tabId === 'teachers') loadTeachers();
+            if (tabId === 'addBundle') populateBundleSelects();
         }
 
+        // تهيئة الصفوف
         function initGrades() {
             const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
-            ['courseGrade', 'bookGrade', 'examGrade'].forEach(id => {
+            ['bundleGrade', 'bookGrade', 'examGrade'].forEach(id => {
                 const select = document.getElementById(id);
                 grades.forEach(g => {
                     const opt = document.createElement('option');
@@ -211,136 +233,161 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initGrades();
-            loadStudentsTable();
-            loadCoursesTable();
-            loadBooksTable();
-            loadTeachersTable();
+            loadStudents();
+            loadBundlesTable();
+            loadBooks();
+            loadTeachers();
+            populateBundleSelects();
             setupForms();
         });
 
-        function loadStudentsTable() {
+        function loadStudents() {
             const users = getUsers().filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
-            if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="color:#888;">لا يوجد طلاب مسجلين.</td></tr>'; return; }
+            if (!users.length) { tbody.innerHTML = '<tr><td colspan="5">لا يوجد طلاب.</td></tr>'; return; }
             tbody.innerHTML = users.map((u, idx) => `
-                <tr>
-                    <td>${idx+1}</td>
-                    <td><strong>${u.name}</strong></td>
-                    <td>${u.grade}</td>
-                    <td style="color:${u.active ? '#2a7a2a' : '#a00'}; font-weight:700;">${u.active ? '✅ مفعل' : '❌ غير مفعل'}</td>
-                    <td><button onclick="toggleStudentActive('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">${u.active ? 'إلغاء التفعيل' : 'تفعيل'}</button></td>
-                </tr>
+                <tr><td>${idx+1}</td><td>${u.name}</td><td>${u.grade}</td><td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td><td><button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">${u.active ? 'إلغاء التفعيل' : 'تفعيل'}</button></td></tr>
             `).join('');
         }
 
-        function toggleStudentActive(userId) {
-            const users = getUsers();
-            const user = users.find(u => u.id === userId);
-            if (user) {
-                user.active = !user.active;
-                setUsers(users);
-                loadStudentsTable();
-            }
+        function toggleStudent(id) {
+            let users = getUsers();
+            let u = users.find(x => x.id === id);
+            u.active = !u.active;
+            setUsers(users);
+            loadStudents();
         }
 
-        function loadCoursesTable() {
-            const courses = getCourses();
-            const tbody = document.getElementById('coursesTableBody');
-            tbody.innerHTML = courses.length ? courses.map((c, idx) => `
-                <tr><td>${idx+1}</td><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.showInHome ? '✅' : '❌'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
-            `).join('') : '<tr><td colspan="5" style="color:#888;">لا توجد محاضرات.</td></tr>';
+        // إدارة الحزم
+        function loadBundlesTable() {
+            const bundles = getBundles();
+            const tbody = document.getElementById('bundlesTableBody');
+            tbody.innerHTML = bundles.length ? bundles.map((b, idx) => `
+                <tr><td>${idx+1}</td><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.items.length} عنصر</td><td><button onclick="deleteBundle('${b.id}')" class="btn-card btn-danger">🗑️ حذف</button></td></tr>
+            `).join('') : '<tr><td colspan="5">لا توجد وحدات.</td></tr>';
         }
 
-        function deleteCourse(courseId) {
-            let courses = getCourses();
-            courses = courses.filter(c => c.id !== courseId);
-            setCourses(courses);
-            loadCoursesTable();
+        function deleteBundle(id) {
+            let bundles = getBundles();
+            setBundles(bundles.filter(b => b.id !== id));
+            loadBundlesTable();
+            populateBundleSelects();
         }
 
-        function loadBooksTable() {
-            const books = getBooks();
-            const tbody = document.getElementById('booksTableBody');
-            tbody.innerHTML = books.length ? books.map((b, idx) => `
-                <tr><td>${idx+1}</td><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.showInHome ? '✅' : '❌'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
-            `).join('') : '<tr><td colspan="5" style="color:#888;">لا توجد كتب.</td></tr>';
-        }
-
-        function deleteBook(bookId) {
-            let books = getBooks();
-            books = books.filter(b => b.id !== bookId);
-            setBooks(books);
-            loadBooksTable();
-        }
-
-        function loadTeachersTable() {
-            const teachers = getTeachers();
-            const tbody = document.getElementById('teachersTableBody');
-            tbody.innerHTML = teachers.length ? teachers.map((t, idx) => `
-                <tr><td>${idx+1}</td><td><strong>${t.name}</strong></td><td>${t.image ? '<img src="'+t.image+'" style="width:40px;height:40px;border-radius:50%;">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
-            `).join('') : '<tr><td colspan="4" style="color:#888;">لا يوجد مدرسون.</td></tr>';
-        }
-
-        function deleteTeacher(teacherId) {
-            let teachers = getTeachers();
-            teachers = teachers.filter(t => t.id !== teacherId);
-            setTeachers(teachers);
-            loadTeachersTable();
-        }
-
-        function setupForms() {
-            document.getElementById('addCourseForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const title = document.getElementById('courseTitle').value.trim();
-                const grade = document.getElementById('courseGrade').value;
-                const link = document.getElementById('courseLink').value.trim();
-                const showInHome = document.getElementById('courseShowInHome').checked;
-                if (!title || !grade || !link) { document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-danger">املأ جميع الحقول.</div>'; return; }
-                const courses = getCourses();
-                courses.push({ id: 'c_' + Date.now(), title, grade, link, showInHome });
-                setCourses(courses);
-                document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
-                this.reset();
-                loadCoursesTable();
+        // تعبئة قوائم الاختيار
+        function populateBundleSelects() {
+            const bundles = getBundles();
+            const selectBundle = document.getElementById('itemBundleSelect');
+            selectBundle.innerHTML = '<option value="">اختر وحدة</option>';
+            bundles.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.id;
+                opt.textContent = b.title;
+                selectBundle.appendChild(opt);
             });
 
+            const exams = getExams();
+            const selectExam = document.getElementById('itemExamSelect');
+            selectExam.innerHTML = '<option value="">اختر اختبار</option>';
+            exams.forEach(e => {
+                const opt = document.createElement('option');
+                opt.value = e.id;
+                opt.textContent = e.title;
+                selectExam.appendChild(opt);
+            });
+        }
+
+        function toggleItemFields() {
+            const type = document.getElementById('itemType').value;
+            document.getElementById('pdfVideoFields').style.display = (type === 'exam') ? 'none' : 'block';
+            document.getElementById('examFields').style.display = (type === 'exam') ? 'block' : 'none';
+        }
+
+        // إنشاء حزمة
+        function setupForms() {
+            document.getElementById('addBundleForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('bundleTitle').value.trim();
+                const grade = document.getElementById('bundleGrade').value;
+                if (!title || !grade) { alert('املأ الحقول'); return; }
+                let bundles = getBundles();
+                bundles.push({ id: 'bundle_' + Date.now(), title, grade, items: [] });
+                setBundles(bundles);
+                document.getElementById('bundleAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الوحدة!</div>';
+                this.reset();
+                loadBundlesTable();
+                populateBundleSelects();
+            });
+
+            // إضافة عنصر لحزمة
+            document.getElementById('addItemForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const bundleId = document.getElementById('itemBundleSelect').value;
+                const type = document.getElementById('itemType').value;
+                if (!bundleId) { alert('اختر وحدة أولاً'); return; }
+                
+                let bundles = getBundles();
+                let bundle = bundles.find(b => b.id === bundleId);
+                
+                if (type === 'exam') {
+                    const examId = document.getElementById('itemExamSelect').value;
+                    const title = document.getElementById('examItemTitle').value.trim();
+                    if (!examId || !title) { alert('املأ بيانات الاختبار'); return; }
+                    bundle.items.push({ type: 'exam', title, examId });
+                } else {
+                    const title = document.getElementById('itemTitle').value.trim();
+                    const link = document.getElementById('itemLink').value.trim();
+                    if (!title || !link) { alert('املأ بيانات العنصر'); return; }
+                    bundle.items.push({ type, title, link });
+                }
+
+                setBundles(bundles);
+                document.getElementById('bundleAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة!</div>';
+                this.reset();
+                toggleItemFields();
+                loadBundlesTable();
+            });
+
+            // كتاب
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
                 const grade = document.getElementById('bookGrade').value;
                 const link = document.getElementById('bookLink').value.trim();
-                const showInHome = document.getElementById('bookShowInHome').checked;
-                if (!title || !grade || !link) { document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-danger">املأ جميع الحقول.</div>'; return; }
-                const books = getBooks();
-                books.push({ id: 'b_' + Date.now(), title, grade, link, showInHome });
+                if (!title || !grade || !link) { alert('املأ الحقول'); return; }
+                let books = getBooks();
+                books.push({ id: 'book_' + Date.now(), title, grade, link });
                 setBooks(books);
-                document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
                 this.reset();
-                loadBooksTable();
+                loadBooks();
+                alert('تمت إضافة الكتاب');
             });
 
+            // مدرس
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
                 const specialty = document.getElementById('teacherSpecialty').value.trim();
                 const image = document.getElementById('teacherImage').value.trim();
-                if (!name) { document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-danger">أدخل اسم المدرس.</div>'; return; }
-                const teachers = getTeachers();
-                teachers.push({ id: 't_' + Date.now(), name, specialty: specialty || 'مدرس', image: image || 'https://via.placeholder.com/150' });
+                if (!name) { alert('ادخل الاسم'); return; }
+                let teachers = getTeachers();
+                teachers.push({ id: 't_' + Date.now(), name, specialty, image });
                 setTeachers(teachers);
-                document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
                 this.reset();
-                loadTeachersTable();
+                loadTeachers();
+                alert('تمت إضافة المدرس');
             });
 
+            // اختبار
             document.getElementById('addExamForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('examTitle').value.trim();
                 const grade = document.getElementById('examGrade').value;
-                const qText = document.getElementById('qText').value.trim();
-                const opts = [document.getElementById('opt1').value.trim(), document.getElementById('opt2').value.trim(), document.getElementById('opt3').value.trim(), document.getElementById('opt4').value.trim()];
-                const correct = document.getElementById('correctOpt').value;
-                if (!title || !grade || !qText || opts.includes('') || !correct) { document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-danger">املأ جميع الحقول.</div>'; return; }
+                const q = document.getElementById('qText').value.trim();
+                const options = [document.getElementById('opt1').value.trim(), document.getElementById('opt2').value.trim(), document.getElementById('opt3').value.trim(), document.getElementById('opt4').value.trim()];
+                const correct = parseInt(document.getElementById('correctOpt').value);
+
+                if (!title || !grade || !q || options.includes('')) { alert('املأ جميع البيانات'); return; }
 
                 let exams = getExams();
                 let exam = exams.find(e => e.title === title && e.grade === grade);
@@ -348,28 +395,34 @@
                     exam = { id: 'exam_' + Date.now(), title, grade, questions: [] };
                     exams.push(exam);
                 }
-                exam.questions.push({ q: qText, options: opts, correct: parseInt(correct) });
+                exam.questions.push({ q, options, correct });
                 setExams(exams);
 
-                document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ السؤال! أضف سؤالاً آخر أو اضغط "إنهاء الاختبار".</div>';
+                document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ السؤال!</div>';
                 document.getElementById('qText').value = '';
                 document.getElementById('opt1').value = '';
                 document.getElementById('opt2').value = '';
                 document.getElementById('opt3').value = '';
                 document.getElementById('opt4').value = '';
-                document.getElementById('correctOpt').value = '';
+                populateBundleSelects();
             });
         }
 
-        function finishExamCreation() {
-            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح! أصبح متاحاً للطلاب في هذا الصف.</div>';
-            document.getElementById('addExamForm').reset();
+        function loadBooks() {
+            const books = getBooks();
+            const tbody = document.getElementById('booksTableBody');
+            tbody.innerHTML = books.length ? books.map(b => `<tr><td>${b.title}</td><td>${b.grade}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا توجد كتب</td></tr>';
         }
+        function deleteBook(id) { setBooks(getBooks().filter(b => b.id !== id)); loadBooks(); }
 
-        function logout() {
-            sessionStorage.removeItem('currentUser');
-            window.location.href = 'index.html';
+        function loadTeachers() {
+            const teachers = getTeachers();
+            const tbody = document.getElementById('teachersTableBody');
+            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
         }
+        function deleteTeacher(id) { setTeachers(getTeachers().filter(t => t.id !== id)); loadTeachers(); }
+
+        function logout() { sessionStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
     </script>
 </body>
 </html>
