@@ -85,14 +85,13 @@
 
     <div class="dashboard-container">
         <h2 style="color:#3b0a0a; margin-bottom:5px;">⚙️ لوحة تحكم الأدمن</h2>
-        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب، المحاضرات، الكتب، المدرسين، والأدمنة.</p>
+        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب، المحاضرات، الكتب، والمدرسين.</p>
 
         <div class="admin-tabs">
             <button class="active" onclick="showTab('students')">👥 الطلاب</button>
             <button onclick="showTab('courses')">📹 المحاضرات</button>
             <button onclick="showTab('books')">📚 الكتب</button>
             <button onclick="showTab('teachers')">👨‍🏫 المدرسون</button>
-            <button onclick="showTab('admins')">👑 الأدمنة</button>
             <button onclick="showTab('addCourse')">➕ إضافة محاضرة</button>
             <button onclick="showTab('addBook')">➕ إضافة كتاب</button>
             <button onclick="showTab('addTeacher')">➕ إضافة مدرس</button>
@@ -138,31 +137,6 @@
                 <table class="admin-table">
                     <thead><tr><th>#</th><th>الاسم</th><th>التخصص</th><th>الصورة</th><th>إجراءات</th></tr></thead>
                     <tbody id="teachersTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- تبويب الأدمنة -->
-        <div id="tabAdmins" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">👑 إدارة الأدمنة</h4>
-            <div class="add-form animate-fade">
-                <h5 style="color:#3b0a0a; margin-bottom:10px;">➕ إضافة أدمن جديد</h5>
-                <form id="addAdminForm">
-                    <div class="form-grid">
-                        <div><label>الاسم</label><input type="text" id="adminName" required placeholder="مثال: أحمد علي"></div>
-                        <div><label>البريد الإلكتروني</label><input type="email" id="adminEmail" required placeholder="admin@example.com"></div>
-                        <div><label>رقم الهاتف</label><input type="tel" id="adminPhone" required placeholder="01xxxxxxxxx"></div>
-                        <div><label>كلمة المرور</label><input type="password" id="adminPassword" required placeholder="كلمة المرور"></div>
-                    </div>
-                    <button type="submit" class="btn-submit">إضافة الأدمن</button>
-                </form>
-                <div id="adminAddMsg" style="margin-top:15px;"></div>
-            </div>
-            <h5 style="color:#3b0a0a; margin-top:30px; margin-bottom:15px;">📋 الأدمنة المسجلين</h5>
-            <div style="overflow-x:auto;">
-                <table class="admin-table">
-                    <thead><tr><th>#</th><th>الاسم</th><th>البريد</th><th>رقم الهاتف</th><th>إجراءات</th></tr></thead>
-                    <tbody id="adminsTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -262,7 +236,6 @@
             loadCoursesTable();
             loadBooksTable();
             loadTeachersTable();
-            loadAdminsTable();
             setupForms();
         });
 
@@ -276,7 +249,6 @@
                 else if (btn.textContent.includes('المحاضرات') && tabId === 'courses') btn.classList.add('active');
                 else if (btn.textContent.includes('الكتب') && tabId === 'books') btn.classList.add('active');
                 else if (btn.textContent.includes('المدرسون') && tabId === 'teachers') btn.classList.add('active');
-                else if (btn.textContent.includes('الأدمنة') && tabId === 'admins') btn.classList.add('active');
                 else if (btn.textContent.includes('إضافة محاضرة') && tabId === 'addCourse') btn.classList.add('active');
                 else if (btn.textContent.includes('إضافة كتاب') && tabId === 'addBook') btn.classList.add('active');
                 else if (btn.textContent.includes('إضافة مدرس') && tabId === 'addTeacher') btn.classList.add('active');
@@ -285,7 +257,6 @@
             if (tabId === 'courses') loadCoursesTable();
             if (tabId === 'books') loadBooksTable();
             if (tabId === 'teachers') loadTeachersTable();
-            if (tabId === 'admins') loadAdminsTable();
         }
 
         // ========== جدول الطلاب ==========
@@ -409,83 +380,8 @@
             loadTeachersTable();
         }
 
-        // ========== إدارة الأدمنة ==========
-        function loadAdminsTable() {
-            const users = getUsers().filter(u => u.role === 'admin');
-            const tbody = document.getElementById('adminsTableBody');
-            if (!users.length) {
-                tbody.innerHTML = '<tr><td colspan="5" style="color:#888;">لا يوجد أدمنة مسجلين.</td></tr>';
-                return;
-            }
-            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            tbody.innerHTML = users.map((u, idx) => `
-                <tr class="animate-slide" style="animation-delay:${idx*0.05}s;">
-                    <td>${idx+1}</td>
-                    <td><strong>${u.name}</strong></td>
-                    <td>${u.email}</td>
-                    <td>${u.phone}</td>
-                    <td>
-                        ${u.id !== currentUser.id ? 
-                            `<button onclick="deleteAdmin('${u.id}')" class="btn-card btn-danger" style="padding:4px 14px; font-size:12px;">🗑️ حذف</button>` 
-                            : 
-                            `<span style="color:#888; font-size:12px;">(أنت)</span>`
-                        }
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function deleteAdmin(adminId) {
-            if (!confirm('هل أنت متأكد من حذف هذا الأدمن؟')) return;
-            let users = getUsers();
-            users = users.filter(u => u.id !== adminId);
-            setUsers(users);
-            loadAdminsTable();
-        }
-
         // ========== نماذج الإضافة ==========
         function setupForms() {
-            // إضافة أدمن
-            document.getElementById('addAdminForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('adminName').value.trim();
-                const email = document.getElementById('adminEmail').value.trim();
-                const phone = document.getElementById('adminPhone').value.trim();
-                const password = document.getElementById('adminPassword').value.trim();
-
-                if (!name || !email || !phone || !password) {
-                    document.getElementById('adminAddMsg').innerHTML = '<div class="alert alert-danger">يرجى ملء جميع الحقول.</div>';
-                    return;
-                }
-                const users = getUsers();
-                if (users.find(u => u.email === email || u.phone === phone)) {
-                    document.getElementById('adminAddMsg').innerHTML = '<div class="alert alert-danger">البريد أو رقم الهاتف مسجل بالفعل.</div>';
-                    return;
-                }
-                const newAdmin = {
-                    id: 'admin_' + Date.now(),
-                    name,
-                    email,
-                    phone,
-                    parentPhone: '',
-                    governorate: 'القاهرة',
-                    center: 'المركز',
-                    stage: 'secondary',
-                    grade: 'الصف الثالث الثانوي',
-                    password,
-                    role: 'admin',
-                    active: true,
-                    exams: [],
-                    completedLessons: 0,
-                    totalLessons: 0
-                };
-                users.push(newAdmin);
-                setUsers(users);
-                document.getElementById('adminAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إضافة الأدمن بنجاح.</div>';
-                document.getElementById('addAdminForm').reset();
-                loadAdminsTable();
-            });
-
             // إضافة محاضرة
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
