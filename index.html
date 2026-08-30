@@ -6,23 +6,12 @@
     <title>نور تعليم الأزهر - الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ====== RESET ====== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
 
-        /* ====== أنيميشن ====== */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         .animate-fade { animation: fadeInUp 0.7s ease forwards; }
         .animate-slide { animation: slideInRight 0.5s ease forwards; }
         .animate-scale { animation: scaleIn 0.4s ease forwards; }
@@ -31,7 +20,6 @@
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
 
-        /* ====== HEADER ====== */
         header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; transition: all 0.3s; }
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
@@ -49,7 +37,6 @@
         .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-admin-panel:hover { background: #e0c060; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.3); }
 
-        /* ====== HERO ====== */
         .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; animation: fadeInUp 0.8s ease; }
         .hero h2 { font-size: 48px; font-weight: 900; color: #f7e1a0; margin-bottom: 15px; }
         .hero p { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
@@ -59,7 +46,6 @@
         .btn-secondary { background: #fff; color: #3b0a0a; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; transition: 0.3s; }
         .btn-secondary:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-        /* ====== SECTIONS ====== */
         .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
         .section-header { margin-bottom: 40px; }
         .section-header span { color: #d4af37; font-weight: 700; font-size: 14px; letter-spacing: 1px; }
@@ -74,35 +60,48 @@
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; }
         .btn-card:hover { background: #520e0e; transform: scale(1.05) translateY(-2px); box-shadow: 0 8px 20px rgba(59,10,10,0.2); }
 
-        /* ====== STUDENT DASHBOARD ====== */
-        .dashboard-section { display: none; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        .dashboard-section { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
         .dashboard-section.active { display: block; animation: fadeInUp 0.6s ease; }
         .student-header-card { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
-        .attempts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .attempt-card { background: #fff; padding: 20px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #eee; text-align: center; transition: 0.3s; }
-        .attempt-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
-        .attempt-card .value { font-size: 28px; font-weight: 900; color: #3b0a0a; }
-        .attempt-card .label { font-size: 13px; color: #888; margin-top: 5px; }
-        .exam-block { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-top: 25px; }
-        .exam-block h4 { color: #3b0a0a; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f4edd3; padding-bottom: 10px; }
-        .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #f5f0ea; transition: 0.2s; }
-        .exam-item:hover { background: #fcfaf8; border-radius: 8px; padding-right: 10px; }
-        .exam-item .exam-name { font-weight: 700; color: #3b0a0a; }
-        .exam-item .exam-status { font-size: 13px; font-weight: 600; }
-        .exam-status.pending { color: #d4af37; }
-        .exam-status.done { color: #2a7a2a; }
-        .exam-status.not-solved { color: #a00; }
-        .courses-registered { background: #fff; border-radius: 16px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-top: 25px; }
-        .courses-registered h4 { color: #3b0a0a; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #f4edd3; padding-bottom: 10px; }
-        .course-reg-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid #f5f0ea; transition: 0.2s; }
-        .course-reg-item:hover { background: #fcfaf8; border-radius: 8px; }
-        .course-reg-item:last-child { border: none; }
-        .course-reg-item .course-title { font-weight: 600; color: #3b0a0a; }
-        .course-reg-item .course-teacher { font-size: 13px; color: #888; }
-        .back-home { display: inline-block; margin-bottom: 20px; color: #3b0a0a; text-decoration: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .back-home:hover { color: #d4af37; padding-right: 5px; transform: translateX(-5px); }
+        .student-header-card h2 { color: #3b0a0a; font-weight: 900; }
+        .student-header-card p { color: #777; margin-top: 8px; }
 
-        /* ====== AUTH ====== */
+        .main-dash-title { color: #3b0a0a; font-size: 28px; font-weight: 900; margin-bottom: 5px; }
+        .dash-subtitle { color: #777; margin-bottom: 30px; font-size: 14px; }
+
+        .attempts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 25px; }
+        .attempt-card { background: #fff; padding: 20px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; transition: 0.3s; }
+        .attempt-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+        .attempt-card .value { font-size: 36px; font-weight: 900; color: #3b0a0a; }
+        .attempt-card .label { font-size: 13px; color: #888; margin-top: 5px; }
+        .attempt-card .icon-circle { width: 50px; height: 50px; background: #f4edd3; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 22px; }
+
+        .pill-bar { display: flex; gap: 15px; justify-content: flex-end; margin-bottom: 30px; }
+        .pill { background: #fff; border: 1px solid #ddd; color: #3b0a0a; padding: 6px 18px; border-radius: 30px; font-weight: 700; font-size: 13px; cursor: default; }
+        .pill.gold { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
+
+        .dash-block { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
+        .dash-block h4 { color: #3b0a0a; font-size: 20px; margin-bottom: 20px; border-bottom: 2px solid #f4edd3; padding-bottom: 12px; }
+
+        .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #f0ede8; border-radius: 12px; margin-bottom: 15px; transition: 0.2s; background: #fcfaf8; }
+        .exam-item:hover { border-color: #d4af37; background: #fff; transform: translateX(-5px); }
+        .exam-name { font-weight: 700; color: #3b0a0a; font-size: 15px; }
+        .exam-status { font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+        .exam-status.waiting { background: #fff7e0; color: #c99e00; }
+        .exam-status.solved { background: #d4edda; color: #155724; }
+        .exam-status.not-solved { background: #f8d7da; color: #721c24; }
+
+        .progress-badge { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+        .progress-circle { width: 80px; height: 80px; border-radius: 50%; background: conic-gradient(#d4af37 58%, #f0ede8 0); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #3b0a0a; font-size: 18px; position: relative; }
+        .progress-circle::before { content: ""; width: 60px; height: 60px; background: #fff; border-radius: 50%; position: absolute; }
+        .progress-circle span { position: relative; z-index: 10; }
+
+        .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f0ede8; transition: 0.3s; }
+        .teacher-card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); border-color: #d4af37; }
+        .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
+        .teacher-card h5 { color: #3b0a0a; font-size: 16px; font-weight: 800; }
+        .teacher-card p { color: #888; font-size: 13px; }
+
         .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; animation: fadeInUp 0.5s ease; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
         .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
@@ -139,7 +138,6 @@
         .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); }
 
-        /* ====== FOOTER ====== */
         footer { background: #2f0808; color: #fff; padding: 50px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .footer-col h3 { color: #d4af37; font-size: 24px; font-weight: 900; }
@@ -161,6 +159,11 @@
         .alert { padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        .pending-container { background: #fff; border-radius: 16px; padding: 30px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 50px; }
+        .pending-icon { font-size: 50px; margin-bottom: 15px; }
+        .pending-title { font-size: 22px; font-weight: 900; color: #3b0a0a; margin-bottom: 10px; }
+        .pending-text { color: #777; font-size: 14px; }
 
         @media (max-width: 900px) {
             .auth-layout-container { flex-direction: column; }
@@ -233,27 +236,52 @@
     </div>
 
     <div id="studentDashboard" class="dashboard-section">
-        <a onclick="showHome()" class="back-home">← العودة للرئيسية</a>
-        <div class="student-header-card animate-fade">
-            <h2>مرحباً، <span id="studentNameDash"></span></h2>
-            <p>هذه صفحتك الشخصية – درجاتك، اختباراتك، ومحاضراتك.</p>
+        <a onclick="showHome()" class="back-home" style="color:#3b0a0a; text-decoration:none; font-weight:700; display:inline-block; margin-bottom:20px; cursor:pointer;">← العودة للرئيسية</a>
+        
+        <div id="pendingMessage" style="display:none;" class="pending-container animate-fade">
+            <div class="pending-icon">⏳</div>
+            <h3 class="pending-title">حسابك قيد المراجعة</h3>
+            <p class="pending-text">شكراً لتسجيلك! سيتم تفعيل حسابك من قبل الإدارة خلال وقت قصير. يرجى المحاولة لاحقاً.</p>
         </div>
-        <div class="attempts-grid">
-            <div class="attempt-card animate-fade"><div class="value">93%</div><div class="label">محاولة 7</div><div class="sub">اختيارات محاولة</div></div>
-            <div class="attempt-card animate-fade delay-1"><div class="value">143</div><div class="label">المحاولة (143) لم تُحل</div><div class="sub">إجمالي الاختبارات 150</div></div>
-            <div class="attempt-card animate-fade delay-2"><div class="value">150</div><div class="label">المحاولة (150) لكل</div><div class="sub">المحاولة (143) · (150)</div></div>
-        </div>
-        <div class="exam-block animate-fade">
-            <h4>📝 اختباراتي</h4>
-            <div id="studentExams"></div>
-        </div>
-        <div class="courses-registered animate-fade">
-            <h4>📚 المواد المسجلة</h4>
-            <div id="studentRegisteredCourses"></div>
-        </div>
-        <div class="exam-block animate-fade" style="margin-top:25px;">
-            <h4>🎥 محاضراتي (حسب الصف)</h4>
-            <div id="studentCourses"></div>
+
+        <div id="studentDashboardContent" style="display:none;">
+            <div class="student-header-card animate-fade">
+                <h2>مرحباً، <span id="studentNameDash"></span> 👋</h2>
+                <p>الصف: <span id="studentGradeDash" style="font-weight:700; color:#d4af37;"></span></p>
+            </div>
+
+            <h1 class="main-dash-title">درجاتي</h1>
+            <p class="dash-subtitle">نتائج اختباراتك ودرجاتك في المنصة</p>
+            
+            <div class="attempts-grid" id="attemptsGrid"></div>
+            <div class="pill-bar" id="pillsBar"></div>
+
+            <div class="dash-block animate-fade">
+                <h4>📝 اختباراتي</h4>
+                <div id="studentExams"></div>
+            </div>
+
+            <h1 class="main-dash-title">كورساتي</h1>
+            <p class="dash-subtitle">تابع تقدمك في المواد المسجلة</p>
+
+            <div class="dash-block animate-fade">
+                <div class="progress-badge">
+                    <div class="progress-circle" id="progressCircle"><span id="progressPercent">0%</span></div>
+                    <div>
+                        <h5 style="font-size:18px; color:#3b0a0a;">الدروس</h5>
+                        <p style="color:#888;">عدد الدروس المكتملة من إجمالي الدروس</p>
+                    </div>
+                </div>
+                <h4 style="margin-top:20px;">📚 المواد المسجلة</h4>
+                <div id="studentRegisteredCourses"></div>
+            </div>
+
+            <h1 class="main-dash-title">مدرسينا</h1>
+            <p class="dash-subtitle">تعرف على المدرسين المتاحين في المنصة</p>
+
+            <div class="dash-block animate-fade">
+                <div class="card-grid" id="studentTeachersGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>
+            </div>
         </div>
     </div>
 
@@ -329,10 +357,7 @@
     </a>
 
     <script>
-        // ============================================================
-        // 🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
-        // ✏️ بيانات الأدمنة (عدل الإيميلات وكلمات المرور هنا)
-        // 🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
+        // ========== بيانات الأدمنة ==========
         const ADMINS = [
             { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' },
             { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', password: 'admin123' },
@@ -340,7 +365,6 @@
             { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', password: 'admin123' },
             { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', password: 'admin123' }
         ];
-        // ============================================================
 
         // ========== دوال البيانات ==========
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
@@ -352,84 +376,26 @@
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        // ========== تهيئة البيانات مع تحديث الأدمنة تلقائياً ==========
+        // ========== تهيئة البيانات ==========
         function initData() {
             let users = getUsers();
             let needUpdate = false;
 
-            // 1. تحديث أو إضافة الأدمنة الخمسة
             ADMINS.forEach(adminData => {
                 let existing = users.find(u => u.id === adminData.id && u.role === 'admin');
                 if (existing) {
-                    if (existing.email !== adminData.email ||
-                        existing.password !== adminData.password ||
-                        existing.name !== adminData.name ||
-                        existing.phone !== adminData.phone) {
+                    if (existing.email !== adminData.email || existing.password !== adminData.password || existing.name !== adminData.name) {
                         existing.email = adminData.email;
                         existing.password = adminData.password;
                         existing.name = adminData.name;
-                        existing.phone = adminData.phone;
                         needUpdate = true;
                     }
                 } else {
-                    users.push({
-                        ...adminData,
-                        parentPhone: '',
-                        governorate: 'القاهرة',
-                        center: 'المركز',
-                        stage: 'secondary',
-                        grade: 'الصف الثالث الثانوي',
-                        role: 'admin',
-                        active: true,
-                        exams: [],
-                        completedLessons: 0,
-                        totalLessons: 0
-                    });
+                    users.push({ ...adminData, role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
                     needUpdate = true;
                 }
             });
 
-            // 2. التأكد من وجود طالب افتراضي
-            let student = users.find(u => u.id === 'student1' && u.role === 'student');
-            if (!student) {
-                student = {
-                    id: 'student1',
-                    name: 'أحمد عماد أحمد',
-                    email: 'ahmed@example.com',
-                    phone: '01234567890',
-                    parentPhone: '01123456789',
-                    governorate: 'القاهرة',
-                    center: 'المركز',
-                    stage: 'secondary',
-                    grade: 'الصف الثالث الثانوي',
-                    password: 'student123',
-                    role: 'student',
-                    active: true,
-                    attempts: { current: '7', score: '93%', total: '150', pending: '143' },
-                    exams: [
-                        { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
-                        { name: 'اختبار النحو', status: 'لم يُحل', fullMark: 50, wait: true },
-                        { name: 'اختبار البلاغة', status: 'لم يُحل', fullMark: 30, wait: true },
-                        { name: 'الامتحان الشامل على كورس التأسيس', status: 'لم يُحل', fullMark: '--', wait: false }
-                    ],
-                    registeredCourses: [
-                        { title: 'اللغة العربية - الصف الثالث الثانوي', teacher: 'زينب محمد حسان بن علي', date: 'أغسطس ٢٠٢٣ م' },
-                        { title: 'اللغة العربية - الصيف الأول الثانوي', teacher: 'مستمر محمد', date: 'أغسطس ٢٠٢٣ م' },
-                        { title: 'اللغة العربية - الصف الثالث الثانوي (بدني)', teacher: 'محمود صبرى محمد', date: 'أغسطس ٢٠٢٣ م' }
-                    ],
-                    completedLessons: 22,
-                    totalLessons: 38
-                };
-                users.push(student);
-                needUpdate = true;
-            }
-
-            if (needUpdate) {
-                setUsers(users);
-                console.log('✅ تم تحديث بيانات الأدمنة تلقائياً');
-            }
-
-            // 3. تهيئة باقي البيانات إذا لم تكن موجودة (مع showInHome)
             if (!localStorage.getItem('courses')) {
                 setCourses([
                     { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', showInHome: false },
@@ -449,52 +415,49 @@
                     { id: 't3', name: 'محمود صبرى محمد', specialty: 'المواد البدنية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=ص' }
                 ]);
             }
+
+            if (needUpdate) { setUsers(users); }
         }
 
-        // ========== دوال العرض (مع أنيميشن + فلترة showInHome) ==========
+        // ========== دوال العرض (فلترة showInHome) ==========
         function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
             const teachers = getTeachers();
-            if (!teachers.length) { grid.innerHTML = '<p>لا يوجد مدرسون.</p>'; return; }
-            grid.innerHTML = teachers.map((t, i) => `
+            grid.innerHTML = teachers.length ? teachers.map((t, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <div style="font-size:60px;">${t.image ? `<img src="${t.image}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : '👨‍🏫'}</div>
                     <h4>${t.name}</h4>
                     <p>${t.specialty || 'مدرس'}</p>
                     <a onclick="showAuthPage('login')" class="btn-card">شوف الكورسات</a>
                 </div>
-            `).join('');
+            `).join('') : '<p style="color:#888;">لا يوجد مدرسون.</p>';
         }
 
-        // 🔹🔹 تم التعديل هنا: عرض المحاضرات التي showInHome = true فقط
         function renderCourses() {
             const grid = document.getElementById('coursesGrid');
             const courses = getCourses();
             const homeCourses = courses.filter(c => c.showInHome === true);
-            if (!homeCourses.length) { grid.innerHTML = '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>'; return; }
-            grid.innerHTML = homeCourses.map((c, i) => `
+            grid.innerHTML = homeCourses.length ? homeCourses.map((c, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <h4>${c.title}</h4>
                     <p><strong>الصف:</strong> ${c.grade}</p>
                     <a href="${c.link}" target="_blank" class="btn-card">مشاهدة</a>
                 </div>
-            `).join('');
+            `).join('') : '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>';
         }
 
-        // 🔹🔹 تم التعديل هنا: عرض الكتب التي showInHome = true فقط
         function renderBooks() {
             const grid = document.getElementById('booksGrid');
             const books = getBooks();
             const homeBooks = books.filter(b => b.showInHome === true);
-            if (!homeBooks.length) { grid.innerHTML = '<p style="color:#888;">لا توجد كتب عامة حالياً.</p>'; return; }
-            grid.innerHTML = homeBooks.map((b, i) => `
+            grid.innerHTML = homeBooks.length ? homeBooks.map((b, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <div style="font-size:40px;">📖</div>
                     <h4>${b.title}</h4>
                     <p><strong>الصف:</strong> ${b.grade}</p>
                     <a href="${b.link}" target="_blank" class="btn-card">تحميل</a>
                 </div>
-            `).join('');
+            `).join('') : '<p style="color:#888;">لا توجد كتب عامة حالياً.</p>';
         }
 
         // ========== التنقل ==========
@@ -527,54 +490,80 @@
             el.type = (el.type === 'password') ? 'text' : 'password';
         }
 
-        // ========== لوحة الطالب (تعرض المحاضرات حسب الصف فقط للمفعلين) ==========
+        // ========== لوحة الطالب ==========
         function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
-            const examsDiv = document.getElementById('studentExams');
-            if (user.exams && user.exams.length) {
-                examsDiv.innerHTML = user.exams.map(ex => `
-                    <div class="exam-item animate-slide">
-                        <span class="exam-name">${ex.name}</span>
-                        <span>
-                            <span class="exam-status ${ex.status === 'تم الحل' ? 'done' : 'not-solved'}">${ex.status}</span>
-                            ${ex.fullMark !== '--' ? `<span class="exam-full-mark">درجة كاملة: ${ex.fullMark}</span>` : ''}
-                            ${ex.wait ? '<span style="font-size:12px; color:#d4af37; margin-right:8px;">⏳ في انتظار الحل</span>' : ''}
-                        </span>
-                    </div>
-                `).join('');
+            document.getElementById('studentGradeDash').textContent = user.grade;
+
+            if (!user.active) {
+                document.getElementById('pendingMessage').style.display = 'block';
+                document.getElementById('studentDashboardContent').style.display = 'none';
+                return;
             } else {
-                examsDiv.innerHTML = '<p>لا توجد اختبارات.</p>';
+                document.getElementById('pendingMessage').style.display = 'none';
+                document.getElementById('studentDashboardContent').style.display = 'block';
             }
+
+            const attempts = user.attempts || { avg: 0, solved: 0, total: 0, pending: 0 };
+            document.getElementById('attemptsGrid').innerHTML = `
+                <div class="attempt-card animate-fade">
+                    <div><div class="value">${attempts.avg}%</div><div class="label">متوسط الدرجات</div></div>
+                    <div class="icon-circle">💯</div>
+                </div>
+                <div class="attempt-card animate-fade delay-1">
+                    <div><div class="value">${attempts.solved}</div><div class="label">اختبارات محلولة</div></div>
+                    <div class="icon-circle">✅</div>
+                </div>
+                <div class="attempt-card animate-fade delay-2">
+                    <div><div class="value">${attempts.total}</div><div class="label">إجمالي الاختبارات</div></div>
+                    <div class="icon-circle">📝</div>
+                </div>
+            `;
+
+            document.getElementById('pillsBar').innerHTML = `
+                <div class="pill gold">الحل (${attempts.total})</div>
+                <div class="pill">محاولة (${attempts.solved})</div>
+                <div class="pill">لم يحل (${attempts.pending})</div>
+            `;
+
+            const examsDiv = document.getElementById('studentExams');
+            examsDiv.innerHTML = user.exams && user.exams.length ? user.exams.map(ex => `
+                <div class="exam-item animate-slide">
+                    <span class="exam-name">${ex.name}</span>
+                    <span>
+                        <span class="exam-status ${ex.status === 'تم الحل' ? 'solved' : (ex.status === 'لم يُحل' && ex.wait ? 'waiting' : 'not-solved')}">${ex.status}</span>
+                        ${ex.fullMark !== '--' ? `<span style="margin-right:15px; font-size:12px; color:#888;">درجة كاملة: ${ex.fullMark}</span>` : ''}
+                        ${ex.wait ? '<span style="font-size:12px; color:#d4af37; margin-right:8px;">⏳ في انتظار الحل</span>' : ''}
+                    </span>
+                </div>
+            `).join('') : '<p style="color:#888;">لا توجد اختبارات.</p>';
 
             const regDiv = document.getElementById('studentRegisteredCourses');
-            if (user.registeredCourses && user.registeredCourses.length) {
-                regDiv.innerHTML = user.registeredCourses.map(c => `
-                    <div class="course-reg-item animate-slide">
-                        <span class="course-title">${c.title}</span>
-                        <span>
-                            <span class="course-teacher">${c.teacher}</span>
-                            <span class="course-date" style="margin-right:15px;">${c.date || ''}</span>
-                        </span>
-                    </div>
-                `).join('');
-            } else {
-                regDiv.innerHTML = '<p>لا توجد مواد مسجلة.</p>';
-            }
+            regDiv.innerHTML = user.registeredCourses && user.registeredCourses.length ? user.registeredCourses.map(c => `
+                <div class="exam-item animate-slide">
+                    <span class="exam-name">${c.title}</span>
+                    <span>
+                        <span style="color:#888; font-size:13px;">${c.teacher}</span>
+                        <span style="margin-right:15px; font-size:12px; color:#aaa;">${c.date || ''}</span>
+                    </span>
+                </div>
+            `).join('') : '<p style="color:#888;">لا توجد مواد مسجلة.</p>';
 
-            // 🔹🔹 هنا يظهر للطالب فقط المحاضرات الخاصة بصفه (بغض النظر عن showInHome)
-            const allCourses = getCourses();
-            const studentCourses = allCourses.filter(c => c.grade === user.grade);
-            const studentCoursesDiv = document.getElementById('studentCourses');
-            if (!studentCourses.length) {
-                studentCoursesDiv.innerHTML = '<p>لا توجد محاضرات مخصصة لصفك.</p>';
-            } else {
-                studentCoursesDiv.innerHTML = studentCourses.map(c => `
-                    <div class="exam-item animate-slide">
-                        <span class="exam-name">${c.title}</span>
-                        <a href="${c.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">مشاهدة</a>
-                    </div>
-                `).join('');
-            }
+            const completed = user.completedLessons || 0;
+            const total = user.totalLessons || 1;
+            const percent = Math.round((completed / total) * 100);
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('progressCircle').style.background = `conic-gradient(#d4af37 ${percent}%, #f0ede8 0)`;
+
+            const teachersGrid = document.getElementById('studentTeachersGrid');
+            const teachers = getTeachers();
+            teachersGrid.innerHTML = teachers.map(t => `
+                <div class="teacher-card animate-scale">
+                    ${t.image ? `<img src="${t.image}" alt="${t.name}">` : '<div style="font-size:40px; margin-bottom:10px;">👨‍🏫</div>'}
+                    <h5>${t.name}</h5>
+                    <p>${t.specialty || 'مدرس'}</p>
+                </div>
+            `).join('');
         }
 
         // ========== أحداث التسجيل والدخول ==========
@@ -623,21 +612,25 @@
                 const newUser = {
                     id: 'user_' + Date.now(), name, email, phone, parentPhone, governorate, center, stage, grade, password,
                     role: 'student',
-                    active: true,
-                    attempts: { current: '1', score: '0%', total: '0', pending: '0' },
+                    active: false,
+                    attempts: { avg: Math.floor(Math.random() * 30 + 60) + '%', solved: Math.floor(Math.random() * 10) + 1, total: 150, pending: 150 - (Math.floor(Math.random() * 10) + 1) },
                     exams: [
                         { name: 'اختبار الصرف', status: 'لم يُحل', fullMark: 50, wait: true },
                         { name: 'اختبار النحو', status: 'لم يُحل', fullMark: 50, wait: true },
                         { name: 'اختبار البلاغة', status: 'لم يُحل', fullMark: 30, wait: true },
-                        { name: 'الامتحان الشامل', status: 'لم يُحل', fullMark: '--', wait: false }
+                        { name: 'الامتحان الشامل على كورس التأسيس', status: 'لم يُحل', fullMark: '--', wait: false }
                     ],
-                    registeredCourses: [],
-                    completedLessons: 0,
+                    registeredCourses: [
+                        { title: 'اللغة العربية - ' + grade, teacher: 'زينب محمد حسان', date: 'أغسطس ٢٠٢٦ م' },
+                        { title: 'المواد الشرعية - ' + grade, teacher: 'مستمر محمد', date: 'أغسطس ٢٠٢٦ م' },
+                        { title: 'المواد البدنية - ' + grade, teacher: 'محمود صبرى', date: 'أغسطس ٢٠٢٦ م' }
+                    ],
+                    completedLessons: Math.floor(Math.random() * 15 + 5),
                     totalLessons: 38
                 };
                 users.push(newUser);
                 setUsers(users);
-                alert('تم إنشاء الحساب!');
+                alert('تم إنشاء الحساب بنجاح! سيتم تفعيل حسابك من قبل الإدارة.');
                 switchAuthView('login');
             });
 
@@ -648,7 +641,11 @@
                 const users = getUsers();
                 const user = users.find(u => (u.email === loginId || u.phone === loginId) && u.password === password);
                 if (!user) { alert('بيانات غير صحيحة.'); return; }
-                if (!user.active) { alert('الحساب غير مفعّل. يرجى التواصل مع الأدمن.'); return; }
+                
+                if (!user.active) { 
+                    alert('حسابك قيد المراجعة من قبل الإدارة. يرجى المحاولة لاحقاً.'); 
+                    return; 
+                }
 
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
                 document.getElementById('authSection').style.display = 'none';
