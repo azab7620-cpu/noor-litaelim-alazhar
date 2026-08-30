@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الأدمن - نور تعليم الأزهر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background: #f8f6f2; color: #333; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .animate-fade { animation: fadeInUp 0.6s ease forwards; }
+        .animate-slide { animation: slideIn 0.5s ease forwards; }
+
+        header { background: #fff; box-shadow: 0 2px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #d4af37; padding: 12px 20px; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
+        .logo-text span { font-size: 11px; color: #888; }
+        .nav-buttons { display: flex; gap: 10px; align-items: center; }
+        .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { background: #520e0e; transform: translateY(-2px); }
+        .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .btn-home:hover { background: #e0c060; transform: translateY(-2px); }
+
+        .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; animation: fadeInUp 0.6s ease; }
+
+        .admin-tabs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
+        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .admin-tabs button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; box-shadow: 0 8px 25px rgba(59,10,10,0.15); }
+
+        .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); animation: fadeInUp 0.5s ease; }
+        .tab-content.active { display: block; }
+
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { background: #3b0a0a; color: #d4af37; padding: 14px; text-align: center; font-size: 15px; }
+        .admin-table td { padding: 14px; text-align: center; border-bottom: 1px solid #f0ede8; }
+        .admin-table tr { transition: 0.2s; }
+        .admin-table tr:hover { background: #f9f6f0; }
+
+        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.3s; }
+        .btn-card:hover { transform: scale(1.05); }
+        .btn-danger { background: #a00; color: #fff; }
+        .btn-danger:hover { background: #c00; }
+        .btn-success { background: #2a7a2a; color: #fff; }
+        .btn-success:hover { background: #3a9a3a; }
+
+        .add-form { margin-top: 20px; }
+        .add-form .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .add-form .full-width { grid-column: 1 / -1; }
+        .add-form label { display: block; font-weight: 700; font-size: 14px; color: #3b0a0a; margin-bottom: 5px; }
+        .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; transition: 0.3s; }
+        .add-form input:focus, .add-form select:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212,175,55,0.1); }
+        .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        .btn-submit:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59,10,10,0.15); }
+
+        .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        @media (max-width: 600px) {
+            .admin-tabs { flex-direction: column; }
+            .add-form .form-grid { grid-template-columns: 1fr; }
+            .admin-table { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>لوحة الأدمن</span></div></div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn-home">🏠 الرئيسية</a>
+                <button onclick="logout()" class="btn-logout">تسجيل خروج</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <h2 style="color:#3b0a0a; margin-bottom:5px;">⚙️ لوحة تحكم الأدمن</h2>
+        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب، المحاضرات، الكتب، والمدرسين.</p>
+
+        <div class="admin-tabs">
+            <button class="active" onclick="showTab('students')">👥 الطلاب</button>
+            <button onclick="showTab('addCourse')">📹 إضافة محاضرة</button>
+            <button onclick="showTab('addBook')">📚 إضافة كتاب</button>
+            <button onclick="showTab('addTeacher')">👨‍🏫 إضافة مدرس</button>
+        </div>
+
+        <!-- الطلاب -->
+        <div id="tabStudents" class="tab-content active">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">قائمة الطلاب</h4>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>رقم الهاتف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                    <tbody id="studentsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- إضافة محاضرة -->
+        <div id="tabAddCourse" class="tab-content">
+            <div class="add-form animate-fade">
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
+                <form id="addCourseForm">
+                    <div class="form-grid">
+                        <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required placeholder="مثال: شرح باب الإيمان"></div>
+                        <div><label>الصف الدراسي</label>
+                            <select id="courseGrade" required>
+                                <option value="">اختر الصف</option>
+                                <option value="الصف الأول الابتدائي">الأول ابتدائي</option><option value="الصف الثاني الابتدائي">الثاني ابتدائي</option>
+                                <option value="الصف الثالث الابتدائي">الثالث ابتدائي</option><option value="الصف الرابع الابتدائي">الرابع ابتدائي</option>
+                                <option value="الصف الخامس الابتدائي">الخامس ابتدائي</option><option value="الصف السادس الابتدائي">السادس ابتدائي</option>
+                                <option value="الصف الأول الإعدادي">الأول إعدادي</option><option value="الصف الثاني الإعدادي">الثاني إعدادي</option>
+                                <option value="الصف الثالث الإعدادي">الثالث إعدادي</option>
+                                <option value="الصف الأول الثانوي">الأول ثانوي</option><option value="الصف الثاني الثانوي">الثاني ثانوي</option>
+                                <option value="الصف الثالث الثانوي">الثالث ثانوي</option>
+                            </select>
+                        </div>
+                        <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink" placeholder="https://example.com/lecture.mp4"></div>
+                        <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                    </div>
+                    <button type="submit" class="btn-submit">إضافة المحاضرة</button>
+                </form>
+                <div id="courseAddMsg" style="margin-top:15px;"></div>
+            </div>
+        </div>
+
+        <!-- إضافة كتاب -->
+        <div id="tabAddBook" class="tab-content">
+            <div class="add-form animate-fade">
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
+                <form id="addBookForm">
+                    <div class="form-grid">
+                        <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required placeholder="مثال: ملزمة الفقه"></div>
+                        <div><label>الصف الدراسي</label>
+                            <select id="bookGrade" required>
+                                <option value="">اختر الصف</option>
+                                <option value="الصف الأول الابتدائي">الأول ابتدائي</option><option value="الصف الثاني الابتدائي">الثاني ابتدائي</option>
+                                <option value="الصف الثالث الابتدائي">الثالث ابتدائي</option><option value="الصف الرابع الابتدائي">الرابع ابتدائي</option>
+                                <option value="الصف الخامس الابتدائي">الخامس ابتدائي</option><option value="الصف السادس الابتدائي">السادس ابتدائي</option>
+                                <option value="الصف الأول الإعدادي">الأول إعدادي</option><option value="الصف الثاني الإعدادي">الثاني إعدادي</option>
+                                <option value="الصف الثالث الإعدادي">الثالث إعدادي</option>
+                                <option value="الصف الأول الثانوي">الأول ثانوي</option><option value="الصف الثاني الثانوي">الثاني ثانوي</option>
+                                <option value="الصف الثالث الثانوي">الثالث ثانوي</option>
+                            </select>
+                        </div>
+                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink" placeholder="https://drive.google.com/..."></div>
+                        <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
+                    </div>
+                    <button type="submit" class="btn-submit">إضافة الكتاب</button>
+                </form>
+                <div id="bookAddMsg" style="margin-top:15px;"></div>
+            </div>
+        </div>
+
+        <!-- إضافة مدرس -->
+        <div id="tabAddTeacher" class="tab-content">
+            <div class="add-form animate-fade">
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
+                <form id="addTeacherForm">
+                    <div class="form-grid">
+                        <div><label>اسم المدرس</label><input type="text" id="teacherName" required placeholder="مثال: محمد انور"></div>
+                        <div><label>التخصص</label><input type="text" id="teacherSpecialty" placeholder="مثال: اللغة العربية"></div>
+                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage" placeholder="https://example.com/photo.jpg"></div>
+                        <div class="full-width"><label>أو ارفع صورة</label><input type="file" id="teacherImageFile" accept="image/*"></div>
+                    </div>
+                    <button type="submit" class="btn-submit">إضافة المدرس</button>
+                </form>
+                <div id="teacherAddMsg" style="margin-top:15px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
+        function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
+        function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
+        function setCourses(c) { localStorage.setItem('courses', JSON.stringify(c)); }
+        function getBooks() { return JSON.parse(localStorage.getItem('books')) || []; }
+        function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
+        function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
+        function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userJson = sessionStorage.getItem('currentUser');
+            if (!userJson) { window.location.href = 'index.html'; return; }
+            const user = JSON.parse(userJson);
+            if (user.role !== 'admin') { window.location.href = 'index.html'; return; }
+            loadStudentsTable();
+            setupForms();
+        });
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
+            document.querySelectorAll('.admin-tabs button').forEach(btn => {
+                if (btn.textContent.includes('الطلاب') && tabId === 'students') btn.classList.add('active');
+                else if (btn.textContent.includes('محاضرة') && tabId === 'addCourse') btn.classList.add('active');
+                else if (btn.textContent.includes('كتاب') && tabId === 'addBook') btn.classList.add('active');
+                else if (btn.textContent.includes('مدرس') && tabId === 'addTeacher') btn.classList.add('active');
+            });
+            if (tabId === 'students') loadStudentsTable();
+        }
+
+        function loadStudentsTable() {
+            const users = getUsers().filter(u => u.role === 'student');
+            const tbody = document.getElementById('studentsTableBody');
+            if (!users.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="color:#888;">لا يوجد طلاب مسجلين.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = users.map((u, idx) => `
+                <tr class="animate-slide" style="animation-delay:${idx*0.05}s;">
+                    <td>${idx+1}</td>
+                    <td><strong>${u.name}</strong></td>
+                    <td>${u.grade}</td>
+                    <td>${u.phone}</td>
+                    <td style="color:${u.active ? '#2a7a2a' : '#a00'}; font-weight:700;">${u.active ? '✅ مفعل' : '❌ غير مفعل'}</td>
+                    <td>
+                        <button onclick="toggleStudentActive('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}" style="padding:4px 14px; font-size:12px;">
+                            ${u.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleStudentActive(userId) {
+            const users = getUsers();
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.active = !user.active;
+                setUsers(users);
+                loadStudentsTable();
+            }
+        }
+
+        function setupForms() {
+            document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('courseTitle').value.trim();
+                const grade = document.getElementById('courseGrade').value;
+                const link = document.getElementById('courseLink').value.trim();
+                const fileInput = document.getElementById('courseFile');
+                let finalLink = link;
+                if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
+                if (!title || !grade || !finalLink) {
+                    document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-danger">يرجى ملء جميع الحقول.</div>';
+                    return;
+                }
+                const courses = getCourses();
+                courses.push({ id: 'c_' + Date.now(), title, grade, link: finalLink });
+                setCourses(courses);
+                document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
+                this.reset();
+            });
+
+            document.getElementById('addBookForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('bookTitle').value.trim();
+                const grade = document.getElementById('bookGrade').value;
+                const link = document.getElementById('bookLink').value.trim();
+                const fileInput = document.getElementById('bookFile');
+                let finalLink = link;
+                if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
+                if (!title || !grade || !finalLink) {
+                    document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-danger">يرجى ملء جميع الحقول.</div>';
+                    return;
+                }
+                const books = getBooks();
+                books.push({ id: 'b_' + Date.now(), title, grade, link: finalLink });
+                setBooks(books);
+                document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
+                this.reset();
+            });
+
+            document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('teacherName').value.trim();
+                const specialty = document.getElementById('teacherSpecialty').value.trim();
+                const imageUrl = document.getElementById('teacherImage').value.trim();
+                const fileInput = document.getElementById('teacherImageFile');
+                let finalImage = imageUrl || 'https://via.placeholder.com/150/3b0a0a/d4af37?text=' + encodeURIComponent(name.charAt(0));
+                
+                if (fileInput.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) { finalImage = ev.target.result; saveTeacher(name, specialty, finalImage); };
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    saveTeacher(name, specialty, finalImage);
+                }
+
+                function saveTeacher(name, specialty, image) {
+                    if (!name) {
+                        document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-danger">أدخل اسم المدرس.</div>';
+                        return;
+                    }
+                    const teachers = getTeachers();
+                    teachers.push({ id: 't_' + Date.now(), name, specialty: specialty || 'مدرس', image });
+                    setTeachers(teachers);
+                    document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة بنجاح.</div>';
+                    document.getElementById('addTeacherForm').reset();
+                }
+            });
+        }
+
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
