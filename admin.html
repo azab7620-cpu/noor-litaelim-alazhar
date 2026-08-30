@@ -6,10 +6,18 @@
     <title>لوحة الأدمن - نور تعليم الأزهر</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* -------------------- STYLES -------------------- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
         .animate-fade { animation: fadeInUp 0.6s ease forwards; }
         .animate-slide { animation: slideIn 0.5s ease forwards; }
 
@@ -92,7 +100,7 @@
             <button onclick="showTab('addTeacher')">➕ إضافة مدرس</button>
         </div>
 
-        <!-- تبويب الطلاب -->
+        <!-- Students -->
         <div id="tabStudents" class="tab-content active">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">قائمة الطلاب</h4>
             <div style="overflow-x:auto;">
@@ -103,7 +111,7 @@
             </div>
         </div>
 
-        <!-- تبويب المحاضرات -->
+        <!-- Courses -->
         <div id="tabCourses" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 قائمة المحاضرات</h4>
             <div style="overflow-x:auto;">
@@ -114,7 +122,7 @@
             </div>
         </div>
 
-        <!-- تبويب الكتب -->
+        <!-- Books -->
         <div id="tabBooks" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 قائمة الكتب</h4>
             <div style="overflow-x:auto;">
@@ -125,7 +133,7 @@
             </div>
         </div>
 
-        <!-- تبويب المدرسين -->
+        <!-- Teachers -->
         <div id="tabTeachers" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 قائمة المدرسين</h4>
             <div style="overflow-x:auto;">
@@ -136,7 +144,7 @@
             </div>
         </div>
 
-        <!-- تبويب الأدمنة -->
+        <!-- Admins -->
         <div id="tabAdmins" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">👑 إدارة الأدمنة</h4>
             <div class="add-form">
@@ -161,7 +169,7 @@
             </div>
         </div>
 
-        <!-- تبويب إضافة محاضرة -->
+        <!-- Add Course -->
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
@@ -189,7 +197,7 @@
             </div>
         </div>
 
-        <!-- تبويب إضافة كتاب -->
+        <!-- Add Book -->
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
@@ -217,7 +225,7 @@
             </div>
         </div>
 
-        <!-- تبويب إضافة مدرس -->
+        <!-- Add Teacher -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
@@ -236,7 +244,7 @@
     </div>
 
     <script>
-        // ========== دوال البيانات ==========
+        // -------------------- DATA HELPERS --------------------
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -246,7 +254,7 @@
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        // ========== التحقق من الصلاحية ==========
+        // -------------------- AUTH CHECK --------------------
         document.addEventListener('DOMContentLoaded', function() {
             const userJson = sessionStorage.getItem('currentUser');
             if (!userJson) { window.location.href = 'index.html'; return; }
@@ -260,7 +268,7 @@
             setupForms();
         });
 
-        // ========== عرض التبويبات ==========
+        // -------------------- TAB NAVIGATION --------------------
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
@@ -282,7 +290,7 @@
             if (tabId === 'admins') loadAdminsTable();
         }
 
-        // ========== جدول الطلاب ==========
+        // -------------------- STUDENTS TABLE --------------------
         function loadStudentsTable() {
             const users = getUsers().filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
@@ -316,7 +324,7 @@
             }
         }
 
-        // ========== جدول المحاضرات ==========
+        // -------------------- COURSES TABLE (with delete) --------------------
         function loadCoursesTable() {
             const courses = getCourses();
             const tbody = document.getElementById('coursesTableBody');
@@ -345,7 +353,7 @@
             loadCoursesTable();
         }
 
-        // ========== جدول الكتب ==========
+        // -------------------- BOOKS TABLE (with delete) --------------------
         function loadBooksTable() {
             const books = getBooks();
             const tbody = document.getElementById('booksTableBody');
@@ -374,7 +382,7 @@
             loadBooksTable();
         }
 
-        // ========== جدول المدرسين ==========
+        // -------------------- TEACHERS TABLE (with delete) --------------------
         function loadTeachersTable() {
             const teachers = getTeachers();
             const tbody = document.getElementById('teachersTableBody');
@@ -403,7 +411,7 @@
             loadTeachersTable();
         }
 
-        // ========== إدارة الأدمنة ==========
+        // -------------------- ADMINS TABLE (with delete) --------------------
         function loadAdminsTable() {
             const users = getUsers().filter(u => u.role === 'admin');
             const tbody = document.getElementById('adminsTableBody');
@@ -437,9 +445,9 @@
             loadAdminsTable();
         }
 
-        // ========== نماذج الإضافة ==========
+        // -------------------- FORMS --------------------
         function setupForms() {
-            // إضافة أدمن
+            // Add Admin
             document.getElementById('addAdminForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('adminName').value.trim();
@@ -480,7 +488,7 @@
                 loadAdminsTable();
             });
 
-            // إضافة محاضرة
+            // Add Course
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
@@ -501,7 +509,7 @@
                 loadCoursesTable();
             });
 
-            // إضافة كتاب
+            // Add Book
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
@@ -522,7 +530,7 @@
                 loadBooksTable();
             });
 
-            // إضافة مدرس
+            // Add Teacher
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
@@ -554,7 +562,7 @@
             });
         }
 
-        // ========== تسجيل الخروج ==========
+        // -------------------- LOGOUT --------------------
         function logout() {
             sessionStorage.removeItem('currentUser');
             window.location.href = 'index.html';
