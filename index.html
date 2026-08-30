@@ -303,12 +303,15 @@
     <script>
         // ============================================================
         //  🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
-        //  ✏️ غيّر بيانات الأدمن هنا (الإيميل وكلمة المرور)
+        //  ✏️ غيّر بيانات الأدمنة هنا (كل أدمن على حدة)
         //  🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹🔹
-        const ADMIN_EMAIL = 'admin@example.com';      // ← غيّر للإيميل الجديد
-        const ADMIN_PASSWORD = 'admin123';            // ← غيّر لكلمة المرور الجديدة
-        const ADMIN_NAME = 'أدمن النظام';              // ← غيّر للاسم الجديد
-        const ADMIN_PHONE = '01113224591';            // ← غيّر لرقم الهاتف الجديد
+        const ADMINS = [
+            { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'admin1@example.com', phone: '01110000001', password: 'admin123' },
+            { id: 'admin2', name: 'أدمن 2 - محمد', email: 'admin2@example.com', phone: '01110000002', password: 'admin123' },
+            { id: 'admin3', name: 'أدمن 3 - سارة', email: 'admin3@example.com', phone: '01110000003', password: 'admin123' },
+            { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', password: 'admin123' },
+            { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', password: 'admin123' }
+        ];
         // ============================================================
 
         // ========== دوال البيانات ==========
@@ -321,53 +324,46 @@
         function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        // ========== تهيئة البيانات مع تحديث الأدمن تلقائياً ==========
+        // ========== تهيئة البيانات مع تحديث الأدمنة تلقائياً ==========
         function initData() {
             let users = getUsers();
             let needUpdate = false;
 
-            // البحث عن الأدمن الحالي (باستخدام id ثابت)
-            let admin = users.find(u => u.id === 'admin1' && u.role === 'admin');
-            
-            if (admin) {
-                // تحديث بيانات الأدمن بالقيم الجديدة من المتغيرات
-                if (admin.email !== ADMIN_EMAIL || 
-                    admin.password !== ADMIN_PASSWORD || 
-                    admin.name !== ADMIN_NAME || 
-                    admin.phone !== ADMIN_PHONE) {
-                    
-                    admin.email = ADMIN_EMAIL;
-                    admin.password = ADMIN_PASSWORD;
-                    admin.name = ADMIN_NAME;
-                    admin.phone = ADMIN_PHONE;
+            // 1. تحديث الأدمنة الموجودين أو إنشاؤهم إذا لم يكونوا موجودين
+            ADMINS.forEach(defaultAdmin => {
+                let existing = users.find(u => u.id === defaultAdmin.id && u.role === 'admin');
+                if (existing) {
+                    // تحديث البيانات إذا تغيرت
+                    if (existing.email !== defaultAdmin.email ||
+                        existing.password !== defaultAdmin.password ||
+                        existing.name !== defaultAdmin.name ||
+                        existing.phone !== defaultAdmin.phone) {
+                        existing.email = defaultAdmin.email;
+                        existing.password = defaultAdmin.password;
+                        existing.name = defaultAdmin.name;
+                        existing.phone = defaultAdmin.phone;
+                        needUpdate = true;
+                    }
+                } else {
+                    // إنشاء أدمن جديد
+                    users.push({
+                        ...defaultAdmin,
+                        parentPhone: '',
+                        governorate: 'القاهرة',
+                        center: 'المركز',
+                        stage: 'secondary',
+                        grade: 'الصف الثالث الثانوي',
+                        role: 'admin',
+                        active: true,
+                        exams: [],
+                        completedLessons: 0,
+                        totalLessons: 0
+                    });
                     needUpdate = true;
-                    console.log('✅ تم تحديث بيانات الأدمن تلقائياً');
                 }
-            } else {
-                // إذا لم يكن الأدمن موجوداً (أول مرة)، أنشئه
-                admin = {
-                    id: 'admin1',
-                    name: ADMIN_NAME,
-                    email: ADMIN_EMAIL,
-                    phone: ADMIN_PHONE,
-                    parentPhone: '',
-                    governorate: 'القاهرة',
-                    center: 'المركز',
-                    stage: 'secondary',
-                    grade: 'الصف الثالث الثانوي',
-                    password: ADMIN_PASSWORD,
-                    role: 'admin',
-                    active: true,
-                    exams: [],
-                    completedLessons: 0,
-                    totalLessons: 0
-                };
-                users.push(admin);
-                needUpdate = true;
-                console.log('✅ تم إنشاء الأدمن لأول مرة');
-            }
+            });
 
-            // التأكد من وجود طالب افتراضي (إذا لم يكن موجوداً)
+            // 2. التأكد من وجود طالب افتراضي
             let student = users.find(u => u.id === 'student1' && u.role === 'student');
             if (!student) {
                 student = {
@@ -400,14 +396,14 @@
                 };
                 users.push(student);
                 needUpdate = true;
-                console.log('✅ تم إنشاء الطالب الافتراضي');
             }
 
             if (needUpdate) {
                 setUsers(users);
+                console.log('✅ تم تحديث بيانات المستخدمين تلقائياً');
             }
 
-            // تهيئة باقي البيانات إذا لم تكن موجودة
+            // 3. تهيئة باقي البيانات إذا لم تكن موجودة
             if (!localStorage.getItem('courses')) {
                 setCourses([
                     { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
@@ -551,7 +547,7 @@
 
         // ========== أحداث التسجيل والدخول ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // تهيئة البيانات (مع تحديث الأدمن)
+            // تهيئة البيانات (مع تحديث الأدمنة)
             initData();
             renderTeachers(); renderCourses(); renderBooks();
 
