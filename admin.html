@@ -8,55 +8,45 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
-
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
         .animate-fade { animation: fadeInUp 0.6s ease forwards; }
-        .animate-slide { animation: slideIn 0.5s ease forwards; }
 
-        header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); border-bottom: 3px solid #d4af37; padding: 12px 20px; }
+        header { background: #fff; border-bottom: 3px solid #d4af37; padding: 12px 20px; }
         .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
-        .nav-buttons { display: flex; gap: 10px; align-items: center; }
-        .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-logout:hover { background: #520e0e; transform: translateY(-2px); }
-        .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
-        .btn-home:hover { background: #e0c060; transform: translateY(-2px); }
+        .nav-buttons { display: flex; gap: 10px; }
+        .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; }
 
-        .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; animation: fadeInUp 0.6s ease; }
-
+        .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
-        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .admin-tabs button:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; box-shadow: 0 8px 25px rgba(59,10,10,0.15); }
+        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .admin-tabs button:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
 
-        .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); animation: fadeInUp 0.5s ease; }
+        .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .tab-content.active { display: block; }
-
+        
         .admin-table { width: 100%; border-collapse: collapse; }
-        .admin-table th { background: #3b0a0a; color: #d4af37; padding: 14px; text-align: center; font-size: 15px; }
-        .admin-table td { padding: 14px; text-align: center; border-bottom: 1px solid #f0ede8; transition: 0.2s; }
+        .admin-table th { background: #3b0a0a; color: #d4af37; padding: 14px; text-align: center; }
+        .admin-table td { padding: 14px; text-align: center; border-bottom: 1px solid #f0ede8; }
         .admin-table tr:hover { background: #f9f6f0; }
 
-        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.3s; }
-        .btn-card:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 6px 15px rgba(59,10,10,0.15); }
+        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
         .btn-danger { background: #a00; color: #fff; }
         .btn-success { background: #2a7a2a; color: #fff; }
 
         .add-form { margin-top: 20px; }
-        .add-form .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .add-form .full-width { grid-column: 1 / -1; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full-width { grid-column: 1 / -1; }
         .add-form label { display: block; font-weight: 700; font-size: 14px; color: #3b0a0a; margin-bottom: 5px; }
-        .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; transition: 0.3s; }
-        .add-form input:focus, .add-form select:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212,175,55,0.1); transform: scale(1.01); }
+        .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; }
         
         .bundle-container-box { border: 2px dashed #ddd; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
 
-        .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 15px; }
-        .btn-submit:hover { background: #520e0e; transform: translateY(-2px); }
-        
-        .btn-finish-exam { background: #2a7a2a; color: #fff; }
+        .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        .btn-finish-exam { background: #2a7a2a; color: #fff; border: none; padding: 12px 40px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
 
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -72,7 +62,7 @@
 <body>
     <header>
         <div class="nav-container">
-            <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>لوحة الأدمن</span></div></div>
+            <div class="logo-text"><h1>نور تعليم الأزهر</h1><span>لوحة الأدمن</span></div>
             <div class="nav-buttons">
                 <a href="index.html" class="btn-home">🏠 الرئيسية</a>
                 <button onclick="logout()" class="btn-logout">تسجيل خروج</button>
@@ -81,8 +71,7 @@
     </header>
 
     <div class="dashboard-container">
-        <h2 style="color:#3b0a0a; margin-bottom:5px;">⚙️ لوحة تحكم الأدمن</h2>
-        <p style="color:#777; margin-bottom:25px;">إدارة الطلاب، الحزم، المحاضرات، الكتب، الاختبارات، والمدرسين.</p>
+        <h2 style="color:#3b0a0a; margin-bottom:20px;">⚙️ لوحة تحكم الأدمن</h2>
 
         <div class="admin-tabs">
             <button class="active" onclick="showTab('students')">👥 الطلاب</button>
@@ -97,56 +86,47 @@
             <button onclick="showTab('addExam')">➕ إضافة اختبار</button>
         </div>
 
-        <!-- تبويب الطلاب -->
+        <!-- إدارة الطلاب -->
         <div id="tabStudents" class="tab-content active">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">قائمة الطلاب (اضغط تفعيل ليظهر للطالب الاختبار)</h4>
-            <div style="overflow-x:auto;">
-                <table class="admin-table">
-                    <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>رقم الهاتف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-                    <tbody id="studentsTableBody"></tbody>
-                </table>
-            </div>
+            <table class="admin-table">
+                <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                <tbody id="studentsTableBody"></tbody>
+            </table>
         </div>
 
-        <!-- تبويب الحزم والوحدات -->
+        <!-- عرض الحزم -->
         <div id="tabBundles" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📦 قائمة الحزم والوحدات</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
                 <tbody id="bundlesTableBody"></tbody>
             </table>
         </div>
 
-        <!-- تبويب المحاضرات -->
+        <!-- المحاضرات -->
         <div id="tabCourses" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 قائمة المحاضرات (مصدر محتمل للفيديوهات)</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                 <tbody id="coursesTableBody"></tbody>
             </table>
         </div>
 
-        <!-- تبويب الكتب -->
+        <!-- الكتب -->
         <div id="tabBooks" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 قائمة الكتب (مصدر محتمل للملفات)</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                 <tbody id="booksTableBody"></tbody>
             </table>
         </div>
 
-        <!-- تبويب المدرسين -->
+        <!-- المدرسين -->
         <div id="tabTeachers" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 قائمة المدرسين</h4>
-            <div style="overflow-x:auto;">
-                <table class="admin-table">
-                    <thead><tr><th>#</th><th>الاسم</th><th>التخصص</th><th>الصورة</th><th>إجراءات</th></tr></thead>
-                    <tbody id="teachersTableBody"></tbody>
-                </table>
-            </div>
+            <table class="admin-table">
+                <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
+                <tbody id="teachersTableBody"></tbody>
+            </table>
         </div>
 
-        <!-- تبويب إنشاء وحدة -->
+        <!-- إنشاء وحدة -->
         <div id="tabAddBundle" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">➕ إنشاء وحدة / حزمة جديدة (اجمع فيها كل حاجة)</h4>
@@ -190,7 +170,6 @@
                                     </select>
                                 </div>
                                 
-                                <!-- حقل اختيار المصدر (جديد) -->
                                 <div id="sourceFields" class="full-width" style="display:none;">
                                     <label>مصدر العنصر</label>
                                     <select id="sourceType" onchange="toggleSourceFields()">
@@ -200,7 +179,6 @@
                                     </select>
                                 </div>
 
-                                <!-- حقول الرفع أو الرابط -->
                                 <div id="manualFields" class="full-width" style="display:none;">
                                     <div class="form-grid">
                                         <div><label>عنوان العنصر</label><input type="text" id="itemTitle" placeholder="مثال: ملف المحاضرة الأولى"></div>
@@ -209,7 +187,6 @@
                                     </div>
                                 </div>
 
-                                <!-- حقول الاختيار من المنصة -->
                                 <div id="platformFields" class="full-width" style="display:none;">
                                     <label>اختر من المحاضرات أو الكتب الموجودة:</label>
                                     <select id="platformItemSelect"></select>
@@ -226,91 +203,56 @@
                             <button type="submit" class="btn-submit">إضافة العنصر للوحدة</button>
                         </form>
                         <div id="itemAddMsg" style="margin-top:15px;"></div>
-                        <p style="font-size:13px; color:#888; margin-top:10px;">* يمكنك إضافة أكثر من ملف وفيديو واختبار في نفس الوحدة، أو تركها فاضية.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- تبويب إضافة محاضرة -->
+        <!-- إضافة محاضرة -->
         <div id="tabAddCourse" class="tab-content">
-            <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
-                <form id="addCourseForm">
-                    <div class="form-grid">
-                        <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
-                        <div><label>الصف الدراسي</label>
-                            <select id="courseGrade" required>
-                                <option value="">اختر الصف</option>
-                                <option value="الصف الأول الابتدائي">الأول ابتدائي</option><option value="الصف الثاني الابتدائي">الثاني ابتدائي</option>
-                                <option value="الصف الثالث الابتدائي">الثالث ابتدائي</option><option value="الصف الرابع الابتدائي">الرابع ابتدائي</option>
-                                <option value="الصف الخامس الابتدائي">الخامس ابتدائي</option><option value="الصف السادس الابتدائي">السادس ابتدائي</option>
-                                <option value="الصف الأول الإعدادي">الأول إعدادي</option><option value="الصف الثاني الإعدادي">الثاني إعدادي</option>
-                                <option value="الصف الثالث الإعدادي">الثالث إعدادي</option>
-                                <option value="الصف الأول الثانوي">الأول ثانوي</option><option value="الصف الثاني الثانوي">الثاني ثانوي</option>
-                                <option value="الصف الثالث الثانوي">الثالث ثانوي</option>
-                            </select>
-                        </div>
-                        <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
-                    </div>
-                    <button type="submit" class="btn-submit">إضافة المحاضرة</button>
-                </form>
-                <div id="courseAddMsg" style="margin-top:15px;"></div>
-            </div>
+            <form id="addCourseForm">
+                <div class="form-grid">
+                    <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
+                    <div><label>الصف</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
+                    <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink"></div>
+                    <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                </div>
+                <button type="submit" class="btn-submit">إضافة المحاضرة</button>
+            </form>
         </div>
 
-        <!-- تبويب إضافة كتاب -->
+        <!-- إضافة كتاب -->
         <div id="tabAddBook" class="tab-content">
-            <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
-                <form id="addBookForm">
-                    <div class="form-grid">
-                        <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
-                        <div><label>الصف الدراسي</label>
-                            <select id="bookGrade" required>
-                                <option value="">اختر الصف</option>
-                                <option value="الصف الأول الابتدائي">الأول ابتدائي</option><option value="الصف الثاني الابتدائي">الثاني ابتدائي</option>
-                                <option value="الصف الثالث الابتدائي">الثالث ابتدائي</option><option value="الصف الرابع الابتدائي">الرابع ابتدائي</option>
-                                <option value="الصف الخامس الابتدائي">الخامس ابتدائي</option><option value="الصف السادس الابتدائي">السادس ابتدائي</option>
-                                <option value="الصف الأول الإعدادي">الأول إعدادي</option><option value="الصف الثاني الإعدادي">الثاني إعدادي</option>
-                                <option value="الصف الثالث الإعدادي">الثالث إعدادي</option>
-                                <option value="الصف الأول الثانوي">الأول ثانوي</option><option value="الصف الثاني الثانوي">الثاني ثانوي</option>
-                                <option value="الصف الثالث الثانوي">الثالث ثانوي</option>
-                            </select>
-                        </div>
-                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
-                    </div>
-                    <button type="submit" class="btn-submit">إضافة الكتاب</button>
-                </form>
-                <div id="bookAddMsg" style="margin-top:15px;"></div>
-            </div>
+            <form id="addBookForm">
+                <div class="form-grid">
+                    <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
+                    <div><label>الصف</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
+                    <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink"></div>
+                    <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
+                </div>
+                <button type="submit" class="btn-submit">إضافة الكتاب</button>
+            </form>
         </div>
 
-        <!-- تبويب إضافة مدرس -->
+        <!-- إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
-            <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
-                <form id="addTeacherForm">
-                    <div class="form-grid">
-                        <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
-                        <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
-                        <div class="full-width"><label>رابط الصورة</label><input type="url" id="teacherImage"></div>
-                    </div>
-                    <button type="submit" class="btn-submit">إضافة المدرس</button>
-                </form>
-                <div id="teacherAddMsg" style="margin-top:15px;"></div>
-            </div>
+            <form id="addTeacherForm">
+                <div class="form-grid">
+                    <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
+                    <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
+                    <div class="full-width"><label>رابط الصورة</label><input type="url" id="teacherImage"></div>
+                </div>
+                <button type="submit" class="btn-submit">إضافة المدرس</button>
+            </form>
         </div>
 
-        <!-- تبويب إضافة اختبار -->
+        <!-- إضافة اختبار -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار (سؤال واحد صحيح)</h4>
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار (يمكنك إضافة أكثر من سؤال بنفس الاختبار)</h4>
                 <form id="addExamForm">
                     <div class="form-grid">
-                        <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required></div>
+                        <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required placeholder="مثال: اختبار النحو - الوحدة الأولى"></div>
                         <div><label>الصف الدراسي</label>
                             <select id="examGrade" required>
                                 <option value="">اختر الصف</option>
@@ -326,16 +268,22 @@
                     </div>
                     
                     <div class="form-grid" style="margin-top:20px; border-top: 1px dashed #ddd; padding-top: 20px;">
-                        <div class="full-width"><label>نص السؤال</label><input type="text" id="qText" required></div>
+                        <div class="full-width"><label>نص السؤال</label><input type="text" id="qText" required placeholder="اكتب السؤال هنا"></div>
                         <div><label>الخيار 1</label><input type="text" id="opt1" required></div>
                         <div><label>الخيار 2</label><input type="text" id="opt2" required></div>
                         <div><label>الخيار 3</label><input type="text" id="opt3" required></div>
                         <div><label>الخيار 4</label><input type="text" id="opt4" required></div>
                         <div><label>الإجابة الصحيحة</label><select id="correctOpt"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
                     </div>
-                    <button type="submit" class="btn-submit">حفظ السؤال</button>
+                    
+                    <div style="margin-top:15px; display:flex; gap:10px; align-items:center;">
+                        <button type="submit" class="btn-submit">حفظ السؤال</button>
+                        <button type="button" onclick="finishExamCreation()" class="btn-finish-exam">إنهاء وحفظ الاختبار</button>
+                    </div>
                 </form>
+                
                 <div id="examAddMsg" style="margin-top:15px;"></div>
+                <p style="font-size:13px; color:#888; margin-top:10px;">* بعد الضغط على "حفظ السؤال" ستُمسح حقول السؤال فقط وتبقى بيانات الاختبار، لتتمكن من كتابة السؤال التالي بنفس الاختبار مباشرة.</p>
             </div>
         </div>
     </div>
@@ -378,7 +326,6 @@
             loadTeachersTable();
             populateBundleSelects();
             setupForms();
-            // إظهار حقول المصدر إذا كانت الوحدة موجودة
             toggleItemFields();
         });
 
@@ -404,9 +351,9 @@
         function loadStudentsTable() {
             const users = getUsers().filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
-            if (!users.length) { tbody.innerHTML = '<tr><td colspan="6">لا يوجد طلاب.</td></tr>'; return; }
+            if (!users.length) { tbody.innerHTML = '<tr><td colspan="5">لا يوجد طلاب.</td></tr>'; return; }
             tbody.innerHTML = users.map((u, idx) => `
-                <tr><td>${idx+1}</td><td>${u.name}</td><td>${u.grade}</td><td>${u.phone}</td><td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td><td><button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">${u.active ? 'إلغاء التفعيل' : 'تفعيل'}</button></td></tr>
+                <tr><td>${idx+1}</td><td>${u.name}</td><td>${u.grade}</td><td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td><td><button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">${u.active ? 'إلغاء التفعيل' : 'تفعيل'}</button></td></tr>
             `).join('');
         }
 
@@ -456,7 +403,6 @@
                 selectExam.appendChild(opt);
             });
 
-            // تعبئة قائمة المحاضرات والكتب لاختيار عنصر منها
             const courses = getCourses();
             const books = getBooks();
             const selectPlatform = document.getElementById('platformItemSelect');
@@ -466,7 +412,6 @@
                 const opt = document.createElement('option');
                 opt.value = JSON.stringify({ source: 'course', id: c.id });
                 opt.textContent = '🎬 ' + c.title;
-                opt.dataset.type = 'video';
                 selectPlatform.appendChild(opt);
             });
 
@@ -474,7 +419,6 @@
                 const opt = document.createElement('option');
                 opt.value = JSON.stringify({ source: 'book', id: b.id });
                 opt.textContent = '📄 ' + b.title;
-                opt.dataset.type = 'pdf';
                 selectPlatform.appendChild(opt);
             });
         }
@@ -491,7 +435,7 @@
             } else {
                 sourceFieldDiv.style.display = 'block';
                 examFieldDiv.style.display = 'none';
-                toggleSourceFields(); // استدعاء دالة المصدر
+                toggleSourceFields();
             }
         }
 
@@ -544,25 +488,22 @@
                     const sourceType = document.getElementById('sourceType').value;
                     let title = '';
                     let link = '';
-                    let finalType = type;
 
                     if (sourceType === 'platform') {
                         const platformVal = document.getElementById('platformItemSelect').value;
                         if (!platformVal) { alert('اختر عنصراً من المنصة'); return; }
-                        
                         const platformObj = JSON.parse(platformVal);
-                        let selectedItem;
                         if (platformObj.source === 'course') {
-                            selectedItem = getCourses().find(c => c.id === platformObj.id);
-                            finalType = 'video';
+                            let selectedItem = getCourses().find(c => c.id === platformObj.id);
+                            title = selectedItem.title;
+                            link = selectedItem.link;
+                            type = 'video';
                         } else {
-                            selectedItem = getBooks().find(b => b.id === platformObj.id);
-                            finalType = 'pdf';
+                            let selectedItem = getBooks().find(b => b.id === platformObj.id);
+                            title = selectedItem.title;
+                            link = selectedItem.link;
+                            type = 'pdf';
                         }
-
-                        title = selectedItem.title;
-                        link = selectedItem.link;
-
                     } else {
                         title = document.getElementById('itemTitle').value.trim();
                         const fileInput = document.getElementById('itemFile');
@@ -571,12 +512,11 @@
                         if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
                     }
 
-                    bundle.items.push({ type: finalType, title, link });
+                    bundle.items.push({ type: type, title, link });
                 }
 
                 setBundles(bundles);
                 document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر! يمكنك إضافة عنصر آخر.</div>';
-                // تفريغ الحقول
                 document.getElementById('itemTitle').value = '';
                 document.getElementById('itemLink').value = '';
                 document.getElementById('itemFile').value = '';
@@ -638,7 +578,7 @@
                 loadTeachersTable();
             });
 
-            // إضافة اختبار
+            // إضافة اختبار (مع دعم الأسئلة المتعددة!)
             document.getElementById('addExamForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('examTitle').value.trim();
@@ -658,14 +598,27 @@
                 exam.questions.push({ q, options, correct });
                 setExams(exams);
 
-                document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ السؤال!</div>';
+                // عرض عدد الأسئلة المضافة
+                let questionCount = exam.questions.length;
+                document.getElementById('examAddMsg').innerHTML = `<div class="alert alert-success">✅ تم حفظ السؤال رقم ${questionCount}! يمكنك كتابة السؤال التالي بنفس الاختبار.</div>`;
+                
+                // مسح حقول السؤال فقط
                 document.getElementById('qText').value = '';
                 document.getElementById('opt1').value = '';
                 document.getElementById('opt2').value = '';
                 document.getElementById('opt3').value = '';
                 document.getElementById('opt4').value = '';
+                document.getElementById('correctOpt').value = '1';
+                
                 populateBundleSelects();
             });
+        }
+
+        // إنهاء الاختبار
+        function finishExamCreation() {
+            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار وحفظه بالكامل! أصبح متاحاً للطلاب المفعلين في هذا الصف.</div>';
+            document.getElementById('addExamForm').reset();
+            populateBundleSelects();
         }
 
         function loadCoursesTable() {
