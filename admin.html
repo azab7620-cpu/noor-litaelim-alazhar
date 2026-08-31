@@ -8,8 +8,6 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeInUp 0.6s ease forwards; }
 
         header { background: #fff; border-bottom: 3px solid #d4af37; padding: 12px 20px; }
         .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
@@ -46,13 +44,12 @@
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
         
         .bundle-container-box { border: 2px dashed #ddd; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
-        
+
         .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
 
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-
-        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -76,59 +73,41 @@
 
         <div class="admin-tabs">
             <button class="active" onclick="showTab('students')">👥 الطلاب</button>
-            <button onclick="showTab('bundles')">📦 الحزم والوحدات</button>
             <button onclick="showTab('courses')">📹 المحاضرات</button>
             <button onclick="showTab('books')">📚 الكتب</button>
             <button onclick="showTab('teachers')">👨‍🏫 المدرسون</button>
             <button onclick="showTab('addCourse')">➕ إضافة محاضرة</button>
             <button onclick="showTab('addBook')">➕ إضافة كتاب</button>
             <button onclick="showTab('addTeacher')">➕ إضافة مدرس</button>
-            <button onclick="showTab('addBundle')">➕ إنشاء وحدة</button>
             <button onclick="showTab('addExam')">➕ إضافة اختبار</button>
         </div>
 
-        <!-- الطلاب -->
+        <!-- تبويب الطلاب -->
         <div id="tabStudents" class="tab-content active">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">قائمة الطلاب</h4>
-            <div class="alert alert-warning" style="margin-bottom:15px;">
-                ⚠️ <strong>تنبيه هام:</strong> الطلاب الجدد يتم تسجيلهم بحالة "غير مفعل". لتظهر لهم المحاضرات والكتب والاختبارات، يجب أن تضغط زر <strong>"تفعيل"</strong> في الجدول أدناه.
-            </div>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
             </table>
         </div>
 
-        <!-- الحزم والوحدات -->
-        <div id="tabBundles" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📦 قائمة الحزم والوحدات</h4>
-            <table class="admin-table">
-                <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
-                <tbody id="bundlesTableBody"></tbody>
-            </table>
-        </div>
-
-        <!-- المحاضرات -->
+        <!-- تبويب المحاضرات -->
         <div id="tabCourses" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 قائمة المحاضرات</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                 <tbody id="coursesTableBody"></tbody>
             </table>
         </div>
 
-        <!-- الكتب -->
+        <!-- تبويب الكتب -->
         <div id="tabBooks" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 قائمة الكتب</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                 <tbody id="booksTableBody"></tbody>
             </table>
         </div>
 
-        <!-- المدرسين -->
+        <!-- تبويب المدرسين -->
         <div id="tabTeachers" class="tab-content">
-            <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 قائمة المدرسين</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
                 <tbody id="teachersTableBody"></tbody>
@@ -139,13 +118,12 @@
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
-                <div class="alert alert-warning">💡 <strong>نصيحة:</strong> لتظهر هذه المحاضرة في الصفحة الرئيسية للجميع، ضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
                 <form id="addCourseForm">
                     <div class="form-grid">
                         <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط المحاضرة (يُفضل رابط يوتيوب أو جوجل درايف)</label><input type="url" id="courseLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف (للعلم: الملف المرفوع يختفي بعد إغلاق المتصفح)</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                        <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="courseShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -161,13 +139,12 @@
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
-                <div class="alert alert-warning">💡 <strong>نصيحة:</strong> لتظهر هذه الملزمة في الصفحة الرئيسية للجميع، ضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
                 <form id="addBookForm">
                     <div class="form-grid">
                         <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط التحميل (يُفضل رابط جوجل درايف)</label><input type="url" id="bookLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف PDF (للعلم: الملف المرفوع يختفي بعد إغلاق المتصفح)</label><input type="file" id="bookFile" accept=".pdf"></div>
+                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -187,7 +164,7 @@
                     <div class="form-grid">
                         <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
                         <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
-                        <div class="full-width"><label>رابط صورة المدرس (يُفضل رابط صورة مباشر)</label><input type="url" id="teacherImage"></div>
+                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage"></div>
                         <div class="full-width"><label>أو ارفع صورة</label><input type="file" id="teacherImageFile" accept="image/*"></div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المدرس</button>
@@ -196,72 +173,10 @@
             </div>
         </div>
 
-        <!-- إنشاء وحدة/حزمة -->
-        <div id="tabAddBundle" class="tab-content">
-            <div class="bundle-container-box">
-                <div class="add-form">
-                    <h5 style="color:#555; margin-bottom:10px;">1. أنشئ الوحدة الجديدة:</h5>
-                    <form id="addBundleForm">
-                        <div class="form-grid">
-                            <div><label>اسم الوحدة</label><input type="text" id="bundleTitle" required></div>
-                            <div><label>الصف الدراسي</label><select id="bundleGrade" required><option value="">اختر الصف</option></select></div>
-                        </div>
-                        <button type="submit" class="btn-submit">إنشاء الوحدة</button>
-                    </form>
-                    <div id="bundleAddMsg" style="margin-top:15px;"></div>
-                </div>
-            </div>
-            <div class="bundle-container-box">
-                <div class="add-form">
-                    <h5 style="color:#555; margin-bottom:10px;">2. أضف عناصر داخل الوحدة:</h5>
-                    <form id="addItemForm">
-                        <div class="form-grid">
-                            <div><label>اختر الوحدة</label><select id="itemBundleSelect" required></select></div>
-                            <div><label>نوع العنصر</label>
-                                <select id="itemType" onchange="toggleItemFields()">
-                                    <option value="pdf">ملف PDF</option>
-                                    <option value="video">فيديو</option>
-                                    <option value="exam">اختبار</option>
-                                </select>
-                            </div>
-                            <div id="sourceFields" class="full-width" style="display:none;">
-                                <label>مصدر العنصر</label>
-                                <select id="sourceType" onchange="toggleSourceFields()">
-                                    <option value="upload">من جهازي (رفع ملف)</option>
-                                    <option value="url">رابط خارجي</option>
-                                    <option value="platform">اختيار من محتويات المنصة</option>
-                                </select>
-                            </div>
-                            <div id="manualFields" class="full-width" style="display:none;">
-                                <div class="form-grid">
-                                    <div><label>عنوان العنصر</label><input type="text" id="itemTitle"></div>
-                                    <div><label>الرابط</label><input type="url" id="itemLink"></div>
-                                    <div class="full-width"><label>أو ارفع ملف من جهازك</label><input type="file" id="itemFile"></div>
-                                </div>
-                            </div>
-                            <div id="platformFields" class="full-width" style="display:none;">
-                                <label>اختر من المحاضرات أو الكتب الموجودة:</label>
-                                <select id="platformItemSelect"></select>
-                            </div>
-                        </div>
-                        <div id="examFields" class="full-width" style="display:none; margin-top:15px;">
-                            <div class="form-grid">
-                                <div><label>عنوان الاختبار</label><input type="text" id="examItemTitle"></div>
-                                <div><label>اختر الاختبار</label><select id="itemExamSelect"></select></div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn-submit">إضافة العنصر للوحدة</button>
-                    </form>
-                    <div id="itemAddMsg" style="margin-top:15px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- إضافة اختبار (تحديد عدد أسئلة) -->
+        <!-- إضافة اختبار (نظام الأسئلة الجديد) -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد (حدد عدد الأسئلة)</h4>
-                <div class="alert alert-warning">💡 <strong>تذكير:</strong> سوف يظهر هذا الاختبار للطلاب الذين قمت بتفعيلهم والموجودين في نفس الصف المختار.</div>
                 <form id="examSetupForm">
                     <div class="form-grid">
                         <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required></div>
@@ -270,8 +185,10 @@
                         <div class="full-width"><button type="button" onclick="generateQuestionBoxes()" class="btn-submit" style="background:#d4af37; color:#3b0a0a;">⬇️ توليد حقول الأسئلة</button></div>
                     </div>
                 </form>
+
                 <div id="questionsContainer"></div>
                 <div id="examAddMsg" style="margin-top:15px;"></div>
+
                 <button type="button" onclick="saveFullExam()" id="saveExamBtn" style="display:none; width:100%; background:#2a7a2a; color:#fff; padding:15px; border:none; border-radius:12px; font-weight:900; font-size:18px; margin-top:20px; cursor:pointer;">💾 حفظ الاختبار بالكامل</button>
             </div>
         </div>
@@ -289,13 +206,11 @@
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
         function getExams() { return JSON.parse(localStorage.getItem('exams')) || []; }
         function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
-        function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
-        function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
 
         // تهيئة الصفوف
         function initGrades() {
             const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
-            ['bundleGrade', 'bookGrade', 'examGrade', 'courseGrade'].forEach(id => {
+            ['courseGrade', 'bookGrade', 'examGrade'].forEach(id => {
                 const select = document.getElementById(id);
                 grades.forEach(g => {
                     const opt = document.createElement('option');
@@ -309,13 +224,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             initGrades();
             loadStudentsTable();
-            loadBundlesTable();
             loadCoursesTable();
             loadBooksTable();
             loadTeachersTable();
-            populateBundleSelects();
             setupForms();
-            toggleItemFields();
         });
 
         function showTab(tabId) {
@@ -323,11 +235,9 @@
             document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
             document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
             if (tabId === 'students') loadStudentsTable();
-            if (tabId === 'bundles') loadBundlesTable();
             if (tabId === 'courses') loadCoursesTable();
             if (tabId === 'books') loadBooksTable();
             if (tabId === 'teachers') loadTeachersTable();
-            if (tabId === 'addBundle') populateBundleSelects();
         }
 
         function loadStudentsTable() {
@@ -347,160 +257,30 @@
             loadStudentsTable();
         }
 
-        function loadBundlesTable() {
-            const bundles = getBundles();
-            const tbody = document.getElementById('bundlesTableBody');
-            tbody.innerHTML = bundles.length ? bundles.map((b, idx) => `
-                <tr><td>${idx+1}</td><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.items.length} عنصر</td><td><button onclick="deleteBundle('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
-            `).join('') : '<tr><td colspan="5">لا توجد وحدات.</td></tr>';
-        }
-
-        function deleteBundle(id) {
-            let bundles = getBundles();
-            setBundles(bundles.filter(b => b.id !== id));
-            loadBundlesTable();
-            populateBundleSelects();
-        }
-
-        function populateBundleSelects() {
-            const bundles = getBundles();
-            const selectBundle = document.getElementById('itemBundleSelect');
-            selectBundle.innerHTML = '<option value="">اختر وحدة</option>';
-            bundles.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.id;
-                opt.textContent = b.title;
-                selectBundle.appendChild(opt);
-            });
-
-            const exams = getExams();
-            const selectExam = document.getElementById('itemExamSelect');
-            selectExam.innerHTML = '<option value="">اختر اختبار</option>';
-            exams.forEach(e => {
-                const opt = document.createElement('option');
-                opt.value = e.id;
-                opt.textContent = e.title;
-                selectExam.appendChild(opt);
-            });
-
+        // دوال الجداول
+        function loadCoursesTable() {
             const courses = getCourses();
+            const tbody = document.getElementById('coursesTableBody');
+            tbody.innerHTML = courses.length ? courses.map(c => `<tr><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد محاضرات</td></tr>';
+        }
+        function deleteCourse(id) { setCourses(getCourses().filter(c => c.id !== id)); loadCoursesTable(); }
+
+        function loadBooksTable() {
             const books = getBooks();
-            const selectPlatform = document.getElementById('platformItemSelect');
-            selectPlatform.innerHTML = '<option value="">اختر عنصراً من المنصة</option>';
-            courses.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = JSON.stringify({ source: 'course', id: c.id });
-                opt.textContent = '🎬 ' + c.title;
-                selectPlatform.appendChild(opt);
-            });
-            books.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = JSON.stringify({ source: 'book', id: b.id });
-                opt.textContent = '📄 ' + b.title;
-                selectPlatform.appendChild(opt);
-            });
+            const tbody = document.getElementById('booksTableBody');
+            tbody.innerHTML = books.length ? books.map(b => `<tr><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد كتب</td></tr>';
         }
+        function deleteBook(id) { setBooks(getBooks().filter(b => b.id !== id)); loadBooksTable(); }
 
-        function toggleItemFields() {
-            const type = document.getElementById('itemType').value;
-            const sourceFieldDiv = document.getElementById('sourceFields');
-            const examFieldDiv = document.getElementById('examFields');
-
-            if (type === 'exam') {
-                sourceFieldDiv.style.display = 'none';
-                examFieldDiv.style.display = 'block';
-            } else {
-                sourceFieldDiv.style.display = 'block';
-                examFieldDiv.style.display = 'none';
-                toggleSourceFields();
-            }
+        function loadTeachers() {
+            const teachers = getTeachers();
+            const tbody = document.getElementById('teachersTableBody');
+            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
         }
+        function deleteTeacher(id) { setTeachers(getTeachers().filter(t => t.id !== id)); loadTeachers(); }
 
-        function toggleSourceFields() {
-            const sourceType = document.getElementById('sourceType').value;
-            const manualFields = document.getElementById('manualFields');
-            const platformFields = document.getElementById('platformFields');
-
-            if (sourceType === 'platform') {
-                manualFields.style.display = 'none';
-                platformFields.style.display = 'block';
-            } else {
-                manualFields.style.display = 'block';
-                platformFields.style.display = 'none';
-            }
-        }
-
+        // دوال الإضافة
         function setupForms() {
-            document.getElementById('addBundleForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const title = document.getElementById('bundleTitle').value.trim();
-                const grade = document.getElementById('bundleGrade').value;
-                if (!title || !grade) { alert('املأ الحقول'); return; }
-                let bundles = getBundles();
-                bundles.push({ id: 'bundle_' + Date.now(), title, grade, items: [] });
-                setBundles(bundles);
-                document.getElementById('bundleAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الوحدة!</div>';
-                this.reset();
-                loadBundlesTable();
-                populateBundleSelects();
-            });
-
-            document.getElementById('addItemForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const bundleId = document.getElementById('itemBundleSelect').value;
-                const type = document.getElementById('itemType').value;
-                if (!bundleId) { alert('اختر وحدة أولاً'); return; }
-                
-                let bundles = getBundles();
-                let bundle = bundles.find(b => b.id === bundleId);
-                
-                if (type === 'exam') {
-                    const examId = document.getElementById('itemExamSelect').value;
-                    const title = document.getElementById('examItemTitle').value.trim();
-                    if (!examId || !title) { alert('املأ بيانات الاختبار'); return; }
-                    bundle.items.push({ type: 'exam', title, examId });
-                } else {
-                    const sourceType = document.getElementById('sourceType').value;
-                    let title = '';
-                    let link = '';
-
-                    if (sourceType === 'platform') {
-                        const platformVal = document.getElementById('platformItemSelect').value;
-                        if (!platformVal) { alert('اختر عنصراً من المنصة'); return; }
-                        const platformObj = JSON.parse(platformVal);
-                        if (platformObj.source === 'course') {
-                            let selectedItem = getCourses().find(c => c.id === platformObj.id);
-                            title = selectedItem.title;
-                            link = selectedItem.link;
-                            type = 'video';
-                        } else {
-                            let selectedItem = getBooks().find(b => b.id === platformObj.id);
-                            title = selectedItem.title;
-                            link = selectedItem.link;
-                            type = 'pdf';
-                        }
-                    } else {
-                        title = document.getElementById('itemTitle').value.trim();
-                        const fileInput = document.getElementById('itemFile');
-                        link = document.getElementById('itemLink').value.trim();
-                        if (fileInput.files.length > 0) { link = URL.createObjectURL(fileInput.files[0]); }
-                        if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
-                    }
-
-                    bundle.items.push({ type: type, title, link });
-                }
-
-                setBundles(bundles);
-                document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر!</div>';
-                document.getElementById('itemTitle').value = '';
-                document.getElementById('itemLink').value = '';
-                document.getElementById('itemFile').value = '';
-                document.getElementById('platformItemSelect').value = '';
-                document.getElementById('examItemTitle').value = '';
-                
-                loadBundlesTable();
-            });
-
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
@@ -510,15 +290,16 @@
                 const showInHome = document.getElementById('courseShowInHome').checked;
                 let finalLink = link;
                 if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
-                if (!title || !grade || !finalLink) { alert('املأ الحقول'); return; }
+                if (!title || !grade || !finalLink) { alert('يرجى ملء جميع الحقول'); return; }
                 let courses = getCourses();
                 courses.push({ id: 'c_' + Date.now(), title, grade, link: finalLink, showInHome });
                 setCourses(courses);
-                document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة!</div>';
+                
+                // إظهار رسالة النجاح وتفريغ الحقول
+                document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة بنجاح!</div>';
                 this.reset();
                 document.getElementById('courseShowInHome').checked = false;
                 loadCoursesTable();
-                populateBundleSelects();
             });
 
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
@@ -530,15 +311,15 @@
                 const showInHome = document.getElementById('bookShowInHome').checked;
                 let finalLink = link;
                 if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
-                if (!title || !grade || !finalLink) { alert('املأ الحقول'); return; }
+                if (!title || !grade || !finalLink) { alert('يرجى ملء جميع الحقول'); return; }
                 let books = getBooks();
                 books.push({ id: 'b_' + Date.now(), title, grade, link: finalLink, showInHome });
                 setBooks(books);
-                document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب!</div>';
+                
+                document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب بنجاح!</div>';
                 this.reset();
                 document.getElementById('bookShowInHome').checked = false;
                 loadBooksTable();
-                populateBundleSelects();
             });
 
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
@@ -549,6 +330,8 @@
                 const fileInput = document.getElementById('teacherImageFile');
                 let finalImage = imageUrl || 'https://via.placeholder.com/150/3b0a0a/d4af37?text=' + encodeURIComponent(name.charAt(0));
                 
+                if (!name) { alert('أدخل اسم المدرس'); return; }
+
                 if (fileInput.files.length > 0) {
                     const reader = new FileReader();
                     reader.onload = function(ev) { finalImage = ev.target.result; saveTeacher(name, specialty, finalImage); };
@@ -558,17 +341,17 @@
                 }
 
                 function saveTeacher(name, specialty, image) {
-                    if (!name) { alert('ادخل الاسم'); return; }
                     let teachers = getTeachers();
                     teachers.push({ id: 't_' + Date.now(), name, specialty, image });
                     setTeachers(teachers);
-                    document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المدرس!</div>';
+                    document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المدرس بنجاح!</div>';
                     document.getElementById('addTeacherForm').reset();
                     loadTeachersTable();
                 }
             });
         }
 
+        // دوال الاختبار الجديدة
         function generateQuestionBoxes() {
             const count = parseInt(document.getElementById('examQuestionCount').value);
             const title = document.getElementById('examTitle').value.trim();
@@ -584,17 +367,15 @@
                     <div class="question-box-generator">
                         <h4>السؤال ${i + 1}</h4>
                         <input type="text" class="q-text-input" placeholder="اكتب نص السؤال هنا" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px;">
-                        <div class="option-row">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                             <input type="text" class="opt-input" placeholder="الخيار الأول" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
                             <input type="text" class="opt-input" placeholder="الخيار الثاني" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
-                        </div>
-                        <div class="option-row">
                             <input type="text" class="opt-input" placeholder="الخيار الثالث" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
                             <input type="text" class="opt-input" placeholder="الخيار الرابع" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
                         </div>
                         <div style="margin-top:10px;">
                             <label style="font-size:14px; font-weight:700; color:#3b0a0a;">الإجابة الصحيحة:</label>
-                            <select class="correct-select">
+                            <select class="correct-select" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
                                 <option value="1">الخيار الأول</option>
                                 <option value="2">الخيار الثاني</option>
                                 <option value="3">الخيار الثالث</option>
@@ -648,34 +429,13 @@
             exam.questions = exam.questions.concat(questions);
             setExams(exams);
 
+            // إظهار رسالة النجاح
             document.getElementById('questionsContainer').innerHTML = '';
             document.getElementById('saveExamBtn').style.display = 'none';
-            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ الاختبار بالكامل! أصبح متاحاً للطلاب المفعلين في هذا الصف.</div>';
+            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ الاختبار بالكامل بنجاح! أصبح متاحاً للطلاب المفعلين في هذا الصف.</div>';
             document.getElementById('examSetupForm').reset();
-            populateBundleSelects();
             window.scrollTo(0,0);
         }
-
-        function loadCoursesTable() {
-            const courses = getCourses();
-            const tbody = document.getElementById('coursesTableBody');
-            tbody.innerHTML = courses.length ? courses.map(c => `<tr><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد محاضرات</td></tr>';
-        }
-        function deleteCourse(id) { setCourses(getCourses().filter(c => c.id !== id)); loadCoursesTable(); populateBundleSelects(); }
-
-        function loadBooksTable() {
-            const books = getBooks();
-            const tbody = document.getElementById('booksTableBody');
-            tbody.innerHTML = books.length ? books.map(b => `<tr><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد كتب</td></tr>';
-        }
-        function deleteBook(id) { setBooks(getBooks().filter(b => b.id !== id)); loadBooksTable(); populateBundleSelects(); }
-
-        function loadTeachers() {
-            const teachers = getTeachers();
-            const tbody = document.getElementById('teachersTableBody');
-            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
-        }
-        function deleteTeacher(id) { setTeachers(getTeachers().filter(t => t.id !== id)); loadTeachers(); }
 
         function logout() { sessionStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
     </script>
