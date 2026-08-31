@@ -53,6 +53,7 @@
 
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -136,12 +137,13 @@
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
                 <div class="alert alert-success">💡 <strong>نصيحة:</strong> لكي تظهر هذه المحاضرة في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
+                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح فقط وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام روابط خارجية (مثل يوتيوب أو جوجل درايف).</div>
                 <form id="addCourseForm">
                     <div class="form-grid">
                         <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
                         <div class="full-width"><label>رابط المحاضرة (يُفضل وضع رابط يوتيوب أو جوجل درايف)</label><input type="url" id="courseLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف (لن يظهر بعد إغلاق المتصفح)</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                        <div class="full-width"><label>أو ارفع ملف (سيُحول إلى نص Base64 وقد لا يعمل مع الملفات الكبيرة)</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="courseShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -158,12 +160,13 @@
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
                 <div class="alert alert-success">💡 <strong>نصيحة:</strong> لكي يظهر هذا الكتاب في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
+                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح فقط وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام روابط خارجية (مثل جوجل درايف).</div>
                 <form id="addBookForm">
                     <div class="form-grid">
                         <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
                         <div class="full-width"><label>رابط التحميل (يُفضل وضع رابط جوجل درايف)</label><input type="url" id="bookLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف PDF (لن يظهر بعد إغلاق المتصفح)</label><input type="file" id="bookFile" accept=".pdf"></div>
+                        <div class="full-width"><label>أو ارفع ملف PDF (سيُحول إلى نص Base64 وقد لا يعمل مع الملفات الكبيرة)</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -179,12 +182,13 @@
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد (يظهر فوراً في الرئيسية)</h4>
+                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الصورة المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام رابط صورة خارجي.</div>
                 <form id="addTeacherForm">
                     <div class="form-grid">
                         <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
                         <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
                         <div class="full-width"><label>رابط صورة المدرس (يُفضل رابط صورة مباشر)</label><input type="url" id="teacherImage"></div>
-                        <div class="full-width"><label>أو ارفع صورة من جهازك</label><input type="file" id="teacherImageFile" accept="image/*"></div>
+                        <div class="full-width"><label>أو ارفع صورة من جهازك (سيُحول إلى Base64)</label><input type="file" id="teacherImageFile" accept="image/*"></div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المدرس</button>
                 </form>
@@ -210,6 +214,7 @@
             <div class="bundle-container-box">
                 <div class="add-form">
                     <h5 style="color:#555; margin-bottom:10px;">2. أضف عناصر داخل الوحدة:</h5>
+                    <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً.</div>
                     <form id="addItemForm">
                         <div class="form-grid">
                             <div><label>اختر الوحدة</label><select id="itemBundleSelect" required></select></div>
@@ -232,7 +237,7 @@
                                 <div class="form-grid">
                                     <div><label>عنوان العنصر</label><input type="text" id="itemTitle"></div>
                                     <div><label>الرابط</label><input type="url" id="itemLink"></div>
-                                    <div class="full-width"><label>أو ارفع ملف من جهازك</label><input type="file" id="itemFile"></div>
+                                    <div class="full-width"><label>أو ارفع ملف من جهازك (سيُحول إلى Base64)</label><input type="file" id="itemFile"></div>
                                 </div>
                             </div>
                             <div id="platformFields" class="full-width" style="display:none;">
@@ -458,45 +463,72 @@
                     const title = document.getElementById('examItemTitle').value.trim();
                     if (!examId || !title) { alert('املأ بيانات الاختبار'); return; }
                     bundle.items.push({ type: 'exam', title, examId });
-                } else {
-                    const sourceType = document.getElementById('sourceType').value;
-                    let title = '';
-                    let link = '';
-                    if (sourceType === 'platform') {
-                        const platformVal = document.getElementById('platformItemSelect').value;
-                        if (!platformVal) { alert('اختر عنصراً من المنصة'); return; }
-                        const platformObj = JSON.parse(platformVal);
-                        if (platformObj.source === 'course') {
-                            let selectedItem = getCourses().find(c => c.id === platformObj.id);
-                            title = selectedItem.title;
-                            link = selectedItem.link;
-                            type = 'video';
-                        } else {
-                            let selectedItem = getBooks().find(b => b.id === platformObj.id);
-                            title = selectedItem.title;
-                            link = selectedItem.link;
-                            type = 'pdf';
-                        }
-                    } else {
-                        title = document.getElementById('itemTitle').value.trim();
-                        const fileInput = document.getElementById('itemFile');
-                        link = document.getElementById('itemLink').value.trim();
-                        if (fileInput.files.length > 0) { link = URL.createObjectURL(fileInput.files[0]); }
-                        if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
-                    }
-                    bundle.items.push({ type: type, title, link });
+                    setBundles(bundles);
+                    document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة بنجاح!</div>';
+                    document.getElementById('examItemTitle').value = '';
+                    loadBundlesTable();
+                    return;
                 }
 
+                const sourceType = document.getElementById('sourceType').value;
+                let title = '';
+                let link = '';
+                let itemType = type;
+
+                if (sourceType === 'platform') {
+                    const platformVal = document.getElementById('platformItemSelect').value;
+                    if (!platformVal) { alert('اختر عنصراً من المنصة'); return; }
+                    const platformObj = JSON.parse(platformVal);
+                    if (platformObj.source === 'course') {
+                        let selectedItem = getCourses().find(c => c.id === platformObj.id);
+                        title = selectedItem.title;
+                        link = selectedItem.link;
+                        itemType = 'video';
+                    } else {
+                        let selectedItem = getBooks().find(b => b.id === platformObj.id);
+                        title = selectedItem.title;
+                        link = selectedItem.link;
+                        itemType = 'pdf';
+                    }
+                } else {
+                    title = document.getElementById('itemTitle').value.trim();
+                    const fileInput = document.getElementById('itemFile');
+                    const linkInput = document.getElementById('itemLink').value.trim();
+                    
+                    if (fileInput.files.length > 0) {
+                        // قراءة الملف وتحويله إلى Base64
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            link = ev.target.result;
+                            if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
+                            bundle.items.push({ type: itemType, title, link });
+                            setBundles(bundles);
+                            document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة بنجاح!</div>';
+                            document.getElementById('itemTitle').value = '';
+                            document.getElementById('itemLink').value = '';
+                            document.getElementById('itemFile').value = '';
+                            loadBundlesTable();
+                        };
+                        reader.readAsDataURL(fileInput.files[0]);
+                        return; // ننتظر حتى تنتهي القراءة
+                    } else {
+                        link = linkInput;
+                        if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
+                    }
+                }
+
+                // إذا لم يكن هناك ملف مرفوع
+                bundle.items.push({ type: itemType, title, link });
                 setBundles(bundles);
                 document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة بنجاح!</div>';
                 document.getElementById('itemTitle').value = '';
                 document.getElementById('itemLink').value = '';
                 document.getElementById('itemFile').value = '';
                 document.getElementById('platformItemSelect').value = '';
-                document.getElementById('examItemTitle').value = '';
                 loadBundlesTable();
             });
 
+            // ========== إضافة محاضرة ==========
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
@@ -505,19 +537,33 @@
                 const fileInput = document.getElementById('courseFile');
                 const showInHome = document.getElementById('courseShowInHome').checked;
                 let finalLink = link;
-                if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
-                if (!title || !grade || !finalLink) { alert('املأ الحقول'); return; }
-                let courses = getCourses();
-                courses.push({ id: 'c_' + Date.now(), title, grade, link: finalLink, showInHome });
-                setCourses(courses);
-                document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة بنجاح!</div>';
-                alert('✅ تمت إضافة المحاضرة بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيتها.');
-                this.reset();
-                document.getElementById('courseShowInHome').checked = false;
-                loadCoursesTable();
-                populateBundleSelects();
+                
+                if (fileInput.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        finalLink = ev.target.result;
+                        saveCourse(title, grade, finalLink, showInHome);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    saveCourse(title, grade, finalLink, showInHome);
+                }
+                
+                function saveCourse(title, grade, link, showInHome) {
+                    if (!title || !grade || !link) { alert('املأ الحقول'); return; }
+                    let courses = getCourses();
+                    courses.push({ id: 'c_' + Date.now(), title, grade, link, showInHome });
+                    setCourses(courses);
+                    document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة بنجاح!</div>';
+                    alert('✅ تمت إضافة المحاضرة بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيتها.');
+                    document.getElementById('addCourseForm').reset();
+                    document.getElementById('courseShowInHome').checked = false;
+                    loadCoursesTable();
+                    populateBundleSelects();
+                }
             });
 
+            // ========== إضافة كتاب ==========
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
@@ -526,19 +572,33 @@
                 const fileInput = document.getElementById('bookFile');
                 const showInHome = document.getElementById('bookShowInHome').checked;
                 let finalLink = link;
-                if (fileInput.files.length > 0) { finalLink = URL.createObjectURL(fileInput.files[0]); }
-                if (!title || !grade || !finalLink) { alert('املأ الحقول'); return; }
-                let books = getBooks();
-                books.push({ id: 'b_' + Date.now(), title, grade, link: finalLink, showInHome });
-                setBooks(books);
-                document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب بنجاح!</div>';
-                alert('✅ تمت إضافة الكتاب بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيته.');
-                this.reset();
-                document.getElementById('bookShowInHome').checked = false;
-                loadBooksTable();
-                populateBundleSelects();
+                
+                if (fileInput.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        finalLink = ev.target.result;
+                        saveBook(title, grade, finalLink, showInHome);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    saveBook(title, grade, finalLink, showInHome);
+                }
+                
+                function saveBook(title, grade, link, showInHome) {
+                    if (!title || !grade || !link) { alert('املأ الحقول'); return; }
+                    let books = getBooks();
+                    books.push({ id: 'b_' + Date.now(), title, grade, link, showInHome });
+                    setBooks(books);
+                    document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب بنجاح!</div>';
+                    alert('✅ تمت إضافة الكتاب بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيته.');
+                    document.getElementById('addBookForm').reset();
+                    document.getElementById('bookShowInHome').checked = false;
+                    loadBooksTable();
+                    populateBundleSelects();
+                }
             });
 
+            // ========== إضافة مدرس ==========
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
@@ -560,7 +620,10 @@
 
                 if (fileInput.files.length > 0) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) { finalImage = ev.target.result; saveTeacher(name, specialty, finalImage); };
+                    reader.onload = function(ev) {
+                        finalImage = ev.target.result;
+                        saveTeacher(name, specialty, finalImage);
+                    };
                     reader.readAsDataURL(fileInput.files[0]);
                 } else {
                     saveTeacher(name, specialty, finalImage);
@@ -644,12 +707,12 @@
         }
         function deleteBook(id) { setBooks(getBooks().filter(b => b.id !== id)); loadBooksTable(); populateBundleSelects(); }
 
-        function loadTeachers() {
+        function loadTeachersTable() {
             const teachers = getTeachers();
             const tbody = document.getElementById('teachersTableBody');
             tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
         }
-        function deleteTeacher(id) { setTeachers(getTeachers().filter(t => t.id !== id)); loadTeachers(); }
+        function deleteTeacher(id) { setTeachers(getTeachers().filter(t => t.id !== id)); loadTeachersTable(); }
 
         function logout() { sessionStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
     </script>
