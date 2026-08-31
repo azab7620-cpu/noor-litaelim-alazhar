@@ -18,6 +18,7 @@
         .nav-buttons { display: flex; gap: 10px; }
         .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; }
+        .btn-home:hover { background: #c99e00; }
 
         .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
@@ -50,14 +51,13 @@
         
         .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
 
-        /* رسائل النجاح الواضحة */
-        .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 700; font-size: 16px; }
+        .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
             .add-form .form-grid { grid-template-columns: 1fr; }
+            .admin-table { font-size: 12px; }
         }
     </style>
 </head>
@@ -66,7 +66,7 @@
         <div class="nav-container">
             <div class="logo-text"><h1>نور تعليم الأزهر</h1><span>لوحة الأدمن</span></div>
             <div class="nav-buttons">
-                <a href="index.html" class="btn-home">🏠 الرئيسية</a>
+                <button onclick="window.open('index.html', '_self')" class="btn-home" style="margin-left: 10px;">🏠 فتح الرئيسية</button>
                 <button onclick="logout()" class="btn-logout">تسجيل خروج</button>
             </div>
         </div>
@@ -90,6 +90,9 @@
 
         <!-- الطلاب -->
         <div id="tabStudents" class="tab-content active">
+            <div class="alert alert-success" style="margin-bottom:15px;">
+                ⚠️ <strong>مهم جداً:</strong> بعد إضافة المحاضرات والكتب والاختبارات، يجب أن تضغط زر <strong>"تفعيل"</strong> بجانب الطالب ليرى المحتوى الخاص بصفه.
+            </div>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
@@ -132,12 +135,13 @@
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
+                <div class="alert alert-success">💡 <strong>نصيحة:</strong> لكي تظهر هذه المحاضرة في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
                 <form id="addCourseForm">
                     <div class="form-grid">
                         <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                        <div class="full-width"><label>رابط المحاضرة (يُفضل وضع رابط يوتيوب أو جوجل درايف)</label><input type="url" id="courseLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف (لن يظهر بعد إغلاق المتصفح)</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="courseShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -153,12 +157,13 @@
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
+                <div class="alert alert-success">💡 <strong>نصيحة:</strong> لكي يظهر هذا الكتاب في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
                 <form id="addBookForm">
                     <div class="form-grid">
                         <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
+                        <div class="full-width"><label>رابط التحميل (يُفضل وضع رابط جوجل درايف)</label><input type="url" id="bookLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف PDF (لن يظهر بعد إغلاق المتصفح)</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -173,13 +178,13 @@
         <!-- إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد (يظهر فوراً في الرئيسية)</h4>
                 <form id="addTeacherForm">
                     <div class="form-grid">
                         <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
                         <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
-                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage"></div>
-                        <div class="full-width"><label>أو ارفع صورة</label><input type="file" id="teacherImageFile" accept="image/*"></div>
+                        <div class="full-width"><label>رابط صورة المدرس (يُفضل رابط صورة مباشر)</label><input type="url" id="teacherImage"></div>
+                        <div class="full-width"><label>أو ارفع صورة من جهازك</label><input type="file" id="teacherImageFile" accept="image/*"></div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المدرس</button>
                 </form>
@@ -252,6 +257,7 @@
         <div id="tabAddExam" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد (حدد عدد الأسئلة)</h4>
+                <div class="alert alert-success">💡 <strong>مهم:</strong> الاختبار لا يظهر في الصفحة الرئيسية، بل يظهر للطلاب "المفعلين" فقط عند دخولهم لحساباتهم.</div>
                 <form id="examSetupForm">
                     <div class="form-grid">
                         <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required></div>
@@ -505,6 +511,7 @@
                 courses.push({ id: 'c_' + Date.now(), title, grade, link: finalLink, showInHome });
                 setCourses(courses);
                 document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة بنجاح!</div>';
+                alert('✅ تمت إضافة المحاضرة بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيتها.');
                 this.reset();
                 document.getElementById('courseShowInHome').checked = false;
                 loadCoursesTable();
@@ -525,6 +532,7 @@
                 books.push({ id: 'b_' + Date.now(), title, grade, link: finalLink, showInHome });
                 setBooks(books);
                 document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب بنجاح!</div>';
+                alert('✅ تمت إضافة الكتاب بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيته.');
                 this.reset();
                 document.getElementById('bookShowInHome').checked = false;
                 loadBooksTable();
@@ -545,6 +553,7 @@
                     teachers.push({ id: 't_' + Date.now(), name, specialty, image });
                     setTeachers(teachers);
                     document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المدرس بنجاح!</div>';
+                    alert('✅ تمت إضافة المدرس بنجاح!');
                     document.getElementById('addTeacherForm').reset();
                     loadTeachersTable();
                 }
@@ -614,6 +623,7 @@
             document.getElementById('questionsContainer').innerHTML = '';
             document.getElementById('saveExamBtn').style.display = 'none';
             document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح! أصبح متاحاً للطلاب المفعلين في هذا الصف.</div>';
+            alert('✅ تم إنشاء الاختبار بنجاح!');
             document.getElementById('examSetupForm').reset();
             populateBundleSelects();
             window.scrollTo(0,0);
