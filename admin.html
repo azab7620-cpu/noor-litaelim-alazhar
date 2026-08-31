@@ -37,6 +37,8 @@
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
         .btn-danger { background: #a00; color: #fff; }
         .btn-success { background: #2a7a2a; color: #fff; }
+        /* زر الحذف الجديد باللون الأحمر الداكن */
+        .btn-delete { background: #8b0000; color: #fff; }
 
         .add-form { margin-top: 20px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -100,7 +102,7 @@
             </table>
         </div>
 
-        <!-- الحزم -->
+        <!-- باقي التابات (لم تتغير) -->
         <div id="tabBundles" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
@@ -108,7 +110,6 @@
             </table>
         </div>
 
-        <!-- المحاضرات -->
         <div id="tabCourses" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
@@ -116,7 +117,6 @@
             </table>
         </div>
 
-        <!-- الكتب -->
         <div id="tabBooks" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
@@ -124,7 +124,6 @@
             </table>
         </div>
 
-        <!-- المدرسين -->
         <div id="tabTeachers" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
@@ -132,7 +131,7 @@
             </table>
         </div>
 
-        <!-- إضافة محاضرة -->
+        <!-- إضافة محاضرة (لم تتغير) -->
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
@@ -155,12 +154,12 @@
             </div>
         </div>
 
-        <!-- إضافة كتاب -->
+        <!-- إضافة كتاب (لم تتغير) -->
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
                 <div class="alert alert-success">💡 <strong>نصيحة:</strong> لكي يظهر هذا الكتاب في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
-                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح فقط وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام روابط خارجية (مثل جوجل درايف).</div>
+                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام روابط خارجية (مثل جوجل درايف).</div>
                 <form id="addBookForm">
                     <div class="form-grid">
                         <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
@@ -178,7 +177,7 @@
             </div>
         </div>
 
-        <!-- إضافة مدرس -->
+        <!-- إضافة مدرس (لم تتغير) -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد (يظهر فوراً في الرئيسية)</h4>
@@ -196,7 +195,7 @@
             </div>
         </div>
 
-        <!-- إنشاء وحدة -->
+        <!-- إنشاء وحدة (لم تتغير) -->
         <div id="tabAddBundle" class="tab-content">
             <div class="bundle-container-box">
                 <div class="add-form">
@@ -258,7 +257,7 @@
             </div>
         </div>
 
-        <!-- إضافة اختبار -->
+        <!-- إضافة اختبار (لم تتغير) -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد (حدد عدد الأسئلة)</h4>
@@ -279,7 +278,7 @@
     </div>
 
     <script>
-        // دوال البيانات
+        // ====== دوال البيانات (نفسها) ======
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -293,7 +292,7 @@
         function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
         function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
 
-        // تهيئة الصفوف
+        // ====== تهيئة الصفوف ======
         function initGrades() {
             const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
             ['bundleGrade', 'bookGrade', 'examGrade', 'courseGrade'].forEach(id => {
@@ -331,26 +330,54 @@
             if (tabId === 'addBundle') populateBundleSelects();
         }
 
-        // ========== الطلاب مع رسالة نجاح ==========
+        // ============================================================
+        //  🔹 الطلاب – مع إضافة زر "حذف" بجانب التفعيل
+        // ============================================================
         function loadStudentsTable() {
             const users = getUsers().filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
             if (!users.length) { tbody.innerHTML = '<tr><td colspan="5">لا يوجد طلاب.</td></tr>'; return; }
             tbody.innerHTML = users.map((u, idx) => `
-                <tr><td>${idx+1}</td><td>${u.name}</td><td>${u.grade}</td><td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td><td><button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">${u.active ? 'إلغاء التفعيل' : 'تفعيل'}</button></td></tr>
+                <tr>
+                    <td>${idx+1}</td>
+                    <td>${u.name}</td>
+                    <td>${u.grade}</td>
+                    <td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td>
+                    <td>
+                        <button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">
+                            ${u.active ? 'إلغاء التفعيل' : 'تفعيل'}
+                        </button>
+                        <button onclick="deleteStudent('${u.id}')" class="btn-card btn-delete" style="margin-right:8px;">
+                            🗑️ حذف
+                        </button>
+                    </td>
+                </tr>
             `).join('');
         }
 
+        // دالة تبديل التفعيل (نفسها)
         function toggleStudent(id) {
             let users = getUsers();
             let u = users.find(x => x.id === id);
+            if (!u) return;
             u.active = !u.active;
             setUsers(users);
             alert(u.active ? '✅ تم تفعيل الطالب بنجاح' : '❌ تم إلغاء التفعيل');
             loadStudentsTable();
         }
 
-        // ========== الحزم ==========
+        // دالة حذف الطالب (جديدة)
+        function deleteStudent(id) {
+            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟ لا يمكن التراجع.')) return;
+            let users = getUsers();
+            const newUsers = users.filter(u => u.id !== id);
+            if (newUsers.length === users.length) { alert('الطالب غير موجود.'); return; }
+            setUsers(newUsers);
+            alert('✅ تم حذف الطالب بنجاح.');
+            loadStudentsTable();
+        }
+
+        // ====== باقي الدوال (حزم، محاضرات، كتب، مدرسين) كما هي ======
         function loadBundlesTable() {
             const bundles = getBundles();
             const tbody = document.getElementById('bundlesTableBody');
@@ -358,7 +385,6 @@
                 <tr><td>${idx+1}</td><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.items.length} عنصر</td><td><button onclick="deleteBundle('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
             `).join('') : '<tr><td colspan="5">لا توجد وحدات.</td></tr>';
         }
-
         function deleteBundle(id) {
             let bundles = getBundles();
             setBundles(bundles.filter(b => b.id !== id));
@@ -366,7 +392,6 @@
             populateBundleSelects();
         }
 
-        // ========== الحقول في الحزم ==========
         function populateBundleSelects() {
             const bundles = getBundles();
             const selectBundle = document.getElementById('itemBundleSelect');
@@ -433,7 +458,7 @@
             }
         }
 
-        // ========== نماذج الإضافة مع رسائل النجاح ==========
+        // ====== نماذج الإضافة (لم تتغير) ======
         function setupForms() {
             document.getElementById('addBundleForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -496,7 +521,6 @@
                     const linkInput = document.getElementById('itemLink').value.trim();
                     
                     if (fileInput.files.length > 0) {
-                        // قراءة الملف وتحويله إلى Base64
                         const reader = new FileReader();
                         reader.onload = function(ev) {
                             link = ev.target.result;
@@ -510,14 +534,13 @@
                             loadBundlesTable();
                         };
                         reader.readAsDataURL(fileInput.files[0]);
-                        return; // ننتظر حتى تنتهي القراءة
+                        return;
                     } else {
                         link = linkInput;
                         if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
                     }
                 }
 
-                // إذا لم يكن هناك ملف مرفوع
                 bundle.items.push({ type: itemType, title, link });
                 setBundles(bundles);
                 document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة بنجاح!</div>';
@@ -528,7 +551,7 @@
                 loadBundlesTable();
             });
 
-            // ========== إضافة محاضرة ==========
+            // إضافة محاضرة
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
@@ -563,7 +586,7 @@
                 }
             });
 
-            // ========== إضافة كتاب ==========
+            // إضافة كتاب
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
@@ -598,7 +621,7 @@
                 }
             });
 
-            // ========== إضافة مدرس ==========
+            // إضافة مدرس
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
@@ -631,7 +654,7 @@
             });
         }
 
-        // ========== منطق الاختبار (تحديد عدد أسئلة) ==========
+        // ====== منطق الاختبارات (لم يتغير) ======
         function generateQuestionBoxes() {
             const count = parseInt(document.getElementById('examQuestionCount').value);
             const title = document.getElementById('examTitle').value.trim();
@@ -692,7 +715,7 @@
             window.scrollTo(0,0);
         }
 
-        // ========== جداول العرض ==========
+        // ====== جداول العرض ======
         function loadCoursesTable() {
             const courses = getCourses();
             const tbody = document.getElementById('coursesTableBody');
