@@ -47,15 +47,12 @@
         
         .bundle-container-box { border: 2px dashed #ddd; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
         
-        /* تنسيقات الاختبار الجديدة */
-        #questionsContainer { margin-top: 20px; }
         .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        .question-box-generator h4 { color: #3b0a0a; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .option-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .correct-select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
 
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -92,6 +89,10 @@
 
         <!-- الطلاب -->
         <div id="tabStudents" class="tab-content active">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">قائمة الطلاب</h4>
+            <div class="alert alert-warning" style="margin-bottom:15px;">
+                ⚠️ <strong>تنبيه هام:</strong> الطلاب الجدد يتم تسجيلهم بحالة "غير مفعل". لتظهر لهم المحاضرات والكتب والاختبارات، يجب أن تضغط زر <strong>"تفعيل"</strong> في الجدول أدناه.
+            </div>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
@@ -100,6 +101,7 @@
 
         <!-- الحزم والوحدات -->
         <div id="tabBundles" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📦 قائمة الحزم والوحدات</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
                 <tbody id="bundlesTableBody"></tbody>
@@ -108,6 +110,7 @@
 
         <!-- المحاضرات -->
         <div id="tabCourses" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 قائمة المحاضرات</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                 <tbody id="coursesTableBody"></tbody>
@@ -116,6 +119,7 @@
 
         <!-- الكتب -->
         <div id="tabBooks" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 قائمة الكتب</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
                 <tbody id="booksTableBody"></tbody>
@@ -124,33 +128,24 @@
 
         <!-- المدرسين -->
         <div id="tabTeachers" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 قائمة المدرسين</h4>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
                 <tbody id="teachersTableBody"></tbody>
             </table>
         </div>
 
-        <!-- إضافة محاضرة (استعادة الشكل الأصلي مع رفع ملف) -->
+        <!-- إضافة محاضرة -->
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
+                <div class="alert alert-warning">💡 <strong>نصيحة:</strong> لتظهر هذه المحاضرة في الصفحة الرئيسية للجميع، ضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
                 <form id="addCourseForm">
                     <div class="form-grid">
-                        <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required placeholder="مثال: شرح باب الإيمان"></div>
-                        <div><label>الصف الدراسي</label>
-                            <select id="courseGrade" required>
-                                <option value="">اختر الصف</option>
-                                <option value="الصف الأول الابتدائي">الأول ابتدائي</option><option value="الصف الثاني الابتدائي">الثاني ابتدائي</option>
-                                <option value="الصف الثالث الابتدائي">الثالث ابتدائي</option><option value="الصف الرابع الابتدائي">الرابع ابتدائي</option>
-                                <option value="الصف الخامس الابتدائي">الخامس ابتدائي</option><option value="الصف السادس الابتدائي">السادس ابتدائي</option>
-                                <option value="الصف الأول الإعدادي">الأول إعدادي</option><option value="الصف الثاني الإعدادي">الثاني إعدادي</option>
-                                <option value="الصف الثالث الإعدادي">الثالث إعدادي</option>
-                                <option value="الصف الأول الثانوي">الأول ثانوي</option><option value="الصف الثاني الثانوي">الثاني ثانوي</option>
-                                <option value="الصف الثالث الثانوي">الثالث ثانوي</option>
-                            </select>
-                        </div>
-                        <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink" placeholder="https://example.com/lecture.mp4"></div>
-                        <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                        <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
+                        <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
+                        <div class="full-width"><label>رابط المحاضرة (يُفضل رابط يوتيوب أو جوجل درايف)</label><input type="url" id="courseLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف (للعلم: الملف المرفوع يختفي بعد إغلاق المتصفح)</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="courseShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -162,27 +157,17 @@
             </div>
         </div>
 
-        <!-- إضافة كتاب (استعادة الشكل الأصلي مع رفع ملف) -->
+        <!-- إضافة كتاب -->
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
+                <div class="alert alert-warning">💡 <strong>نصيحة:</strong> لتظهر هذه الملزمة في الصفحة الرئيسية للجميع، ضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
                 <form id="addBookForm">
                     <div class="form-grid">
-                        <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required placeholder="مثال: ملزمة الفقه"></div>
-                        <div><label>الصف الدراسي</label>
-                            <select id="bookGrade" required>
-                                <option value="">اختر الصف</option>
-                                <option value="الصف الأول الابتدائي">الأول ابتدائي</option><option value="الصف الثاني الابتدائي">الثاني ابتدائي</option>
-                                <option value="الصف الثالث الابتدائي">الثالث ابتدائي</option><option value="الصف الرابع الابتدائي">الرابع ابتدائي</option>
-                                <option value="الصف الخامس الابتدائي">الخامس ابتدائي</option><option value="الصف السادس الابتدائي">السادس ابتدائي</option>
-                                <option value="الصف الأول الإعدادي">الأول إعدادي</option><option value="الصف الثاني الإعدادي">الثاني إعدادي</option>
-                                <option value="الصف الثالث الإعدادي">الثالث إعدادي</option>
-                                <option value="الصف الأول الثانوي">الأول ثانوي</option><option value="الصف الثاني الثانوي">الثاني ثانوي</option>
-                                <option value="الصف الثالث الثانوي">الثالث ثانوي</option>
-                            </select>
-                        </div>
-                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink" placeholder="https://drive.google.com/..."></div>
-                        <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
+                        <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
+                        <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
+                        <div class="full-width"><label>رابط التحميل (يُفضل رابط جوجل درايف)</label><input type="url" id="bookLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف PDF (للعلم: الملف المرفوع يختفي بعد إغلاق المتصفح)</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -194,15 +179,15 @@
             </div>
         </div>
 
-        <!-- إضافة مدرس (استعادة الشكل الأصلي مع رفع صورة) -->
+        <!-- إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
                 <form id="addTeacherForm">
                     <div class="form-grid">
-                        <div><label>اسم المدرس</label><input type="text" id="teacherName" required placeholder="مثال: محمد انور"></div>
-                        <div><label>التخصص</label><input type="text" id="teacherSpecialty" placeholder="مثال: اللغة العربية"></div>
-                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage" placeholder="https://example.com/photo.jpg"></div>
+                        <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
+                        <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
+                        <div class="full-width"><label>رابط صورة المدرس (يُفضل رابط صورة مباشر)</label><input type="url" id="teacherImage"></div>
                         <div class="full-width"><label>أو ارفع صورة</label><input type="file" id="teacherImageFile" accept="image/*"></div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المدرس</button>
@@ -211,7 +196,7 @@
             </div>
         </div>
 
-        <!-- إنشاء وحدة/حزمة (بكل خيارات المصدر) -->
+        <!-- إنشاء وحدة/حزمة -->
         <div id="tabAddBundle" class="tab-content">
             <div class="bundle-container-box">
                 <div class="add-form">
@@ -272,42 +257,28 @@
             </div>
         </div>
 
-        <!-- إضافة اختبار (النموذج الجديد مع تحديد عدد الأسئلة) -->
+        <!-- إضافة اختبار (تحديد عدد أسئلة) -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد (حدد عدد الأسئلة)</h4>
+                <div class="alert alert-warning">💡 <strong>تذكير:</strong> سوف يظهر هذا الاختبار للطلاب الذين قمت بتفعيلهم والموجودين في نفس الصف المختار.</div>
                 <form id="examSetupForm">
                     <div class="form-grid">
                         <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required></div>
-                        <div><label>الصف الدراسي</label>
-                            <select id="examGrade" required>
-                                <option value="">اختر الصف</option>
-                                <option value="الصف الأول الابتدائي">الأول ابتدائي</option><option value="الصف الثاني الابتدائي">الثاني ابتدائي</option>
-                                <option value="الصف الثالث الابتدائي">الثالث ابتدائي</option><option value="الصف الرابع الابتدائي">الرابع ابتدائي</option>
-                                <option value="الصف الخامس الابتدائي">الخامس ابتدائي</option><option value="الصف السادس الابتدائي">السادس ابتدائي</option>
-                                <option value="الصف الأول الإعدادي">الأول إعدادي</option><option value="الصف الثاني الإعدادي">الثاني إعدادي</option>
-                                <option value="الصف الثالث الإعدادي">الثالث إعدادي</option>
-                                <option value="الصف الأول الثانوي">الأول ثانوي</option><option value="الصف الثاني الثانوي">الثاني ثانوي</option>
-                                <option value="الصف الثالث الثانوي">الثالث ثانوي</option>
-                            </select>
-                        </div>
+                        <div><label>الصف الدراسي</label><select id="examGrade" required><option value="">اختر الصف</option></select></div>
                         <div><label>عدد الأسئلة</label><input type="number" id="examQuestionCount" min="1" max="50" placeholder="مثال: 5"></div>
                         <div class="full-width"><button type="button" onclick="generateQuestionBoxes()" class="btn-submit" style="background:#d4af37; color:#3b0a0a;">⬇️ توليد حقول الأسئلة</button></div>
                     </div>
                 </form>
-
-                <!-- حيث تظهر الأسئلة -->
                 <div id="questionsContainer"></div>
-
                 <div id="examAddMsg" style="margin-top:15px;"></div>
-
-                <button type="button" onclick="saveFullExam()" id="saveExamBtn" style="display:none; width:100%; background:#2a7a2a; color:#fff; padding:15px; border:none; border-radius:12px; font-weight:900; font-size:18px; margin-top:20px; cursor:pointer;">💾 حفظ الاختبار بالكامل (جميع الأسئلة)</button>
+                <button type="button" onclick="saveFullExam()" id="saveExamBtn" style="display:none; width:100%; background:#2a7a2a; color:#fff; padding:15px; border:none; border-radius:12px; font-weight:900; font-size:18px; margin-top:20px; cursor:pointer;">💾 حفظ الاختبار بالكامل</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ========== دوال البيانات ==========
+        // دوال البيانات
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -359,7 +330,6 @@
             if (tabId === 'addBundle') populateBundleSelects();
         }
 
-        // ========== الطلاب ==========
         function loadStudentsTable() {
             const users = getUsers().filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
@@ -377,7 +347,6 @@
             loadStudentsTable();
         }
 
-        // ========== الحزم ==========
         function loadBundlesTable() {
             const bundles = getBundles();
             const tbody = document.getElementById('bundlesTableBody');
@@ -393,7 +362,6 @@
             populateBundleSelects();
         }
 
-        // ========== الحقول في الحزم ==========
         function populateBundleSelects() {
             const bundles = getBundles();
             const selectBundle = document.getElementById('itemBundleSelect');
@@ -462,7 +430,6 @@
             }
         }
 
-        // ========== إضافة الحزم ==========
         function setupForms() {
             document.getElementById('addBundleForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -534,7 +501,6 @@
                 loadBundlesTable();
             });
 
-            // إضافة محاضرة
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
@@ -555,7 +521,6 @@
                 populateBundleSelects();
             });
 
-            // إضافة كتاب
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
@@ -576,7 +541,6 @@
                 populateBundleSelects();
             });
 
-            // إضافة مدرس
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
@@ -605,7 +569,6 @@
             });
         }
 
-        // ========== منطق الاختبار الجديد (تحديد عدد الأسئلة) ==========
         function generateQuestionBoxes() {
             const count = parseInt(document.getElementById('examQuestionCount').value);
             const title = document.getElementById('examTitle').value.trim();
@@ -682,11 +645,9 @@
                 exams.push(exam);
             }
             
-            // دمج الأسئلة الجديدة مع القديمة إذا كان الاختبار موجوداً
             exam.questions = exam.questions.concat(questions);
             setExams(exams);
 
-            // التنظيف
             document.getElementById('questionsContainer').innerHTML = '';
             document.getElementById('saveExamBtn').style.display = 'none';
             document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ الاختبار بالكامل! أصبح متاحاً للطلاب المفعلين في هذا الصف.</div>';
@@ -695,7 +656,6 @@
             window.scrollTo(0,0);
         }
 
-        // ========== جداول العرض (محاضرات، كتب، مدرسين) ==========
         function loadCoursesTable() {
             const courses = getCourses();
             const tbody = document.getElementById('coursesTableBody');
