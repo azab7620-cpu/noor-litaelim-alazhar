@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نور تعليم الأزهر</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        /* ====== RESET ====== */
+        /* ====== RESET & STYLES ====== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
-
-        /* ====== أنيميشن ====== */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
@@ -21,9 +22,7 @@
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
-
-        /* ====== HEADER ====== */
-        header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; transition: all 0.3s; }
+        header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; }
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
@@ -39,9 +38,7 @@
         .btn-register:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,10,10,0.2); }
         .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-admin-panel:hover { background: #e0c060; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.3); }
-
-        /* ====== HERO ====== */
-        .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; animation: fadeInUp 0.8s ease; }
+        .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; }
         .hero h2 { font-size: 48px; font-weight: 900; color: #f7e1a0; margin-bottom: 15px; }
         .hero p { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
         .hero-btns { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
@@ -49,14 +46,11 @@
         .btn-primary:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .btn-secondary { background: #fff; color: #3b0a0a; padding: 14px 35px; border-radius: 10px; text-decoration: none; font-weight: 700; transition: 0.3s; }
         .btn-secondary:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-
-        /* ====== SECTIONS ====== */
         .section-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
         .section-header { margin-bottom: 40px; }
         .section-header span { color: #d4af37; font-weight: 700; font-size: 14px; letter-spacing: 1px; }
         .section-header h3 { font-size: 32px; color: #3b0a0a; font-weight: 900; }
         .section-header p { color: #666; font-size: 15px; margin-top: 5px; }
-
         .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
         .card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f0ede8; padding: 25px 20px; text-align: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.08); border-color: #d4af37; }
@@ -64,8 +58,6 @@
         .card p { font-size: 13px; color: #666; line-height: 1.7; }
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 8px 25px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block; border: none; cursor: pointer; transition: 0.3s; }
         .btn-card:hover { background: #520e0e; transform: scale(1.05) translateY(-2px); box-shadow: 0 8px 20px rgba(59,10,10,0.2); }
-
-        /* ====== STUDENT DASHBOARD ====== */
         .dashboard-section { display: none; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
         .dashboard-section.active { display: block; animation: fadeInUp 0.6s ease; }
         .student-header-card { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; }
@@ -74,7 +66,6 @@
         .attempt-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
         .attempt-card .value { font-size: 28px; font-weight: 900; color: #3b0a0a; }
         .attempt-card .label { font-size: 13px; color: #888; margin-top: 5px; }
-
         .dash-block { background: #fff; border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 25px; }
         .dash-block h4 { color: #3b0a0a; border-bottom: 2px solid #f4edd3; padding-bottom: 12px; margin-bottom: 20px; }
         .bundle-container { margin-top: 20px; }
@@ -88,11 +79,8 @@
         .bundle-item:last-child { border-bottom: none; }
         .bundle-item-title { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #444; }
         .btn-start-exam { background: #d4af37; color: #3b0a0a; padding: 10px 30px; border-radius: 8px; border: none; font-weight: 900; cursor: pointer; }
-
         .teacher-card { background: #fff; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .teacher-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
-
-        /* ====== EXAM PAGE ====== */
         #examPage { display: none; max-width: 900px; margin: 20px auto; padding: 30px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         #examPage.active { display: block; }
         .exam-header { background: #2d4a3d; color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
@@ -117,8 +105,6 @@
         .answer-review { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: right; }
         .correct-answer { color: #2a7a2a; font-weight: 800; }
         .wrong-answer { color: #a00; font-weight: 800; }
-
-        /* ====== AUTH ====== */
         .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; animation: fadeInUp 0.5s ease; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
         .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); }
@@ -155,8 +141,6 @@
         .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee; }
         .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); }
-
-        /* ====== FOOTER ====== */
         footer { background: #2f0808; color: #fff; padding: 50px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .footer-col h3 { color: #d4af37; font-size: 24px; font-weight: 900; }
@@ -170,11 +154,9 @@
         .social-icon { width: 38px; height: 38px; background: #1a0404; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; font-size: 16px; border: 1px solid rgba(212,175,55,0.3); transition: 0.3s; }
         .social-icon:hover { background: #d4af37; color: #3b0a0a; transform: translateY(-3px) scale(1.1); }
         .footer-bottom { max-width: 1200px; margin: 30px auto 0; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; font-size: 13px; color: #aaa; }
-
         .support-float-btn { position: fixed; bottom: 25px; left: 25px; background: #fff; color: #3b0a0a; padding: 12px 20px; border-radius: 14px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; z-index: 9999; text-decoration: none; border: 1px solid #e0d0a0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .support-float-btn:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
         .support-float-icon { background: #3b0a0a; color: #d4af37; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-
         @media (max-width: 900px) {
             .auth-layout-container { flex-direction: column; }
             .auth-sidebar { width: 100%; padding: 30px 20px; }
@@ -218,7 +200,6 @@
                 <a onclick="showAuthPage('login')" class="btn-secondary">تسجيل الدخول</a>
             </div>
         </section>
-
         <div class="section-container animate-fade">
             <div class="section-header"><span>لماذا نحن؟</span><h3>ليه نور تعليم الأزهر؟</h3><p>منصة متكاملة لطلاب الأزهر</p></div>
             <div class="card-grid">
@@ -228,17 +209,14 @@
                 <div class="card animate-scale delay-3"><div style="font-size:40px;">⏱️</div><h4>تعلم في أي وقت</h4><p>من موبايلك أو لابتوبك.</p></div>
             </div>
         </div>
-
         <div class="section-container animate-fade" id="teachersSection">
             <div class="section-header"><span>المدرسون</span><h3>مدرسين نور تعليم الأزهر</h3></div>
             <div class="card-grid" id="teachersGrid"></div>
         </div>
-
         <div class="section-container animate-fade" id="coursesSection">
             <div class="section-header"><span>كورساتنا</span><h3>كورسات هتفرق معاك</h3></div>
             <div class="card-grid" id="coursesGrid"></div>
         </div>
-
         <div class="section-container animate-fade" id="booksSection">
             <div class="section-header"><span>مكتبة الطالب</span><h3>الكتب والملازم</h3></div>
             <div class="card-grid" id="booksGrid"></div>
@@ -256,22 +234,17 @@
                 <h2>مرحباً، <span id="studentNameDash"></span> 👋</h2>
                 <p>الصف: <span id="studentGradeDash" style="font-weight:700; color:#d4af37;"></span></p>
             </div>
-
             <h2 style="color:#3b0a0a; margin-bottom:20px;">درجاتي</h2>
             <div class="attempts-grid" id="attemptsGrid"></div>
-
-            <!-- إضافة قسم الاختبارات -->
             <div class="dash-block">
                 <h4>📝 اختباراتي (متاحة لك)</h4>
                 <div id="studentExams"></div>
             </div>
-
             <h2 style="color:#3b0a0a; margin-top:30px; margin-bottom:20px;">كورساتي</h2>
             <div class="dash-block">
                 <h4>📦 محتوى الوحدات (اضغط على الوحدة لفتحها)</h4>
                 <div id="studentBundles" class="bundle-container"></div>
             </div>
-            
             <div class="dash-block">
                 <h4>👨‍🏫 مدرسينا</h4>
                 <div class="card-grid" id="studentTeachersGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>
@@ -296,8 +269,6 @@
             <button class="btn-nav btn-next" onclick="nextQuestion()">التالي</button>
         </div>
         <button class="btn-finish" onclick="finishExam()">أجب عن جميع الأسئلة</button>
-        
-        <!-- صندوق النتيجة والتصحيح -->
         <div id="resultBox" style="display:none;" class="result-box">
             <h3 class="result-title" id="resultTitle">مبروك!</h3>
             <div id="resultDetails"></div>
@@ -334,48 +305,52 @@
                             </div>
 
                             <div class="form-section-title">الموقع والصف</div>
-                            
-                            <!-- حقل اختيار "صفارة" (دراسة خارج مصر) -->
+
+                            <!-- ✅ صفارة: دراسة خارج مصر -->
                             <div class="form-group-modern full-width" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
                                 <input type="checkbox" id="regIsOutside" style="width:20px; height:20px; margin:0;" onchange="toggleCenterField()">
                                 <label for="regIsOutside" style="font-weight:700; color:#3b0a0a; margin:0;">🌍 أدرس خارج مصر (صفارة)</label>
                             </div>
 
                             <div class="form-grid-2">
-                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper">
-                                    <select id="regGovernorate" required>
-                                        <option value="" disabled selected>اختر المحافظة</option>
-                                        <option value="القاهرة">القاهرة</option>
-                                        <option value="الجيزة">الجيزة</option>
-                                        <option value="الإسكندرية">الإسكندرية</option>
-                                        <option value="بورسعيد">بورسعيد</option>
-                                        <option value="السويس">السويس</option>
-                                        <option value="دمياط">دمياط</option>
-                                        <option value="الدقهلية">الدقهلية</option>
-                                        <option value="الشرقية">الشرقية</option>
-                                        <option value="القليوبية">القليوبية</option>
-                                        <option value="كفر الشيخ">كفر الشيخ</option>
-                                        <option value="الغربية">الغربية</option>
-                                        <option value="المنوفية">المنوفية</option>
-                                        <option value="البحيرة">البحيرة</option>
-                                        <option value="الإسماعيلية">الإسماعيلية</option>
-                                        <option value="أسوان">أسوان</option>
-                                        <option value="أسيوط">أسيوط</option>
-                                        <option value="الأقصر">الأقصر</option>
-                                        <option value="البحر الأحمر">البحر الأحمر</option>
-                                        <option value="الوادي الجديد">الوادي الجديد</option>
-                                        <option value="سوهاج">سوهاج</option>
-                                        <option value="قنا">قنا</option>
-                                        <option value="مرسى مطروح">مرسى مطروح</option>
-                                        <option value="شمال سيناء">شمال سيناء</option>
-                                        <option value="جنوب سيناء">جنوب سيناء</option>
-                                        <option value="بني سويف">بني سويف</option>
-                                        <option value="الفيوم">الفيوم</option>
-                                        <option value="المنيا">المنيا</option>
-                                    </select>
-                                    <span class="input-icon-right">📍</span>
-                                </div></div>
-                                <!-- حقل "المركز" الذي سيختفي عند اختيار صفارة -->
+                                <div class="form-group-modern">
+                                    <label>المحافظة</label>
+                                    <div class="input-wrapper">
+                                        <select id="regGovernorate" required>
+                                            <option value="" disabled selected>اختر المحافظة</option>
+                                            <option value="القاهرة">القاهرة</option>
+                                            <option value="الجيزة">الجيزة</option>
+                                            <option value="الإسكندرية">الإسكندرية</option>
+                                            <option value="بورسعيد">بورسعيد</option>
+                                            <option value="السويس">السويس</option>
+                                            <option value="دمياط">دمياط</option>
+                                            <option value="الدقهلية">الدقهلية</option>
+                                            <option value="الشرقية">الشرقية</option>
+                                            <option value="القليوبية">القليوبية</option>
+                                            <option value="كفر الشيخ">كفر الشيخ</option>
+                                            <option value="الغربية">الغربية</option>
+                                            <option value="المنوفية">المنوفية</option>
+                                            <option value="البحيرة">البحيرة</option>
+                                            <option value="الإسماعيلية">الإسماعيلية</option>
+                                            <option value="أسوان">أسوان</option>
+                                            <option value="أسيوط">أسيوط</option>
+                                            <option value="الأقصر">الأقصر</option>
+                                            <option value="البحر الأحمر">البحر الأحمر</option>
+                                            <option value="الوادي الجديد">الوادي الجديد</option>
+                                            <option value="سوهاج">سوهاج</option>
+                                            <option value="قنا">قنا</option>
+                                            <option value="مرسى مطروح">مرسى مطروح</option>
+                                            <option value="شمال سيناء">شمال سيناء</option>
+                                            <option value="جنوب سيناء">جنوب سيناء</option>
+                                            <option value="بني سويف">بني سويف</option>
+                                            <option value="الفيوم">الفيوم</option>
+                                            <option value="المنيا">المنيا</option>
+                                        </select>
+                                        <span class="input-icon-right">📍</span>
+                                    </div>
+                                </div>
+
+                                <!-- ✅ حقل "المركز" الذي يختفي عند اختيار صفارة -->
                                 <div id="regCenterContainer" class="form-group-modern">
                                     <label>المركز</label>
                                     <div class="input-wrapper">
@@ -425,7 +400,61 @@
     </a>
 
     <script>
-        // ========== بيانات الأدمنة ==========
+        // ============================================================
+        //  🔥 إعدادات Firebase (ضع المفاتيح الخاصة بك هنا)
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-7DnDsopGu1ztOdnSm-lHYw-ECk-UpII",
+            authDomain: "noor-litaelim-alazhar.firebaseapp.com",
+            projectId: "noor-litaelim-alazhar",
+            storageBucket: "noor-litaelim-alazhar.firebasestorage.app",
+            messagingSenderId: "934675417585",
+            appId: "1:934675417585:web:dcf734f31e2ba31e219c50"
+        };
+
+        // ============================================================
+        //  تهيئة Firebase
+        // ============================================================
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ============================================================
+        //  دوال مساعدة للقراءة والكتابة من Firestore
+        // ============================================================
+        async function getCollection(collectionName) {
+            const snapshot = await db.collection(collectionName).get();
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+
+        async function setCollection(collectionName, dataArray) {
+            const snapshot = await db.collection(collectionName).get();
+            const batch = db.batch();
+            snapshot.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+            dataArray.forEach(item => {
+                db.collection(collectionName).add(item);
+            });
+        }
+
+        // ============================================================
+        //  دوال البيانات
+        // ============================================================
+        async function getUsers() { return await getCollection('users'); }
+        async function setUsers(data) { await setCollection('users', data); }
+        async function getCourses() { return await getCollection('courses'); }
+        async function setCourses(data) { await setCollection('courses', data); }
+        async function getBooks() { return await getCollection('books'); }
+        async function setBooks(data) { await setCollection('books', data); }
+        async function getTeachers() { return await getCollection('teachers'); }
+        async function setTeachers(data) { await setCollection('teachers', data); }
+        async function getExams() { return await getCollection('exams'); }
+        async function setExams(data) { await setCollection('exams', data); }
+        async function getBundles() { return await getCollection('bundles'); }
+        async function setBundles(data) { await setCollection('bundles', data); }
+
+        // ============================================================
+        //  إعداد الأدمنة الافتراضيين
+        // ============================================================
         const ADMINS = [
             { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'azab7620@gmail.com', phone: '01110000001', password: 'r11a6r10' },
             { id: 'admin2', name: 'أدمن 2 - محمد', email: 'anwer2345n@gmail.com', phone: '01110000002', password: '666711' },
@@ -434,77 +463,25 @@
             { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', password: 'admin123' }
         ];
 
-        // ========== دوال البيانات ==========
-        function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
-        function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
-        function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
-        function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
-        function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
-        function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
-        function getExams() { return JSON.parse(localStorage.getItem('exams')) || []; }
-        function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
-        function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
-        function setCourses(c) { localStorage.setItem('courses', JSON.stringify(c)); }
-        function getBooks() { return JSON.parse(localStorage.getItem('books')) || []; }
-        function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
-
-        // ========== دالة إخفاء/إظهار "المركز" بناءً على اختيار "صفارة" ==========
-        function toggleCenterField() {
-            const isOutside = document.getElementById('regIsOutside').checked;
-            const centerContainer = document.getElementById('regCenterContainer');
-            centerContainer.style.display = isOutside ? 'none' : 'block';
-        }
-
-        // ========== تهيئة البيانات ==========
-        function initData() {
-            let users = getUsers();
+        async function initAdmins() {
+            const users = await getUsers();
             let needUpdate = false;
-
             ADMINS.forEach(adminData => {
                 let existing = users.find(u => u.id === adminData.id && u.role === 'admin');
-                if (existing) {
-                    if (existing.email !== adminData.email || existing.password !== adminData.password || existing.name !== adminData.name || existing.phone !== adminData.phone) {
-                        Object.assign(existing, adminData);
-                        needUpdate = true;
-                    }
-                } else {
+                if (!existing) {
                     users.push({ ...adminData, parentPhone: '', governorate: 'القاهرة', stage: 'secondary', grade: 'الصف الثالث الثانوي', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
                     needUpdate = true;
                 }
             });
-
-            if (!localStorage.getItem('bundles')) setBundles([
-                { id: 'bundle1', title: 'الوحدة الأولى - النحو', grade: 'الصف الثالث الثانوي', items: [
-                    { type: 'pdf', title: 'مذكرة النحو', link: '#' },
-                    { type: 'video', title: 'شرح الدرس الأول', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
-                    { type: 'exam', title: 'اختبار الوحدة الأولى', examId: 'exam1' }
-                ]}
-            ]);
-            if (!localStorage.getItem('teachers')) setTeachers([
-                { id: 't1', name: 'زينب محمد حسان', specialty: 'اللغة العربية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=ز' },
-                { id: 't2', name: 'مستمر محمد', specialty: 'المواد الشرعية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=م' },
-                { id: 't3', name: 'محمود صبرى محمد', specialty: 'المواد البدنية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=ص' }
-            ]);
-            if (!localStorage.getItem('exams')) setExams([
-                { id: 'exam1', title: 'اختبار الوحدة الأولى', grade: 'الصف الثالث الثانوي', questions: [
-                    { q: 'ما هو جمع كلمة "كتاب"؟', options: ['كتب', 'كتابون', 'كتابات', 'مكتبة'], correct: 0 },
-                    { q: 'ما هو الفاعل في جملة "قرأ الطالب الدرس"؟', options: ['الدرس', 'قرأ', 'الطالب', 'لا يوجد'], correct: 2 }
-                ]}
-            ]);
-            if (!localStorage.getItem('courses')) setCourses([
-                { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', showInHome: true }
-            ]);
-            if (!localStorage.getItem('books')) setBooks([
-                { id: 'b1', title: 'ملزمة الفقه الشافعي', grade: 'الصف الثالث الثانوي', link: '#', showInHome: true }
-            ]);
-
-            if (needUpdate) setUsers(users);
+            if (needUpdate) await setUsers(users);
         }
 
-        // ========== عرض المدرسين/الكورسات/الكتب في الرئيسية ==========
-        function renderTeachers() {
+        // ============================================================
+        //  دوال العرض
+        // ============================================================
+        async function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
-            const teachers = getTeachers();
+            const teachers = await getTeachers();
             grid.innerHTML = teachers.length ? teachers.map((t, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <div style="font-size:60px;">${t.image ? `<img src="${t.image}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">` : '👨‍🏫'}</div>
@@ -515,9 +492,10 @@
             `).join('') : '<p>لا يوجد مدرسون.</p>';
         }
 
-        function renderCourses() {
+        async function renderCourses() {
             const grid = document.getElementById('coursesGrid');
-            const homeCourses = getCourses().filter(c => c.showInHome === true);
+            const allCourses = await getCourses();
+            const homeCourses = allCourses.filter(c => c.showInHome === true);
             grid.innerHTML = homeCourses.length ? homeCourses.map((c, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <h4>${c.title}</h4>
@@ -527,9 +505,10 @@
             `).join('') : '<p style="color:#888;">لا توجد محاضرات عامة حالياً.</p>';
         }
 
-        function renderBooks() {
+        async function renderBooks() {
             const grid = document.getElementById('booksGrid');
-            const homeBooks = getBooks().filter(b => b.showInHome === true);
+            const allBooks = await getBooks();
+            const homeBooks = allBooks.filter(b => b.showInHome === true);
             grid.innerHTML = homeBooks.length ? homeBooks.map((b, i) => `
                 <div class="card animate-scale" style="animation-delay:${i*0.1}s;">
                     <div style="font-size:40px;">📖</div>
@@ -540,7 +519,18 @@
             `).join('') : '<p style="color:#888;">لا توجد كتب عامة حالياً.</p>';
         }
 
-        // ========== التنقل ==========
+        // ============================================================
+        //  دالة إخفاء/إظهار "المركز" (الصفارة)
+        // ============================================================
+        function toggleCenterField() {
+            const isOutside = document.getElementById('regIsOutside').checked;
+            const centerContainer = document.getElementById('regCenterContainer');
+            centerContainer.style.display = isOutside ? 'none' : 'block';
+        }
+
+        // ============================================================
+        //  دوال التنقل
+        // ============================================================
         function showHome() {
             document.getElementById('homeSection').style.display = 'block';
             document.getElementById('authSection').style.display = 'none';
@@ -572,8 +562,10 @@
             el.type = (el.type === 'password') ? 'text' : 'password';
         }
 
-        // ========== لوحة الطالب ==========
-        function loadStudentDashboard(user) {
+        // ============================================================
+        //  لوحة الطالب
+        // ============================================================
+        async function loadStudentDashboard(user) {
             document.getElementById('studentNameDash').textContent = user.name;
             document.getElementById('studentGradeDash').textContent = user.grade;
 
@@ -586,7 +578,6 @@
                 document.getElementById('studentDashboardContent').style.display = 'block';
             }
 
-            // عرض الدرجات
             const a = user.attempts || { avg:0, solved:0, total:0, pending:0 };
             document.getElementById('attemptsGrid').innerHTML = `
                 <div class="attempt-card"><div class="value">${Number(a.avg)||0}%</div><div class="label">متوسط الدرجات</div></div>
@@ -594,8 +585,7 @@
                 <div class="attempt-card"><div class="value">${Number(a.total)||0}</div><div class="label">إجمالي الاختبارات</div></div>
             `;
 
-            // عرض الاختبارات المتاحة حسب الصف (للمفعلين فقط)
-            const exams = getExams().filter(e => e.grade === user.grade);
+            const exams = (await getExams()).filter(e => e.grade === user.grade);
             document.getElementById('studentExams').innerHTML = exams.length ? exams.map(ex => `
                 <div class="exam-item">
                     <span class="exam-name">${ex.title}</span>
@@ -603,8 +593,7 @@
                 </div>
             `).join('') : '<p style="color:#888;">لا توجد اختبارات لصفك بعد.</p>';
 
-            // عرض الحزم/الوحدات
-            const bundles = getBundles().filter(b => b.grade === user.grade);
+            const bundles = (await getBundles()).filter(b => b.grade === user.grade);
             const bundlesDiv = document.getElementById('studentBundles');
             if (bundles.length) {
                 bundlesDiv.innerHTML = bundles.map((b, idx) => `
@@ -636,28 +625,31 @@
                 bundlesDiv.innerHTML = '<p style="color:#888;">لا توجد وحدات مضافة لصفك بعد.</p>';
             }
 
-            // عرض المدرسين
-            const teachers = getTeachers();
+            const teachers = await getTeachers();
             document.getElementById('studentTeachersGrid').innerHTML = teachers.map(t => `
                 <div class="teacher-card">${t.image ? `<img src="${t.image}">` : ''}<h5>${t.name}</h5><p>${t.specialty}</p></div>
             `).join('');
         }
 
-        // ========== منطق الاختبار ==========
+        // ============================================================
+        //  منطق الاختبار
+        // ============================================================
         let currentUser = null;
         let currentExam = null;
         let currentQIndex = 0;
         let answers = [];
 
         function startExam(examId) {
-            currentExam = getExams().find(e => e.id === examId);
-            if (!currentExam || !currentExam.questions.length) return;
-            currentQIndex = 0;
-            answers = new Array(currentExam.questions.length).fill(null);
-            document.getElementById('studentDashboard').classList.remove('active');
-            document.getElementById('examPage').classList.add('active');
-            document.getElementById('examTitleHeader').textContent = currentExam.title;
-            renderQuestion();
+            getExams().then(exams => {
+                currentExam = exams.find(e => e.id === examId);
+                if (!currentExam || !currentExam.questions.length) return;
+                currentQIndex = 0;
+                answers = new Array(currentExam.questions.length).fill(null);
+                document.getElementById('studentDashboard').classList.remove('active');
+                document.getElementById('examPage').classList.add('active');
+                document.getElementById('examTitleHeader').textContent = currentExam.title;
+                renderQuestion();
+            });
         }
 
         function renderQuestion() {
@@ -695,21 +687,18 @@
         function nextQuestion() { if (currentQIndex < currentExam.questions.length - 1) { currentQIndex++; renderQuestion(); } }
         function prevQuestion() { if (currentQIndex > 0) { currentQIndex--; renderQuestion(); } }
 
-        function finishExam() {
+        async function finishExam() {
             let correctCount = 0, wrongCount = 0, unanswered = 0;
             let reviewHTML = '<h4 style="margin-top:20px; border-top:1px solid #ddd; padding-top:15px;">مراجعة الإجابات:</h4>';
             
             currentExam.questions.forEach((q, i) => {
                 let studentAnswer = answers[i];
                 let correctAnswer = q.correct;
-                
                 if (studentAnswer === null) unanswered++;
                 else if (studentAnswer === correctAnswer) correctCount++;
                 else wrongCount++;
-
                 let userChoice = studentAnswer !== null ? q.options[studentAnswer] : 'لم يجيب';
                 let rightChoice = q.options[correctAnswer];
-                
                 reviewHTML += `
                     <div class="answer-review">
                         <p><strong>س${i+1}:</strong> ${q.q}</p>
@@ -719,7 +708,7 @@
                 `;
             });
 
-            const users = getUsers();
+            let users = await getUsers();
             const userIdx = users.findIndex(u => u.id === currentUser.id);
             if (userIdx > -1) {
                 const user = users[userIdx];
@@ -728,7 +717,7 @@
                 const newSolved = (Number(oldAttempts.solved) || 0) + 1;
                 const newAvg = Math.round(((Number(oldAttempts.avg) * Number(oldAttempts.solved)) + (correctCount / currentExam.questions.length * 100)) / newSolved);
                 user.attempts = { avg: newAvg, solved: newSolved, total: newTotal, pending: Math.max(0, (Number(oldAttempts.pending) || 0) - currentExam.questions.length) };
-                setUsers(users);
+                await setUsers(users);
             }
 
             document.getElementById('questionNav').style.display = 'none';
@@ -752,7 +741,6 @@
         function exitExam() {
             document.getElementById('examPage').classList.remove('active');
             document.getElementById('studentDashboard').classList.add('active');
-            // استرجاع عناصر الاختبار المخفية
             document.getElementById('questionNav').style.display = '';
             document.getElementById('qTextDisplay').style.display = '';
             document.getElementById('optionsList').style.display = '';
@@ -762,10 +750,14 @@
             loadStudentDashboard(currentUser);
         }
 
-        // ========== أحداث التسجيل والدخول ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            initData();
-            renderTeachers(); renderCourses(); renderBooks();
+        // ============================================================
+        //  أحداث التسجيل والدخول
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initAdmins();
+            await renderTeachers();
+            await renderCourses();
+            await renderBooks();
 
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
@@ -787,14 +779,13 @@
                 }
             });
 
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
+            document.getElementById('registerForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const name = document.getElementById('regName').value.trim();
                 const email = document.getElementById('regEmail').value.trim();
                 const phone = document.getElementById('regPhone').value.trim();
                 const parentPhone = document.getElementById('regParentPhone').value.trim();
                 const governorate = document.getElementById('regGovernorate').value;
-                // قراءة المركز فقط إذا لم يكن مخفياً
                 const isOutside = document.getElementById('regIsOutside').checked;
                 const center = isOutside ? '' : document.getElementById('regCenter').value.trim();
                 const stage = document.getElementById('regStage').value;
@@ -804,39 +795,30 @@
 
                 if (password !== confirm) { alert('كلمتا المرور غير متطابقتين.'); return; }
                 if (!name || !email || !phone || !grade || !password) { alert('املأ جميع الحقول.'); return; }
-                const users = getUsers();
+                const users = await getUsers();
                 if (users.find(u => u.email === email || u.phone === phone)) { alert('مسجل بالفعل.'); return; }
                 
                 const newUser = {
                     id: 'user_' + Date.now(),
-                    name,
-                    email,
-                    phone,
-                    parentPhone,
-                    governorate,
-                    center,          // سيتم تخزينها فارغة إذا كان خارج مصر
-                    isOutside,       // لتخزين حالة "صفارة"
-                    stage,
-                    grade,
-                    password,
+                    name, email, phone, parentPhone, governorate, center, isOutside, stage, grade, password,
                     role: 'student',
-                    active: false,    // ينتظر التفعيل من الأدمن
+                    active: false,
                     attempts: { avg: 0, solved: 0, total: 0, pending: 0 },
                     exams: [],
                     completedLessons: 0,
                     totalLessons: 38
                 };
                 users.push(newUser);
-                setUsers(users);
-                alert('تم إنشاء الحساب! يرجى انتظار التفعيل من الإدارة.');
+                await setUsers(users);
+                alert('✅ تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل من الإدارة.');
                 switchAuthView('login');
             });
 
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
+            document.getElementById('loginForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const loginId = document.getElementById('loginEmailOrPhone').value.trim();
                 const password = document.getElementById('loginPass').value.trim();
-                const users = getUsers();
+                const users = await getUsers();
                 const user = users.find(u => (u.email === loginId || u.phone === loginId) && u.password === password);
                 if (!user) { alert('بيانات غير صحيحة.'); return; }
                 if (!user.active) { alert('الحساب غير مفعّل. يرجى التواصل مع الأدمن.'); return; }
@@ -879,7 +861,7 @@
                 }
             }
 
-            // التأكد من إخفاء "المركز" إذا كان الصندوق مفعلاً مسبقاً (لن يحدث عادة)
+            // التأكد من حالة حقل المركز عند تحميل الصفحة
             toggleCenterField();
         });
 
