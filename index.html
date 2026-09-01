@@ -142,6 +142,7 @@
         .form-section-title { font-size: 14px; font-weight: 800; color: #3b0a0a; margin: 20px 0 15px; display: flex; align-items: center; gap: 6px; }
         .form-section-title::before { content: ""; display: inline-block; width: 4px; height: 16px; background: #d4af37; border-radius: 2px; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: 1 / -1; }
         .form-group-modern { margin-bottom: 15px; }
         .form-group-modern label { display: block; font-size: 12px; font-weight: 700; color: #3b0a0a; margin-bottom: 6px; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
@@ -331,11 +332,58 @@
                                 <div class="form-group-modern"><label>رقم الهاتف</label><div class="input-wrapper"><input type="tel" id="regPhone" placeholder="01xxxxxxxxx" required><span class="input-icon-right">📞</span></div></div>
                                 <div class="form-group-modern"><label>رقم هاتف ولي الأمر</label><div class="input-wrapper"><input type="tel" id="regParentPhone" placeholder="01xxxxxxxxx"><span class="input-icon-right">📞</span></div></div>
                             </div>
+
                             <div class="form-section-title">الموقع والصف</div>
-                            <div class="form-grid-2">
-                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper"><select id="regGovernorate" required><option value="" disabled selected>اختر المحافظة</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>الشرقية</option><option>الغربية</option><option>المنوفية</option><option>البحيرة</option></select><span class="input-icon-right">📍</span></div></div>
-                                <div class="form-group-modern"><label>المركز</label><div class="input-wrapper"><input type="text" id="regCenter" placeholder="أدخل المركز"></div></div>
+                            
+                            <!-- حقل اختيار "صفارة" (دراسة خارج مصر) -->
+                            <div class="form-group-modern full-width" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                                <input type="checkbox" id="regIsOutside" style="width:20px; height:20px; margin:0;" onchange="toggleCenterField()">
+                                <label for="regIsOutside" style="font-weight:700; color:#3b0a0a; margin:0;">🌍 أدرس خارج مصر (صفارة)</label>
                             </div>
+
+                            <div class="form-grid-2">
+                                <div class="form-group-modern"><label>المحافظة</label><div class="input-wrapper">
+                                    <select id="regGovernorate" required>
+                                        <option value="" disabled selected>اختر المحافظة</option>
+                                        <option value="القاهرة">القاهرة</option>
+                                        <option value="الجيزة">الجيزة</option>
+                                        <option value="الإسكندرية">الإسكندرية</option>
+                                        <option value="بورسعيد">بورسعيد</option>
+                                        <option value="السويس">السويس</option>
+                                        <option value="دمياط">دمياط</option>
+                                        <option value="الدقهلية">الدقهلية</option>
+                                        <option value="الشرقية">الشرقية</option>
+                                        <option value="القليوبية">القليوبية</option>
+                                        <option value="كفر الشيخ">كفر الشيخ</option>
+                                        <option value="الغربية">الغربية</option>
+                                        <option value="المنوفية">المنوفية</option>
+                                        <option value="البحيرة">البحيرة</option>
+                                        <option value="الإسماعيلية">الإسماعيلية</option>
+                                        <option value="أسوان">أسوان</option>
+                                        <option value="أسيوط">أسيوط</option>
+                                        <option value="الأقصر">الأقصر</option>
+                                        <option value="البحر الأحمر">البحر الأحمر</option>
+                                        <option value="الوادي الجديد">الوادي الجديد</option>
+                                        <option value="سوهاج">سوهاج</option>
+                                        <option value="قنا">قنا</option>
+                                        <option value="مرسى مطروح">مرسى مطروح</option>
+                                        <option value="شمال سيناء">شمال سيناء</option>
+                                        <option value="جنوب سيناء">جنوب سيناء</option>
+                                        <option value="بني سويف">بني سويف</option>
+                                        <option value="الفيوم">الفيوم</option>
+                                        <option value="المنيا">المنيا</option>
+                                    </select>
+                                    <span class="input-icon-right">📍</span>
+                                </div></div>
+                                <!-- حقل "المركز" الذي سيختفي عند اختيار صفارة -->
+                                <div id="regCenterContainer" class="form-group-modern">
+                                    <label>المركز</label>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="regCenter" placeholder="أدخل المركز">
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-section-title">المرحلة والصف</div>
                             <div class="form-group-modern"><label>المرحلة</label><div class="input-wrapper"><select id="regStage" required><option value="" disabled selected>اختر المرحلة</option><option value="primary">ابتدائي أزهري</option><option value="preparatory">إعدادي أزهري</option><option value="secondary">ثانوي أزهري</option></select><span class="input-icon-right">🎓</span></div></div>
                             <div class="form-group-modern"><label>الصف الدراسي</label><div class="input-wrapper"><select id="regGrade" required><option value="" disabled selected>اختر الصف</option></select><span class="input-icon-right">📚</span></div></div>
@@ -400,6 +448,13 @@
         function getBooks() { return JSON.parse(localStorage.getItem('books')) || []; }
         function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
 
+        // ========== دالة إخفاء/إظهار "المركز" بناءً على اختيار "صفارة" ==========
+        function toggleCenterField() {
+            const isOutside = document.getElementById('regIsOutside').checked;
+            const centerContainer = document.getElementById('regCenterContainer');
+            centerContainer.style.display = isOutside ? 'none' : 'block';
+        }
+
         // ========== تهيئة البيانات ==========
         function initData() {
             let users = getUsers();
@@ -413,7 +468,7 @@
                         needUpdate = true;
                     }
                 } else {
-                    users.push({ ...adminData, parentPhone: '', governorate: 'القاهرة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
+                    users.push({ ...adminData, parentPhone: '', governorate: 'القاهرة', stage: 'secondary', grade: 'الصف الثالث الثانوي', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
                     needUpdate = true;
                 }
             });
@@ -739,7 +794,9 @@
                 const phone = document.getElementById('regPhone').value.trim();
                 const parentPhone = document.getElementById('regParentPhone').value.trim();
                 const governorate = document.getElementById('regGovernorate').value;
-                const center = document.getElementById('regCenter').value.trim();
+                // قراءة المركز فقط إذا لم يكن مخفياً
+                const isOutside = document.getElementById('regIsOutside').checked;
+                const center = isOutside ? '' : document.getElementById('regCenter').value.trim();
                 const stage = document.getElementById('regStage').value;
                 const grade = document.getElementById('regGrade').value;
                 const password = document.getElementById('regPass').value;
@@ -750,11 +807,20 @@
                 const users = getUsers();
                 if (users.find(u => u.email === email || u.phone === phone)) { alert('مسجل بالفعل.'); return; }
                 
-                // تعديل مهم: تم تغيير active من true إلى false ليتم تفعيله من قبل الأدمن
                 const newUser = {
-                    id: 'user_' + Date.now(), name, email, phone, parentPhone, governorate, center, stage, grade, password,
+                    id: 'user_' + Date.now(),
+                    name,
+                    email,
+                    phone,
+                    parentPhone,
+                    governorate,
+                    center,          // سيتم تخزينها فارغة إذا كان خارج مصر
+                    isOutside,       // لتخزين حالة "صفارة"
+                    stage,
+                    grade,
+                    password,
                     role: 'student',
-                    active: false,
+                    active: false,    // ينتظر التفعيل من الأدمن
                     attempts: { avg: 0, solved: 0, total: 0, pending: 0 },
                     exams: [],
                     completedLessons: 0,
@@ -812,6 +878,9 @@
                     loadStudentDashboard(user);
                 }
             }
+
+            // التأكد من إخفاء "المركز" إذا كان الصندوق مفعلاً مسبقاً (لن يحدث عادة)
+            toggleCenterField();
         });
 
         function logout() {
