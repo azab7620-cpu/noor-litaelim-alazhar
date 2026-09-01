@@ -5,61 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة الأدمن - نور تعليم الأزهر</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
+        /* ====== كل الـ CSS الخاص بـ admin ====== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeInUp 0.6s ease forwards; }
-
         header { background: #fff; border-bottom: 3px solid #d4af37; padding: 12px 20px; }
-        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
         .logo-text span { font-size: 11px; color: #888; }
-        .nav-buttons { display: flex; gap: 10px; }
+        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; }
         .btn-home:hover { background: #c99e00; }
-
         .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
         .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .admin-tabs button:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
-
         .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .tab-content.active { display: block; }
-        
         .admin-table { width: 100%; border-collapse: collapse; }
         .admin-table th { background: #3b0a0a; color: #d4af37; padding: 14px; text-align: center; }
         .admin-table td { padding: 14px; text-align: center; border-bottom: 1px solid #f0ede8; }
         .admin-table tr:hover { background: #f9f6f0; }
-
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
         .btn-danger { background: #a00; color: #fff; }
         .btn-success { background: #2a7a2a; color: #fff; }
         .btn-delete { background: #8b0000; color: #fff; }
-
         .add-form { margin-top: 20px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .full-width { grid-column: 1 / -1; }
         .add-form label { display: block; font-weight: 700; font-size: 14px; color: #3b0a0a; margin-bottom: 5px; }
         .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; }
         .add-form input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); }
-
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
-        
         .bundle-container-box { border: 2px dashed #ddd; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
-        
         .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-
-        /* زر التحديث الجديد */
-        .btn-refresh { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 15px; transition: 0.3s; }
-        .btn-refresh:hover { background: #c99e00; transform: scale(1.02); }
-
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
             .add-form .form-grid { grid-template-columns: 1fr; }
@@ -99,14 +88,13 @@
             <div class="alert alert-success" style="margin-bottom:15px;">
                 ⚠️ <strong>مهم جداً:</strong> بعد إضافة المحاضرات والكتب والاختبارات، يجب أن تضغط زر <strong>"تفعيل"</strong> بجانب الطالب ليرى المحتوى الخاص بصفه.
             </div>
-            <button class="btn-refresh" onclick="refreshStudents()">🔄 تحديث قائمة الطلاب</button>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
             </table>
         </div>
 
-        <!-- باقي التابات (لم تتغير) -->
+        <!-- باقي التابات -->
         <div id="tabBundles" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
@@ -139,14 +127,14 @@
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
-                <div class="alert alert-success">💡 <strong>نصيحة:</strong> لكي تظهر هذه المحاضرة في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
-                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح فقط وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام روابط خارجية (مثل يوتيوب أو جوجل درايف).</div>
+                <div class="alert alert-success">💡 لكي تظهر هذه المحاضرة في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
+                <div class="alert alert-warning">⚠️ الملفات المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً.</div>
                 <form id="addCourseForm">
                     <div class="form-grid">
                         <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط المحاضرة (يُفضل وضع رابط يوتيوب أو جوجل درايف)</label><input type="url" id="courseLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف (سيُحول إلى نص Base64 وقد لا يعمل مع الملفات الكبيرة)</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
+                        <div class="full-width"><label>رابط المحاضرة</label><input type="url" id="courseLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="courseShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -162,14 +150,14 @@
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
-                <div class="alert alert-success">💡 <strong>نصيحة:</strong> لكي يظهر هذا الكتاب في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
-                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام روابط خارجية (مثل جوجل درايف).</div>
+                <div class="alert alert-success">💡 لكي يظهر هذا الكتاب في الصفحة الرئيسية للجميع، يجب وضع علامة صح على خيار "ظهور في الصفحة الرئيسية".</div>
+                <div class="alert alert-warning">⚠️ الملفات المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً.</div>
                 <form id="addBookForm">
                     <div class="form-grid">
                         <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط التحميل (يُفضل وضع رابط جوجل درايف)</label><input type="url" id="bookLink"></div>
-                        <div class="full-width"><label>أو ارفع ملف PDF (سيُحول إلى نص Base64 وقد لا يعمل مع الملفات الكبيرة)</label><input type="file" id="bookFile" accept=".pdf"></div>
+                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink"></div>
+                        <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
                             <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
@@ -184,14 +172,14 @@
         <!-- إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد (يظهر فوراً في الرئيسية)</h4>
-                <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الصورة المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً. يُفضل استخدام رابط صورة خارجي.</div>
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
+                <div class="alert alert-warning">⚠️ الصورة المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً.</div>
                 <form id="addTeacherForm">
                     <div class="form-grid">
                         <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
                         <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
-                        <div class="full-width"><label>رابط صورة المدرس (يُفضل رابط صورة مباشر)</label><input type="url" id="teacherImage"></div>
-                        <div class="full-width"><label>أو ارفع صورة من جهازك (سيُحول إلى Base64)</label><input type="file" id="teacherImageFile" accept="image/*"></div>
+                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage"></div>
+                        <div class="full-width"><label>أو ارفع صورة من جهازك</label><input type="file" id="teacherImageFile" accept="image/*"></div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المدرس</button>
                 </form>
@@ -217,7 +205,7 @@
             <div class="bundle-container-box">
                 <div class="add-form">
                     <h5 style="color:#555; margin-bottom:10px;">2. أضف عناصر داخل الوحدة:</h5>
-                    <div class="alert alert-warning">⚠️ <strong>تنبيه:</strong> الملفات المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً.</div>
+                    <div class="alert alert-warning">⚠️ الملفات المرفوعة تُحفظ في المتصفح وقد لا تظهر بعد إغلاق المتصفح إذا كان الحجم كبيراً.</div>
                     <form id="addItemForm">
                         <div class="form-grid">
                             <div><label>اختر الوحدة</label><select id="itemBundleSelect" required></select></div>
@@ -240,7 +228,7 @@
                                 <div class="form-grid">
                                     <div><label>عنوان العنصر</label><input type="text" id="itemTitle"></div>
                                     <div><label>الرابط</label><input type="url" id="itemLink"></div>
-                                    <div class="full-width"><label>أو ارفع ملف من جهازك (سيُحول إلى Base64)</label><input type="file" id="itemFile"></div>
+                                    <div class="full-width"><label>أو ارفع ملف من جهازك</label><input type="file" id="itemFile"></div>
                                 </div>
                             </div>
                             <div id="platformFields" class="full-width" style="display:none;">
@@ -264,8 +252,8 @@
         <!-- إضافة اختبار -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form animate-fade">
-                <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد (حدد عدد الأسئلة)</h4>
-                <div class="alert alert-success">💡 <strong>مهم:</strong> الاختبار لا يظهر في الصفحة الرئيسية، بل يظهر للطلاب "المفعلين" فقط عند دخولهم لحساباتهم.</div>
+                <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد</h4>
+                <div class="alert alert-success">💡 الاختبار لا يظهر في الصفحة الرئيسية، بل يظهر للطلاب "المفعلين" فقط.</div>
                 <form id="examSetupForm">
                     <div class="form-grid">
                         <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required></div>
@@ -282,64 +270,65 @@
     </div>
 
     <script>
-        // ====== دوال البيانات مع معالجة الأخطاء ======
-        function getUsers() {
-            try {
-                const data = localStorage.getItem('users');
-                return data ? JSON.parse(data) : [];
-            } catch (e) {
-                console.error('خطأ في قراءة المستخدمين:', e);
-                return [];
-            }
-        }
-        function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
+        // ============================================================
+        //  🔥 إعدادات Firebase (ضع المفاتيح الخاصة بك هنا)
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-7DnDsopGu1ztOdnSm-lHYw-ECk-UpII",
+            authDomain: "noor-litaelim-alazhar.firebaseapp.com",
+            projectId: "noor-litaelim-alazhar",
+            storageBucket: "noor-litaelim-alazhar.firebasestorage.app",
+            messagingSenderId: "934675417585",
+            appId: "1:934675417585:web:dcf734f31e2ba31e219c50"
+        };
 
-        function getCourses() {
-            try {
-                const data = localStorage.getItem('courses');
-                return data ? JSON.parse(data) : [];
-            } catch (e) { return []; }
-        }
-        function setCourses(c) { localStorage.setItem('courses', JSON.stringify(c)); }
+        // ============================================================
+        //  تهيئة Firebase
+        // ============================================================
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        function getBooks() {
-            try {
-                const data = localStorage.getItem('books');
-                return data ? JSON.parse(data) : [];
-            } catch (e) { return []; }
+        // ============================================================
+        //  دوال مساعدة
+        // ============================================================
+        async function getCollection(collectionName) {
+            const snapshot = await db.collection(collectionName).get();
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         }
-        function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
 
-        function getTeachers() {
-            try {
-                const data = localStorage.getItem('teachers');
-                return data ? JSON.parse(data) : [];
-            } catch (e) { return []; }
+        async function setCollection(collectionName, dataArray) {
+            const snapshot = await db.collection(collectionName).get();
+            const batch = db.batch();
+            snapshot.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+            dataArray.forEach(item => {
+                db.collection(collectionName).add(item);
+            });
         }
-        function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
 
-        function getExams() {
-            try {
-                const data = localStorage.getItem('exams');
-                return data ? JSON.parse(data) : [];
-            } catch (e) { return []; }
-        }
-        function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
+        // ============================================================
+        //  دوال البيانات
+        // ============================================================
+        async function getUsers() { return await getCollection('users'); }
+        async function setUsers(data) { await setCollection('users', data); }
+        async function getCourses() { return await getCollection('courses'); }
+        async function setCourses(data) { await setCollection('courses', data); }
+        async function getBooks() { return await getCollection('books'); }
+        async function setBooks(data) { await setCollection('books', data); }
+        async function getTeachers() { return await getCollection('teachers'); }
+        async function setTeachers(data) { await setCollection('teachers', data); }
+        async function getExams() { return await getCollection('exams'); }
+        async function setExams(data) { await setCollection('exams', data); }
+        async function getBundles() { return await getCollection('bundles'); }
+        async function setBundles(data) { await setCollection('bundles', data); }
 
-        function getBundles() {
-            try {
-                const data = localStorage.getItem('bundles');
-                return data ? JSON.parse(data) : [];
-            } catch (e) { return []; }
-        }
-        function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
-
-        // ====== تهيئة الصفوف ======
+        // ============================================================
+        //  دوال العرض والتحكم
+        // ============================================================
         function initGrades() {
             const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
             ['bundleGrade', 'bookGrade', 'examGrade', 'courseGrade'].forEach(id => {
                 const select = document.getElementById(id);
-                select.innerHTML = '<option value="">اختر الصف</option>';
                 grades.forEach(g => {
                     const opt = document.createElement('option');
                     opt.value = 'الصف ' + g;
@@ -349,98 +338,67 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            initGrades();
-            refreshStudents();      // عرض الطلاب مع البيانات الجديدة
-            loadBundlesTable();
-            loadCoursesTable();
-            loadBooksTable();
-            loadTeachersTable();
-            populateBundleSelects();
-            setupForms();
-            toggleItemFields();
-        });
-
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
-            if (tabId === 'students') refreshStudents();
-            if (tabId === 'bundles') loadBundlesTable();
-            if (tabId === 'courses') loadCoursesTable();
-            if (tabId === 'books') loadBooksTable();
-            if (tabId === 'teachers') loadTeachersTable();
-            if (tabId === 'addBundle') populateBundleSelects();
-        }
-
-        // ============================================================
-        //  🔹 الطلاب – دالة محدثة (refreshStudents)
-        // ============================================================
-        function refreshStudents() {
-            const users = getUsers().filter(u => u.role === 'student');
-            console.log('عدد الطلاب:', users.length); // للتأكد
+        async function loadStudentsTable() {
+            const allUsers = await getUsers();
+            const students = allUsers.filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
-            if (!users.length) {
-                tbody.innerHTML = '<tr><td colspan="5">لا يوجد طلاب.</td></tr>';
+            if (!students.length) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-info" style="margin:10px 0;">📭 لا يوجد طلاب مسجلون حتى الآن.</div></td></tr>';
                 return;
             }
-            tbody.innerHTML = users.map((u, idx) => `
+            tbody.innerHTML = students.map((u, idx) => `
                 <tr>
                     <td>${idx+1}</td>
                     <td>${u.name}</td>
-                    <td>${u.grade}</td>
+                    <td>${u.grade || 'غير محدد'}</td>
                     <td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td>
                     <td>
                         <button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">
                             ${u.active ? 'إلغاء التفعيل' : 'تفعيل'}
                         </button>
-                        <button onclick="deleteStudent('${u.id}')" class="btn-card btn-delete" style="margin-right:8px;">
-                            🗑️ حذف
-                        </button>
+                        <button onclick="deleteStudent('${u.id}')" class="btn-card btn-delete" style="margin-right:8px;">🗑️ حذف</button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        // دالة تبديل التفعيل
-        function toggleStudent(id) {
-            let users = getUsers();
+        async function toggleStudent(id) {
+            let users = await getUsers();
             let u = users.find(x => x.id === id);
-            if (!u) return;
+            if (!u) { alert('الطالب غير موجود'); return; }
             u.active = !u.active;
-            setUsers(users);
-            alert(u.active ? '✅ تم تفعيل الطالب بنجاح' : '❌ تم إلغاء التفعيل');
-            refreshStudents();
+            await setUsers(users);
+            alert(u.active ? '✅ تم تفعيل الطالب' : '❌ تم إلغاء التفعيل');
+            loadStudentsTable();
         }
 
-        // دالة حذف الطالب
-        function deleteStudent(id) {
-            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟ لا يمكن التراجع.')) return;
-            let users = getUsers();
+        async function deleteStudent(id) {
+            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟')) return;
+            let users = await getUsers();
             const newUsers = users.filter(u => u.id !== id);
             if (newUsers.length === users.length) { alert('الطالب غير موجود.'); return; }
-            setUsers(newUsers);
+            await setUsers(newUsers);
             alert('✅ تم حذف الطالب بنجاح.');
-            refreshStudents();
+            loadStudentsTable();
         }
 
-        // ====== باقي الدوال (حزم، محاضرات، كتب، مدرسين) كما هي ======
-        function loadBundlesTable() {
-            const bundles = getBundles();
+        async function loadBundlesTable() {
+            const bundles = await getBundles();
             const tbody = document.getElementById('bundlesTableBody');
             tbody.innerHTML = bundles.length ? bundles.map((b, idx) => `
                 <tr><td>${idx+1}</td><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.items.length} عنصر</td><td><button onclick="deleteBundle('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
             `).join('') : '<tr><td colspan="5">لا توجد وحدات.</td></tr>';
         }
-        function deleteBundle(id) {
-            let bundles = getBundles();
-            setBundles(bundles.filter(b => b.id !== id));
+
+        async function deleteBundle(id) {
+            let bundles = await getBundles();
+            await setBundles(bundles.filter(b => b.id !== id));
             loadBundlesTable();
             populateBundleSelects();
         }
 
-        function populateBundleSelects() {
-            const bundles = getBundles();
+        async function populateBundleSelects() {
+            const bundles = await getBundles();
             const selectBundle = document.getElementById('itemBundleSelect');
             selectBundle.innerHTML = '<option value="">اختر وحدة</option>';
             bundles.forEach(b => {
@@ -450,7 +408,7 @@
                 selectBundle.appendChild(opt);
             });
 
-            const exams = getExams();
+            const exams = await getExams();
             const selectExam = document.getElementById('itemExamSelect');
             selectExam.innerHTML = '<option value="">اختر اختبار</option>';
             exams.forEach(e => {
@@ -460,8 +418,8 @@
                 selectExam.appendChild(opt);
             });
 
-            const courses = getCourses();
-            const books = getBooks();
+            const courses = await getCourses();
+            const books = await getBooks();
             const selectPlatform = document.getElementById('platformItemSelect');
             selectPlatform.innerHTML = '<option value="">اختر عنصراً من المنصة</option>';
             courses.forEach(c => {
@@ -480,54 +438,42 @@
 
         function toggleItemFields() {
             const type = document.getElementById('itemType').value;
-            const sourceFieldDiv = document.getElementById('sourceFields');
-            const examFieldDiv = document.getElementById('examFields');
-            if (type === 'exam') {
-                sourceFieldDiv.style.display = 'none';
-                examFieldDiv.style.display = 'block';
-            } else {
-                sourceFieldDiv.style.display = 'block';
-                examFieldDiv.style.display = 'none';
-                toggleSourceFields();
-            }
+            document.getElementById('sourceFields').style.display = (type === 'exam') ? 'none' : 'block';
+            document.getElementById('examFields').style.display = (type === 'exam') ? 'block' : 'none';
+            if (type !== 'exam') toggleSourceFields();
         }
 
         function toggleSourceFields() {
             const sourceType = document.getElementById('sourceType').value;
-            const manualFields = document.getElementById('manualFields');
-            const platformFields = document.getElementById('platformFields');
-            if (sourceType === 'platform') {
-                manualFields.style.display = 'none';
-                platformFields.style.display = 'block';
-            } else {
-                manualFields.style.display = 'block';
-                platformFields.style.display = 'none';
-            }
+            document.getElementById('manualFields').style.display = (sourceType === 'platform') ? 'none' : 'block';
+            document.getElementById('platformFields').style.display = (sourceType === 'platform') ? 'block' : 'none';
         }
 
-        // ====== نماذج الإضافة (لم تتغير) ======
+        // ============================================================
+        //  نماذج الإضافة
+        // ============================================================
         function setupForms() {
-            document.getElementById('addBundleForm').addEventListener('submit', function(e) {
+            document.getElementById('addBundleForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bundleTitle').value.trim();
                 const grade = document.getElementById('bundleGrade').value;
                 if (!title || !grade) { alert('املأ الحقول'); return; }
-                let bundles = getBundles();
+                let bundles = await getBundles();
                 bundles.push({ id: 'bundle_' + Date.now(), title, grade, items: [] });
-                setBundles(bundles);
+                await setBundles(bundles);
                 document.getElementById('bundleAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الوحدة بنجاح!</div>';
                 this.reset();
                 loadBundlesTable();
                 populateBundleSelects();
             });
 
-            document.getElementById('addItemForm').addEventListener('submit', function(e) {
+            document.getElementById('addItemForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const bundleId = document.getElementById('itemBundleSelect').value;
                 const type = document.getElementById('itemType').value;
                 if (!bundleId) { alert('اختر وحدة أولاً'); return; }
                 
-                let bundles = getBundles();
+                let bundles = await getBundles();
                 let bundle = bundles.find(b => b.id === bundleId);
                 
                 if (type === 'exam') {
@@ -535,32 +481,26 @@
                     const title = document.getElementById('examItemTitle').value.trim();
                     if (!examId || !title) { alert('املأ بيانات الاختبار'); return; }
                     bundle.items.push({ type: 'exam', title, examId });
-                    setBundles(bundles);
-                    document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة بنجاح!</div>';
+                    await setBundles(bundles);
+                    document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة!</div>';
                     document.getElementById('examItemTitle').value = '';
                     loadBundlesTable();
                     return;
                 }
 
                 const sourceType = document.getElementById('sourceType').value;
-                let title = '';
-                let link = '';
-                let itemType = type;
+                let title = '', link = '', itemType = type;
 
                 if (sourceType === 'platform') {
                     const platformVal = document.getElementById('platformItemSelect').value;
                     if (!platformVal) { alert('اختر عنصراً من المنصة'); return; }
                     const platformObj = JSON.parse(platformVal);
                     if (platformObj.source === 'course') {
-                        let selectedItem = getCourses().find(c => c.id === platformObj.id);
-                        title = selectedItem.title;
-                        link = selectedItem.link;
-                        itemType = 'video';
+                        let selectedItem = (await getCourses()).find(c => c.id === platformObj.id);
+                        title = selectedItem.title; link = selectedItem.link; itemType = 'video';
                     } else {
-                        let selectedItem = getBooks().find(b => b.id === platformObj.id);
-                        title = selectedItem.title;
-                        link = selectedItem.link;
-                        itemType = 'pdf';
+                        let selectedItem = (await getBooks()).find(b => b.id === platformObj.id);
+                        title = selectedItem.title; link = selectedItem.link; itemType = 'pdf';
                     }
                 } else {
                     title = document.getElementById('itemTitle').value.trim();
@@ -569,12 +509,12 @@
                     
                     if (fileInput.files.length > 0) {
                         const reader = new FileReader();
-                        reader.onload = function(ev) {
+                        reader.onload = async function(ev) {
                             link = ev.target.result;
-                            if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
+                            if (!title || !link) { alert('املأ البيانات'); return; }
                             bundle.items.push({ type: itemType, title, link });
-                            setBundles(bundles);
-                            document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة بنجاح!</div>';
+                            await setBundles(bundles);
+                            document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر!</div>';
                             document.getElementById('itemTitle').value = '';
                             document.getElementById('itemLink').value = '';
                             document.getElementById('itemFile').value = '';
@@ -584,13 +524,13 @@
                         return;
                     } else {
                         link = linkInput;
-                        if (!title || !link) { alert('املأ بيانات الملف أو الرابط'); return; }
+                        if (!title || !link) { alert('املأ البيانات'); return; }
                     }
                 }
 
                 bundle.items.push({ type: itemType, title, link });
-                setBundles(bundles);
-                document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر للوحدة بنجاح!</div>';
+                await setBundles(bundles);
+                document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة العنصر!</div>';
                 document.getElementById('itemTitle').value = '';
                 document.getElementById('itemLink').value = '';
                 document.getElementById('itemFile').value = '';
@@ -598,8 +538,7 @@
                 loadBundlesTable();
             });
 
-            // إضافة محاضرة
-            document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+            document.getElementById('addCourseForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
                 const grade = document.getElementById('courseGrade').value;
@@ -610,22 +549,22 @@
                 
                 if (fileInput.files.length > 0) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = async function(ev) {
                         finalLink = ev.target.result;
-                        saveCourse(title, grade, finalLink, showInHome);
+                        await saveCourse(title, grade, finalLink, showInHome);
                     };
                     reader.readAsDataURL(fileInput.files[0]);
                 } else {
-                    saveCourse(title, grade, finalLink, showInHome);
+                    await saveCourse(title, grade, finalLink, showInHome);
                 }
                 
-                function saveCourse(title, grade, link, showInHome) {
+                async function saveCourse(title, grade, link, showInHome) {
                     if (!title || !grade || !link) { alert('املأ الحقول'); return; }
-                    let courses = getCourses();
+                    let courses = await getCourses();
                     courses.push({ id: 'c_' + Date.now(), title, grade, link, showInHome });
-                    setCourses(courses);
-                    document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة بنجاح!</div>';
-                    alert('✅ تمت إضافة المحاضرة بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيتها.');
+                    await setCourses(courses);
+                    document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة!</div>';
+                    alert('✅ تمت إضافة المحاضرة بنجاح!');
                     document.getElementById('addCourseForm').reset();
                     document.getElementById('courseShowInHome').checked = false;
                     loadCoursesTable();
@@ -633,8 +572,7 @@
                 }
             });
 
-            // إضافة كتاب
-            document.getElementById('addBookForm').addEventListener('submit', function(e) {
+            document.getElementById('addBookForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
                 const grade = document.getElementById('bookGrade').value;
@@ -645,22 +583,22 @@
                 
                 if (fileInput.files.length > 0) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = async function(ev) {
                         finalLink = ev.target.result;
-                        saveBook(title, grade, finalLink, showInHome);
+                        await saveBook(title, grade, finalLink, showInHome);
                     };
                     reader.readAsDataURL(fileInput.files[0]);
                 } else {
-                    saveBook(title, grade, finalLink, showInHome);
+                    await saveBook(title, grade, finalLink, showInHome);
                 }
                 
-                function saveBook(title, grade, link, showInHome) {
+                async function saveBook(title, grade, link, showInHome) {
                     if (!title || !grade || !link) { alert('املأ الحقول'); return; }
-                    let books = getBooks();
+                    let books = await getBooks();
                     books.push({ id: 'b_' + Date.now(), title, grade, link, showInHome });
-                    setBooks(books);
-                    document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب بنجاح!</div>';
-                    alert('✅ تمت إضافة الكتاب بنجاح! اضغط زر "فتح الرئيسية" بالأعلى لرؤيته.');
+                    await setBooks(books);
+                    document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب!</div>';
+                    alert('✅ تمت إضافة الكتاب بنجاح!');
                     document.getElementById('addBookForm').reset();
                     document.getElementById('bookShowInHome').checked = false;
                     loadBooksTable();
@@ -668,8 +606,7 @@
                 }
             });
 
-            // إضافة مدرس
-            document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
+            document.getElementById('addTeacherForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
                 const specialty = document.getElementById('teacherSpecialty').value.trim();
@@ -677,12 +614,12 @@
                 const fileInput = document.getElementById('teacherImageFile');
                 let finalImage = imageUrl || 'https://via.placeholder.com/150/3b0a0a/d4af37?text=' + encodeURIComponent(name.charAt(0));
                 
-                function saveTeacher(name, specialty, image) {
+                async function saveTeacher(name, specialty, image) {
                     if (!name) { alert('ادخل الاسم'); return; }
-                    let teachers = getTeachers();
+                    let teachers = await getTeachers();
                     teachers.push({ id: 't_' + Date.now(), name, specialty, image });
-                    setTeachers(teachers);
-                    document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المدرس بنجاح!</div>';
+                    await setTeachers(teachers);
+                    document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المدرس!</div>';
                     alert('✅ تمت إضافة المدرس بنجاح!');
                     document.getElementById('addTeacherForm').reset();
                     loadTeachersTable();
@@ -690,30 +627,32 @@
 
                 if (fileInput.files.length > 0) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = async function(ev) {
                         finalImage = ev.target.result;
-                        saveTeacher(name, specialty, finalImage);
+                        await saveTeacher(name, specialty, finalImage);
                     };
                     reader.readAsDataURL(fileInput.files[0]);
                 } else {
-                    saveTeacher(name, specialty, finalImage);
+                    await saveTeacher(name, specialty, finalImage);
                 }
             });
         }
 
-        // ====== منطق الاختبارات (لم يتغير) ======
+        // ============================================================
+        //  منطق الاختبارات
+        // ============================================================
         function generateQuestionBoxes() {
             const count = parseInt(document.getElementById('examQuestionCount').value);
             const title = document.getElementById('examTitle').value.trim();
             const grade = document.getElementById('examGrade').value;
             if (!title || !grade) { alert('أدخل عنوان الاختبار واختر الصف أولاً'); return; }
-            if (!count || count < 1) { alert('أدخل عدد أسئلة صحيح (1 على الأقل)'); return; }
+            if (!count || count < 1) { alert('أدخل عدد أسئلة صحيح'); return; }
             let html = '<h4 style="color:#3b0a0a; margin:20px 0; border-top:1px dashed #ddd; padding-top:20px;">الأسئلة:</h4>';
             for (let i = 0; i < count; i++) {
                 html += `
                     <div class="question-box-generator">
                         <h4>السؤال ${i + 1}</h4>
-                        <input type="text" class="q-text-input" placeholder="اكتب نص السؤال هنا" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px;">
+                        <input type="text" class="q-text-input" placeholder="نص السؤال" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px;">
                         <div class="option-row">
                             <input type="text" class="opt-input" placeholder="الخيار الأول" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
                             <input type="text" class="opt-input" placeholder="الخيار الثاني" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
@@ -730,11 +669,11 @@
             }
             document.getElementById('questionsContainer').innerHTML = html;
             document.getElementById('saveExamBtn').style.display = 'block';
-            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم توليد ' + count + ' أسئلة. املأ البيانات ثم اضغط زر الحفظ بالأسفل.</div>';
+            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم توليد ' + count + ' أسئلة.</div>';
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
 
-        function saveFullExam() {
+        async function saveFullExam() {
             const title = document.getElementById('examTitle').value.trim();
             const grade = document.getElementById('examGrade').value;
             const boxes = document.querySelectorAll('.question-box-generator');
@@ -748,41 +687,73 @@
                 if (!q || opts.includes('')) { alert('يرجى ملء جميع بيانات السؤال رقم ' + (i + 1)); return; }
                 questions.push({ q, options: opts, correct });
             }
-            let exams = getExams();
+            let exams = await getExams();
             let exam = exams.find(e => e.title === title && e.grade === grade);
             if (!exam) { exam = { id: 'exam_' + Date.now(), title, grade, questions: [] }; exams.push(exam); }
             exam.questions = exam.questions.concat(questions);
-            setExams(exams);
+            await setExams(exams);
             document.getElementById('questionsContainer').innerHTML = '';
             document.getElementById('saveExamBtn').style.display = 'none';
-            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح! أصبح متاحاً للطلاب المفعلين في هذا الصف.</div>';
+            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح!</div>';
             alert('✅ تم إنشاء الاختبار بنجاح!');
             document.getElementById('examSetupForm').reset();
             populateBundleSelects();
             window.scrollTo(0,0);
         }
 
-        // ====== جداول العرض ======
-        function loadCoursesTable() {
-            const courses = getCourses();
+        // ============================================================
+        //  جداول العرض
+        // ============================================================
+        async function loadCoursesTable() {
+            const courses = await getCourses();
             const tbody = document.getElementById('coursesTableBody');
             tbody.innerHTML = courses.length ? courses.map(c => `<tr><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد محاضرات</td></tr>';
         }
-        function deleteCourse(id) { setCourses(getCourses().filter(c => c.id !== id)); loadCoursesTable(); populateBundleSelects(); }
+        async function deleteCourse(id) { let c = await getCourses(); await setCourses(c.filter(x => x.id !== id)); loadCoursesTable(); populateBundleSelects(); }
 
-        function loadBooksTable() {
-            const books = getBooks();
+        async function loadBooksTable() {
+            const books = await getBooks();
             const tbody = document.getElementById('booksTableBody');
             tbody.innerHTML = books.length ? books.map(b => `<tr><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد كتب</td></tr>';
         }
-        function deleteBook(id) { setBooks(getBooks().filter(b => b.id !== id)); loadBooksTable(); populateBundleSelects(); }
+        async function deleteBook(id) { let b = await getBooks(); await setBooks(b.filter(x => x.id !== id)); loadBooksTable(); populateBundleSelects(); }
 
-        function loadTeachersTable() {
-            const teachers = getTeachers();
+        async function loadTeachersTable() {
+            const teachers = await getTeachers();
             const tbody = document.getElementById('teachersTableBody');
             tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
         }
-        function deleteTeacher(id) { setTeachers(getTeachers().filter(t => t.id !== id)); loadTeachersTable(); }
+        async function deleteTeacher(id) { let t = await getTeachers(); await setTeachers(t.filter(x => x.id !== id)); loadTeachersTable(); }
+
+        // ============================================================
+        //  التبويبات
+        // ============================================================
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
+            if (tabId === 'students') loadStudentsTable();
+            if (tabId === 'bundles') loadBundlesTable();
+            if (tabId === 'courses') loadCoursesTable();
+            if (tabId === 'books') loadBooksTable();
+            if (tabId === 'teachers') loadTeachersTable();
+            if (tabId === 'addBundle') populateBundleSelects();
+        }
+
+        // ============================================================
+        //  التهيئة
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initGrades();
+            loadStudentsTable();
+            loadBundlesTable();
+            loadCoursesTable();
+            loadBooksTable();
+            loadTeachersTable();
+            populateBundleSelects();
+            setupForms();
+            toggleItemFields();
+        });
 
         function logout() { sessionStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
     </script>
