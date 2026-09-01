@@ -37,7 +37,6 @@
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
         .btn-danger { background: #a00; color: #fff; }
         .btn-success { background: #2a7a2a; color: #fff; }
-        /* زر الحذف الجديد باللون الأحمر الداكن */
         .btn-delete { background: #8b0000; color: #fff; }
 
         .add-form { margin-top: 20px; }
@@ -56,6 +55,10 @@
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        /* زر التحديث الجديد */
+        .btn-refresh { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 15px; transition: 0.3s; }
+        .btn-refresh:hover { background: #c99e00; transform: scale(1.02); }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -96,6 +99,7 @@
             <div class="alert alert-success" style="margin-bottom:15px;">
                 ⚠️ <strong>مهم جداً:</strong> بعد إضافة المحاضرات والكتب والاختبارات، يجب أن تضغط زر <strong>"تفعيل"</strong> بجانب الطالب ليرى المحتوى الخاص بصفه.
             </div>
+            <button class="btn-refresh" onclick="refreshStudents()">🔄 تحديث قائمة الطلاب</button>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
@@ -131,7 +135,7 @@
             </table>
         </div>
 
-        <!-- إضافة محاضرة (لم تتغير) -->
+        <!-- إضافة محاضرة -->
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
@@ -154,7 +158,7 @@
             </div>
         </div>
 
-        <!-- إضافة كتاب (لم تتغير) -->
+        <!-- إضافة كتاب -->
         <div id="tabAddBook" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
@@ -177,7 +181,7 @@
             </div>
         </div>
 
-        <!-- إضافة مدرس (لم تتغير) -->
+        <!-- إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد (يظهر فوراً في الرئيسية)</h4>
@@ -195,7 +199,7 @@
             </div>
         </div>
 
-        <!-- إنشاء وحدة (لم تتغير) -->
+        <!-- إنشاء وحدة -->
         <div id="tabAddBundle" class="tab-content">
             <div class="bundle-container-box">
                 <div class="add-form">
@@ -257,7 +261,7 @@
             </div>
         </div>
 
-        <!-- إضافة اختبار (لم تتغير) -->
+        <!-- إضافة اختبار -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form animate-fade">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد (حدد عدد الأسئلة)</h4>
@@ -278,18 +282,56 @@
     </div>
 
     <script>
-        // ====== دوال البيانات (نفسها) ======
-        function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
+        // ====== دوال البيانات مع معالجة الأخطاء ======
+        function getUsers() {
+            try {
+                const data = localStorage.getItem('users');
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error('خطأ في قراءة المستخدمين:', e);
+                return [];
+            }
+        }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
-        function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
+
+        function getCourses() {
+            try {
+                const data = localStorage.getItem('courses');
+                return data ? JSON.parse(data) : [];
+            } catch (e) { return []; }
+        }
         function setCourses(c) { localStorage.setItem('courses', JSON.stringify(c)); }
-        function getBooks() { return JSON.parse(localStorage.getItem('books')) || []; }
+
+        function getBooks() {
+            try {
+                const data = localStorage.getItem('books');
+                return data ? JSON.parse(data) : [];
+            } catch (e) { return []; }
+        }
         function setBooks(b) { localStorage.setItem('books', JSON.stringify(b)); }
-        function getTeachers() { return JSON.parse(localStorage.getItem('teachers')) || []; }
+
+        function getTeachers() {
+            try {
+                const data = localStorage.getItem('teachers');
+                return data ? JSON.parse(data) : [];
+            } catch (e) { return []; }
+        }
         function setTeachers(t) { localStorage.setItem('teachers', JSON.stringify(t)); }
-        function getExams() { return JSON.parse(localStorage.getItem('exams')) || []; }
+
+        function getExams() {
+            try {
+                const data = localStorage.getItem('exams');
+                return data ? JSON.parse(data) : [];
+            } catch (e) { return []; }
+        }
         function setExams(e) { localStorage.setItem('exams', JSON.stringify(e)); }
-        function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
+
+        function getBundles() {
+            try {
+                const data = localStorage.getItem('bundles');
+                return data ? JSON.parse(data) : [];
+            } catch (e) { return []; }
+        }
         function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
 
         // ====== تهيئة الصفوف ======
@@ -297,6 +339,7 @@
             const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
             ['bundleGrade', 'bookGrade', 'examGrade', 'courseGrade'].forEach(id => {
                 const select = document.getElementById(id);
+                select.innerHTML = '<option value="">اختر الصف</option>';
                 grades.forEach(g => {
                     const opt = document.createElement('option');
                     opt.value = 'الصف ' + g;
@@ -308,7 +351,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initGrades();
-            loadStudentsTable();
+            refreshStudents();      // عرض الطلاب مع البيانات الجديدة
             loadBundlesTable();
             loadCoursesTable();
             loadBooksTable();
@@ -322,7 +365,7 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
             document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
-            if (tabId === 'students') loadStudentsTable();
+            if (tabId === 'students') refreshStudents();
             if (tabId === 'bundles') loadBundlesTable();
             if (tabId === 'courses') loadCoursesTable();
             if (tabId === 'books') loadBooksTable();
@@ -331,12 +374,16 @@
         }
 
         // ============================================================
-        //  🔹 الطلاب – مع إضافة زر "حذف" بجانب التفعيل
+        //  🔹 الطلاب – دالة محدثة (refreshStudents)
         // ============================================================
-        function loadStudentsTable() {
+        function refreshStudents() {
             const users = getUsers().filter(u => u.role === 'student');
+            console.log('عدد الطلاب:', users.length); // للتأكد
             const tbody = document.getElementById('studentsTableBody');
-            if (!users.length) { tbody.innerHTML = '<tr><td colspan="5">لا يوجد طلاب.</td></tr>'; return; }
+            if (!users.length) {
+                tbody.innerHTML = '<tr><td colspan="5">لا يوجد طلاب.</td></tr>';
+                return;
+            }
             tbody.innerHTML = users.map((u, idx) => `
                 <tr>
                     <td>${idx+1}</td>
@@ -355,7 +402,7 @@
             `).join('');
         }
 
-        // دالة تبديل التفعيل (نفسها)
+        // دالة تبديل التفعيل
         function toggleStudent(id) {
             let users = getUsers();
             let u = users.find(x => x.id === id);
@@ -363,10 +410,10 @@
             u.active = !u.active;
             setUsers(users);
             alert(u.active ? '✅ تم تفعيل الطالب بنجاح' : '❌ تم إلغاء التفعيل');
-            loadStudentsTable();
+            refreshStudents();
         }
 
-        // دالة حذف الطالب (جديدة)
+        // دالة حذف الطالب
         function deleteStudent(id) {
             if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟ لا يمكن التراجع.')) return;
             let users = getUsers();
@@ -374,7 +421,7 @@
             if (newUsers.length === users.length) { alert('الطالب غير موجود.'); return; }
             setUsers(newUsers);
             alert('✅ تم حذف الطالب بنجاح.');
-            loadStudentsTable();
+            refreshStudents();
         }
 
         // ====== باقي الدوال (حزم، محاضرات، كتب، مدرسين) كما هي ======
