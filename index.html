@@ -750,6 +750,7 @@
                 const users = getUsers();
                 if (users.find(u => u.email === email || u.phone === phone)) { alert('مسجل بالفعل.'); return; }
                 
+                // تعديل مهم: تم تغيير active من true إلى false ليتم تفعيله من قبل الأدمن
                 const newUser = {
                     id: 'user_' + Date.now(), name, email, phone, parentPhone, governorate, center, stage, grade, password,
                     role: 'student',
@@ -761,9 +762,7 @@
                 };
                 users.push(newUser);
                 setUsers(users);
-                
-                // ✅ رسالة تأكيد مع عدد المستخدمين الحالي
-                alert(`✅ تم إنشاء الحساب بنجاح! (إجمالي المستخدمين الآن: ${users.length}) يرجى انتظار التفعيل من الإدارة.`);
+                alert('تم إنشاء الحساب! يرجى انتظار التفعيل من الإدارة.');
                 switchAuthView('login');
             });
 
