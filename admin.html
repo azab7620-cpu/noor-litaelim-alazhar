@@ -103,6 +103,7 @@
             <div class="refresh-row">
                 <button onclick="debugStorage()" class="btn-debug">🔍 فحص localStorage</button>
                 <button onclick="loadStudentsTable()" class="btn-refresh">🔄 تحديث الطلاب</button>
+                <button onclick="location.reload()" class="btn-refresh" style="background:#d4af37; color:#3b0a0a;">🔄 إعادة تحميل الصفحة</button>
             </div>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
@@ -286,7 +287,9 @@
     </div>
 
     <script>
-        // ====== دوال البيانات ======
+        // ============================================================
+        //  دوال البيانات الأساسية
+        // ============================================================
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -300,11 +303,71 @@
         function getBundles() { return JSON.parse(localStorage.getItem('bundles')) || []; }
         function setBundles(b) { localStorage.setItem('bundles', JSON.stringify(b)); }
 
-        // ====== تهيئة الصفوف ======
+        // ============================================================
+        //  تهيئة البيانات (نفس الذي في index.html)
+        // ============================================================
+        function initData() {
+            let users = getUsers();
+            let needUpdate = false;
+
+            const ADMINS = [
+                { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'azab7620@gmail.com', phone: '01110000001', password: 'r11a6r10' },
+                { id: 'admin2', name: 'أدمن 2 - محمد', email: 'anwer2345n@gmail.com', phone: '01110000002', password: '666711' },
+                { id: 'admin3', name: 'أدمن 3 - سارة', email: 'admin3@example.com', phone: '01110000003', password: 'admin123' },
+                { id: 'admin4', name: 'أدمن 4 - خالد', email: 'admin4@example.com', phone: '01110000004', password: 'admin123' },
+                { id: 'admin5', name: 'أدمن 5 - نورة', email: 'admin5@example.com', phone: '01110000005', password: 'admin123' }
+            ];
+
+            ADMINS.forEach(adminData => {
+                let existing = users.find(u => u.id === adminData.id && u.role === 'admin');
+                if (existing) {
+                    if (existing.email !== adminData.email || existing.password !== adminData.password || existing.name !== adminData.name || existing.phone !== adminData.phone) {
+                        Object.assign(existing, adminData);
+                        needUpdate = true;
+                    }
+                } else {
+                    users.push({ ...adminData, parentPhone: '', governorate: 'القاهرة', center: 'المركز', stage: 'secondary', grade: 'الصف الثالث الثانوي', role: 'admin', active: true, exams: [], completedLessons: 0, totalLessons: 0 });
+                    needUpdate = true;
+                }
+            });
+
+            if (!localStorage.getItem('bundles')) setBundles([
+                { id: 'bundle1', title: 'الوحدة الأولى - النحو', grade: 'الصف الثالث الثانوي', items: [
+                    { type: 'pdf', title: 'مذكرة النحو', link: '#' },
+                    { type: 'video', title: 'شرح الدرس الأول', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ' },
+                    { type: 'exam', title: 'اختبار الوحدة الأولى', examId: 'exam1' }
+                ]}
+            ]);
+            if (!localStorage.getItem('teachers')) setTeachers([
+                { id: 't1', name: 'زينب محمد حسان', specialty: 'اللغة العربية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=ز' },
+                { id: 't2', name: 'مستمر محمد', specialty: 'المواد الشرعية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=م' },
+                { id: 't3', name: 'محمود صبرى محمد', specialty: 'المواد البدنية', image: 'https://via.placeholder.com/150/3b0a0a/d4af37?text=ص' }
+            ]);
+            if (!localStorage.getItem('exams')) setExams([
+                { id: 'exam1', title: 'اختبار الوحدة الأولى', grade: 'الصف الثالث الثانوي', questions: [
+                    { q: 'ما هو جمع كلمة "كتاب"؟', options: ['كتب', 'كتابون', 'كتابات', 'مكتبة'], correct: 0 },
+                    { q: 'ما هو الفاعل في جملة "قرأ الطالب الدرس"؟', options: ['الدرس', 'قرأ', 'الطالب', 'لا يوجد'], correct: 2 }
+                ]}
+            ]);
+            if (!localStorage.getItem('courses')) setCourses([
+                { id: 'c1', title: 'كورس التأسيسي - دفعة 2027', grade: 'الصف الثالث الثانوي', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', showInHome: true }
+            ]);
+            if (!localStorage.getItem('books')) setBooks([
+                { id: 'b1', title: 'ملزمة الفقه الشافعي', grade: 'الصف الثالث الثانوي', link: '#', showInHome: true }
+            ]);
+
+            if (needUpdate) setUsers(users);
+        }
+
+        // ============================================================
+        //  تهيئة الصفوف
+        // ============================================================
         function initGrades() {
             const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
             ['bundleGrade', 'bookGrade', 'examGrade', 'courseGrade'].forEach(id => {
                 const select = document.getElementById(id);
+                if(!select) return;
+                select.innerHTML = '<option value="">اختر الصف</option>';
                 grades.forEach(g => {
                     const opt = document.createElement('option');
                     opt.value = 'الصف ' + g;
@@ -314,32 +377,29 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            initGrades();
-            loadStudentsTable();
-            loadBundlesTable();
-            loadCoursesTable();
-            loadBooksTable();
-            loadTeachersTable();
-            populateBundleSelects();
-            setupForms();
-            toggleItemFields();
-        });
-
+        // ============================================================
+        //  التاب والتنقل
+        // ============================================================
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
-            if (tabId === 'students') loadStudentsTable();
-            if (tabId === 'bundles') loadBundlesTable();
-            if (tabId === 'courses') loadCoursesTable();
-            if (tabId === 'books') loadBooksTable();
-            if (tabId === 'teachers') loadTeachersTable();
-            if (tabId === 'addBundle') populateBundleSelects();
+            const target = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+            if (target) target.classList.add('active');
+            
+            // تحديث الجداول عند التبديل
+            const map = {
+                'students': loadStudentsTable,
+                'bundles': loadBundlesTable,
+                'courses': loadCoursesTable,
+                'books': loadBooksTable,
+                'teachers': loadTeachersTable,
+                'addBundle': populateBundleSelects
+            };
+            if (map[tabId]) map[tabId]();
         }
 
         // ============================================================
-        //  🔹 الطلاب مع زر فحص قوي
+        //  🔹 الطلاب
         // ============================================================
         function debugStorage() {
             const users = getUsers();
@@ -353,13 +413,14 @@
             }
             alert(msg);
             console.log('🔍 بيانات localStorage:', users);
-            loadStudentsTable(); // تحديث الجدول بعد الفحص
+            loadStudentsTable();
         }
 
         function loadStudentsTable() {
             const users = getUsers();
             const students = users.filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
+            if (!tbody) return;
 
             console.log('✅ جميع المستخدمين:', users);
             console.log('✅ الطلاب:', students);
@@ -407,30 +468,491 @@
             loadStudentsTable();
         }
 
-        // ====== باقي الدوال (حزم، محاضرات، كتب، مدرسين) ======
-        // (جميع الدوال التالية موجودة ولكنني اختصرتها هنا للمساحة، ولكنها موجودة في الكود الكامل أعلاه)
-        // ... loadBundlesTable, deleteBundle, populateBundleSelects, toggleItemFields, toggleSourceFields, setupForms, generateQuestionBoxes, saveFullExam, loadCoursesTable, deleteCourse, loadBooksTable, deleteBook, loadTeachersTable, deleteTeacher, logout
-        // للتأكد، الكود الكامل أعلاه يحتوي على كل هذه الدوال.
+        // ============================================================
+        //  🔹 الحزم والوحدات
+        // ============================================================
+        function loadBundlesTable() {
+            const bundles = getBundles();
+            const tbody = document.getElementById('bundlesTableBody');
+            if (!tbody) return;
+            if (!bundles.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="alert alert-info">لا توجد وحدات بعد.</div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = bundles.map((b, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${b.title}</td>
+                    <td>${b.grade}</td>
+                    <td>${b.items ? b.items.length : 0}</td>
+                    <td><button onclick="deleteBundle('${b.id}')" class="btn-card btn-delete">🗑️ حذف</button></td>
+                </tr>
+            `).join('');
+        }
 
-        // ====== دوال مختصرة لتجنب الأخطاء (ضعها في الكود الكامل) ======
-        function loadBundlesTable() { /* ... */ }
-        function deleteBundle(id) { /* ... */ }
-        function populateBundleSelects() { /* ... */ }
-        function toggleItemFields() { /* ... */ }
-        function toggleSourceFields() { /* ... */ }
-        function setupForms() { /* ... */ }
-        function generateQuestionBoxes() { /* ... */ }
-        function saveFullExam() { /* ... */ }
-        function loadCoursesTable() { /* ... */ }
-        function deleteCourse(id) { /* ... */ }
-        function loadBooksTable() { /* ... */ }
-        function deleteBook(id) { /* ... */ }
-        function loadTeachersTable() { /* ... */ }
-        function deleteTeacher(id) { /* ... */ }
-        function logout() { sessionStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+        function deleteBundle(id) {
+            if (!confirm('حذف الوحدة؟')) return;
+            let bundles = getBundles().filter(b => b.id !== id);
+            setBundles(bundles);
+            loadBundlesTable();
+            populateBundleSelects();
+        }
 
-        // **ملاحظة**: يجب نسخ الدوال المختصرة من الكود الكامل أعلاه.
-        // لتوفير الوقت، تأكد من أن الكود الكامل الذي سيتم نسخه يحتوي على جميع الدوال.
+        function populateBundleSelects() {
+            const bundles = getBundles();
+            const select = document.getElementById('itemBundleSelect');
+            const examSelect = document.getElementById('itemExamSelect');
+            const platformSelect = document.getElementById('platformItemSelect');
+            
+            if (select) {
+                select.innerHTML = '<option value="">اختر وحدة</option>';
+                bundles.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.id;
+                    opt.textContent = `${b.title} (${b.grade})`;
+                    select.appendChild(opt);
+                });
+            }
+            // ملء قائمة الاختبارات
+            if (examSelect) {
+                const exams = getExams();
+                examSelect.innerHTML = '<option value="">اختر اختبار</option>';
+                exams.forEach(e => {
+                    const opt = document.createElement('option');
+                    opt.value = e.id;
+                    opt.textContent = e.title;
+                    examSelect.appendChild(opt);
+                });
+            }
+            // ملء قائمة المنصة (محاضرات + كتب)
+            if (platformSelect) {
+                const courses = getCourses();
+                const books = getBooks();
+                platformSelect.innerHTML = '<option value="">اختر محتوى</option>';
+                courses.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = 'course_' + c.id;
+                    opt.textContent = '📹 ' + c.title;
+                    platformSelect.appendChild(opt);
+                });
+                books.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = 'book_' + b.id;
+                    opt.textContent = '📚 ' + b.title;
+                    platformSelect.appendChild(opt);
+                });
+            }
+        }
+
+        // ============================================================
+        //  🔹 المحاضرات
+        // ============================================================
+        function loadCoursesTable() {
+            const courses = getCourses();
+            const tbody = document.getElementById('coursesTableBody');
+            if (!tbody) return;
+            if (!courses.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="alert alert-info">لا توجد محاضرات.</div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = courses.map((c, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${c.title}</td>
+                    <td>${c.grade}</td>
+                    <td><a href="${c.link}" target="_blank">رابط</a></td>
+                    <td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-delete">🗑️ حذف</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteCourse(id) {
+            if (!confirm('حذف المحاضرة؟')) return;
+            setCourses(getCourses().filter(c => c.id !== id));
+            loadCoursesTable();
+        }
+
+        // ============================================================
+        //  🔹 الكتب
+        // ============================================================
+        function loadBooksTable() {
+            const books = getBooks();
+            const tbody = document.getElementById('booksTableBody');
+            if (!tbody) return;
+            if (!books.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="alert alert-info">لا توجد كتب.</div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = books.map((b, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${b.title}</td>
+                    <td>${b.grade}</td>
+                    <td><a href="${b.link}" target="_blank">رابط</a></td>
+                    <td><button onclick="deleteBook('${b.id}')" class="btn-card btn-delete">🗑️ حذف</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteBook(id) {
+            if (!confirm('حذف الكتاب؟')) return;
+            setBooks(getBooks().filter(b => b.id !== id));
+            loadBooksTable();
+        }
+
+        // ============================================================
+        //  🔹 المدرسين
+        // ============================================================
+        function loadTeachersTable() {
+            const teachers = getTeachers();
+            const tbody = document.getElementById('teachersTableBody');
+            if (!tbody) return;
+            if (!teachers.length) {
+                tbody.innerHTML = `<tr><td colspan="4"><div class="alert alert-info">لا يوجد مدرسين.</div></td></tr>`;
+                return;
+            }
+            tbody.innerHTML = teachers.map((t, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${t.name}</td>
+                    <td>${t.image ? '🖼️ موجودة' : 'لا توجد'}</td>
+                    <td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-delete">🗑️ حذف</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteTeacher(id) {
+            if (!confirm('حذف المدرس؟')) return;
+            setTeachers(getTeachers().filter(t => t.id !== id));
+            loadTeachersTable();
+        }
+
+        // ============================================================
+        //  🔹 دوال إظهار/إخفاء الحقول (Bundle Items)
+        // ============================================================
+        function toggleItemFields() {
+            const type = document.getElementById('itemType').value;
+            const sourceDiv = document.getElementById('sourceFields');
+            const examDiv = document.getElementById('examFields');
+            
+            if (type === 'exam') {
+                sourceDiv.style.display = 'none';
+                examDiv.style.display = 'block';
+                document.getElementById('manualFields').style.display = 'none';
+                document.getElementById('platformFields').style.display = 'none';
+            } else {
+                sourceDiv.style.display = 'block';
+                examDiv.style.display = 'none';
+                toggleSourceFields(); // لتحديد manual أو platform
+            }
+        }
+
+        function toggleSourceFields() {
+            const sourceType = document.getElementById('sourceType').value;
+            const manualDiv = document.getElementById('manualFields');
+            const platformDiv = document.getElementById('platformFields');
+            
+            if (sourceType === 'upload' || sourceType === 'url') {
+                manualDiv.style.display = 'block';
+                platformDiv.style.display = 'none';
+            } else if (sourceType === 'platform') {
+                manualDiv.style.display = 'none';
+                platformDiv.style.display = 'block';
+            } else {
+                manualDiv.style.display = 'none';
+                platformDiv.style.display = 'none';
+            }
+        }
+
+        // ============================================================
+        //  🔹 ربط النماذج (Setup Forms)
+        // ============================================================
+        function setupForms() {
+            // 1. إضافة محاضرة
+            document.getElementById('addCourseForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const title = document.getElementById('courseTitle').value.trim();
+                const grade = document.getElementById('courseGrade').value;
+                const link = document.getElementById('courseLink').value.trim();
+                const fileInput = document.getElementById('courseFile');
+                const showInHome = document.getElementById('courseShowInHome').checked;
+                let finalLink = link;
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    const data = await new Promise(resolve => {
+                        reader.onload = (ev) => resolve(ev.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    finalLink = data;
+                }
+                if (!finalLink) { alert('الرجاء إدخال رابط أو رفع ملف.'); return; }
+                const courses = getCourses();
+                courses.push({ id: 'c_' + Date.now(), title, grade, link: finalLink, showInHome });
+                setCourses(courses);
+                document.getElementById('courseAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المحاضرة بنجاح!</div>';
+                this.reset();
+                loadCoursesTable();
+            });
+
+            // 2. إضافة كتاب
+            document.getElementById('addBookForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const title = document.getElementById('bookTitle').value.trim();
+                const grade = document.getElementById('bookGrade').value;
+                const link = document.getElementById('bookLink').value.trim();
+                const fileInput = document.getElementById('bookFile');
+                const showInHome = document.getElementById('bookShowInHome').checked;
+                let finalLink = link;
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    const data = await new Promise(resolve => {
+                        reader.onload = (ev) => resolve(ev.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    finalLink = data;
+                }
+                if (!finalLink) { alert('الرجاء إدخال رابط أو رفع ملف.'); return; }
+                const books = getBooks();
+                books.push({ id: 'b_' + Date.now(), title, grade, link: finalLink, showInHome });
+                setBooks(books);
+                document.getElementById('bookAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة الكتاب بنجاح!</div>';
+                this.reset();
+                loadBooksTable();
+            });
+
+            // 3. إضافة مدرس
+            document.getElementById('addTeacherForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const name = document.getElementById('teacherName').value.trim();
+                const specialty = document.getElementById('teacherSpecialty').value.trim();
+                const imageLink = document.getElementById('teacherImage').value.trim();
+                const fileInput = document.getElementById('teacherImageFile');
+                let finalImage = imageLink;
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    const data = await new Promise(resolve => {
+                        reader.onload = (ev) => resolve(ev.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    finalImage = data;
+                }
+                if (!name) { alert('الرجاء إدخال اسم المدرس.'); return; }
+                const teachers = getTeachers();
+                teachers.push({ id: 't_' + Date.now(), name, specialty, image: finalImage || 'https://via.placeholder.com/150/3b0a0a/d4af37?text=' + name.charAt(0) });
+                setTeachers(teachers);
+                document.getElementById('teacherAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت إضافة المدرس بنجاح!</div>';
+                this.reset();
+                loadTeachersTable();
+            });
+
+            // 4. إنشاء وحدة
+            document.getElementById('addBundleForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('bundleTitle').value.trim();
+                const grade = document.getElementById('bundleGrade').value;
+                if (!title || !grade) { alert('املأ جميع الحقول.'); return; }
+                const bundles = getBundles();
+                bundles.push({ id: 'bundle_' + Date.now(), title, grade, items: [] });
+                setBundles(bundles);
+                document.getElementById('bundleAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الوحدة!</div>';
+                this.reset();
+                loadBundlesTable();
+                populateBundleSelects();
+            });
+
+            // 5. إضافة عنصر للوحدة
+            document.getElementById('addItemForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const bundleId = document.getElementById('itemBundleSelect').value;
+                const type = document.getElementById('itemType').value;
+                if (!bundleId) { alert('اختر وحدة أولاً.'); return; }
+                
+                let bundles = getBundles();
+                const bundleIndex = bundles.findIndex(b => b.id === bundleId);
+                if (bundleIndex === -1) { alert('الوحدة غير موجودة.'); return; }
+                
+                let newItem = { type, title: '' };
+                
+                if (type === 'exam') {
+                    const examId = document.getElementById('itemExamSelect').value;
+                    const title = document.getElementById('examItemTitle').value.trim();
+                    if (!examId || !title) { alert('املأ بيانات الاختبار.'); return; }
+                    newItem.title = title;
+                    newItem.examId = examId;
+                } else {
+                    const sourceType = document.getElementById('sourceType').value;
+                    if (sourceType === 'upload' || sourceType === 'url') {
+                        const title = document.getElementById('itemTitle').value.trim();
+                        const link = document.getElementById('itemLink').value.trim();
+                        const fileInput = document.getElementById('itemFile');
+                        if (!title) { alert('أدخل عنوان العنصر.'); return; }
+                        newItem.title = title;
+                        if (sourceType === 'url') {
+                            if (!link) { alert('أدخل الرابط.'); return; }
+                            newItem.link = link;
+                        } else {
+                            // رفع ملف (سيتم التعامل معه كـ base64)
+                            if (fileInput.files.length > 0) {
+                                const reader = new FileReader();
+                                reader.onload = function(ev) {
+                                    newItem.link = ev.target.result;
+                                    // حفظ بعد التحميل
+                                    bundles[bundleIndex].items.push(newItem);
+                                    setBundles(bundles);
+                                    document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة!</div>';
+                                    loadBundlesTable();
+                                    populateBundleSelects();
+                                };
+                                reader.readAsDataURL(fileInput.files[0]);
+                                return; // ننتظر التحميل
+                            } else {
+                                alert('ارفع ملفاً أو استخدم رابطاً.');
+                                return;
+                            }
+                        }
+                    } else if (sourceType === 'platform') {
+                        const selected = document.getElementById('platformItemSelect').value;
+                        if (!selected) { alert('اختر محتوى من المنصة.'); return; }
+                        const parts = selected.split('_');
+                        if (parts[0] === 'course') {
+                            const courses = getCourses();
+                            const course = courses.find(c => c.id === parts[1]);
+                            if (course) {
+                                newItem.title = course.title;
+                                newItem.link = course.link;
+                            }
+                        } else if (parts[0] === 'book') {
+                            const books = getBooks();
+                            const book = books.find(b => b.id === parts[1]);
+                            if (book) {
+                                newItem.title = book.title;
+                                newItem.link = book.link;
+                            }
+                        }
+                    }
+                }
+                
+                // إذا لم يتم الإرجاع من الرفع، نضيف مباشرة
+                if (newItem.title) {
+                    bundles[bundleIndex].items.push(newItem);
+                    setBundles(bundles);
+                    document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة!</div>';
+                    loadBundlesTable();
+                    populateBundleSelects();
+                    this.reset();
+                    toggleItemFields();
+                }
+            });
+        }
+
+        // ============================================================
+        //  🔹 إضافة اختبار (توليد الحقول وحفظها)
+        // ============================================================
+        let generatedQuestions = [];
+
+        function generateQuestionBoxes() {
+            const count = parseInt(document.getElementById('examQuestionCount').value);
+            if (!count || count < 1) { alert('أدخل عدداً صحيحاً للأسئلة.'); return; }
+            const container = document.getElementById('questionsContainer');
+            let html = '';
+            for (let i = 1; i <= count; i++) {
+                html += `
+                    <div class="question-box-generator">
+                        <h5>سؤال ${i}</h5>
+                        <div class="form-grid">
+                            <div class="full-width"><label>نص السؤال</label><input type="text" id="q_text_${i}" placeholder="نص السؤال" required></div>
+                            <div><label>الخيار 1</label><input type="text" id="q_opt1_${i}" placeholder="الخيار 1"></div>
+                            <div><label>الخيار 2</label><input type="text" id="q_opt2_${i}" placeholder="الخيار 2"></div>
+                            <div><label>الخيار 3</label><input type="text" id="q_opt3_${i}" placeholder="الخيار 3"></div>
+                            <div><label>الخيار 4</label><input type="text" id="q_opt4_${i}" placeholder="الخيار 4"></div>
+                            <div><label>رقم الإجابة الصحيحة (1-4)</label><input type="number" id="q_correct_${i}" min="1" max="4" placeholder="1" required></div>
+                        </div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+            document.getElementById('saveExamBtn').style.display = 'block';
+            document.getElementById('examAddMsg').innerHTML = '';
+        }
+
+        function saveFullExam() {
+            const title = document.getElementById('examTitle').value.trim();
+            const grade = document.getElementById('examGrade').value;
+            const count = parseInt(document.getElementById('examQuestionCount').value);
+            
+            if (!title || !grade || !count) { alert('املأ عنوان الاختبار والصف وعدد الأسئلة.'); return; }
+            
+            let questions = [];
+            let valid = true;
+            for (let i = 1; i <= count; i++) {
+                const text = document.getElementById(`q_text_${i}`).value.trim();
+                const opt1 = document.getElementById(`q_opt1_${i}`).value.trim();
+                const opt2 = document.getElementById(`q_opt2_${i}`).value.trim();
+                const opt3 = document.getElementById(`q_opt3_${i}`).value.trim();
+                const opt4 = document.getElementById(`q_opt4_${i}`).value.trim();
+                const correct = parseInt(document.getElementById(`q_correct_${i}`).value);
+                
+                if (!text || !opt1 || !opt2 || !opt3 || !opt4 || !correct) {
+                    alert(`الرجاء ملء جميع حقول السؤال ${i}.`);
+                    valid = false;
+                    return;
+                }
+                if (correct < 1 || correct > 4) { alert(`رقم الإجابة الصحيحة للسؤال ${i} يجب أن يكون بين 1 و 4.`); return; }
+                
+                questions.push({
+                    q: text,
+                    options: [opt1, opt2, opt3, opt4],
+                    correct: correct - 1
+                });
+            }
+            
+            if (!valid) return;
+            
+            const exams = getExams();
+            const newExam = { id: 'exam_' + Date.now(), title, grade, questions };
+            exams.push(newExam);
+            setExams(exams);
+            
+            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم حفظ الاختبار بنجاح!</div>';
+            document.getElementById('saveExamBtn').style.display = 'none';
+            document.getElementById('questionsContainer').innerHTML = '';
+            document.getElementById('examSetupForm').reset();
+            // تحديث قائمة الاختبارات في تبويب الوحدات
+            populateBundleSelects();
+        }
+
+        // ============================================================
+        //  تسجيل الخروج
+        // ============================================================
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // ============================================================
+        //  التحميل الأولي
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initData(); // تهيئة البيانات فوراً
+            initGrades();
+            loadStudentsTable();
+            loadBundlesTable();
+            loadCoursesTable();
+            loadBooksTable();
+            loadTeachersTable();
+            populateBundleSelects();
+            setupForms();
+            toggleItemFields();
+            
+            // تعيين الحالة الافتراضية لحقول المصدر
+            document.getElementById('sourceFields').style.display = 'none';
+            document.getElementById('manualFields').style.display = 'none';
+            document.getElementById('platformFields').style.display = 'none';
+            document.getElementById('examFields').style.display = 'none';
+        });
     </script>
 </body>
 </html>
