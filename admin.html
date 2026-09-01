@@ -37,8 +37,8 @@
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
         .btn-danger { background: #a00; color: #fff; }
         .btn-success { background: #2a7a2a; color: #fff; }
-        /* زر الحذف الجديد باللون الأحمر الداكن */
         .btn-delete { background: #8b0000; color: #fff; }
+        .btn-refresh { background: #3b0a0a; color: #d4af37; padding: 8px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; }
 
         .add-form { margin-top: 20px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -56,6 +56,9 @@
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+
+        .refresh-row { display: flex; justify-content: flex-end; margin-bottom: 15px; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -95,6 +98,9 @@
         <div id="tabStudents" class="tab-content active">
             <div class="alert alert-success" style="margin-bottom:15px;">
                 ⚠️ <strong>مهم جداً:</strong> بعد إضافة المحاضرات والكتب والاختبارات، يجب أن تضغط زر <strong>"تفعيل"</strong> بجانب الطالب ليرى المحتوى الخاص بصفه.
+            </div>
+            <div class="refresh-row">
+                <button onclick="loadStudentsTable()" class="btn-refresh">🔄 تحديث الطلاب</button>
             </div>
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
@@ -278,7 +284,7 @@
     </div>
 
     <script>
-        // ====== دوال البيانات (نفسها) ======
+        // ====== دوال البيانات ======
         function getUsers() { return JSON.parse(localStorage.getItem('users')) || []; }
         function setUsers(u) { localStorage.setItem('users', JSON.stringify(u)); }
         function getCourses() { return JSON.parse(localStorage.getItem('courses')) || []; }
@@ -331,17 +337,26 @@
         }
 
         // ============================================================
-        //  🔹 الطلاب – مع إضافة زر "حذف" بجانب التفعيل
+        //  🔹 الطلاب – مع زر تحديث وتحسينات
         // ============================================================
         function loadStudentsTable() {
-            const users = getUsers().filter(u => u.role === 'student');
+            const users = getUsers();
+            const students = users.filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
-            if (!users.length) { tbody.innerHTML = '<tr><td colspan="5">لا يوجد طلاب.</td></tr>'; return; }
-            tbody.innerHTML = users.map((u, idx) => `
+
+            console.log('✅ جميع المستخدمين:', users);
+            console.log('✅ الطلاب:', students);
+
+            if (!students.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="alert alert-info" style="margin:10px 0;">📭 لا يوجد طلاب مسجلون حتى الآن. تأكد من أن الطلاب قد سجلوا بشكل صحيح.</div></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = students.map((u, idx) => `
                 <tr>
                     <td>${idx+1}</td>
                     <td>${u.name}</td>
-                    <td>${u.grade}</td>
+                    <td>${u.grade || 'غير محدد'}</td>
                     <td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td>
                     <td>
                         <button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}">
@@ -355,18 +370,18 @@
             `).join('');
         }
 
-        // دالة تبديل التفعيل (نفسها)
+        // دالة تبديل التفعيل
         function toggleStudent(id) {
             let users = getUsers();
             let u = users.find(x => x.id === id);
-            if (!u) return;
+            if (!u) { alert('الطالب غير موجود'); return; }
             u.active = !u.active;
             setUsers(users);
             alert(u.active ? '✅ تم تفعيل الطالب بنجاح' : '❌ تم إلغاء التفعيل');
             loadStudentsTable();
         }
 
-        // دالة حذف الطالب (جديدة)
+        // دالة حذف الطالب
         function deleteStudent(id) {
             if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟ لا يمكن التراجع.')) return;
             let users = getUsers();
@@ -378,6 +393,11 @@
         }
 
         // ====== باقي الدوال (حزم، محاضرات، كتب، مدرسين) كما هي ======
+        // ... (جميع الدوال التالية لم تتغير، أنقلها من الكود السابق)
+        // لكن لتوفير المساحة، سأضعها مختصرة مع الإشارة إلى أنها موجودة.
+        // في التطبيق الفعلي، يجب أن تكون جميع الدوال موجودة.
+
+        // دالة loadBundlesTable
         function loadBundlesTable() {
             const bundles = getBundles();
             const tbody = document.getElementById('bundlesTableBody');
@@ -392,6 +412,7 @@
             populateBundleSelects();
         }
 
+        // populateBundleSelects, toggleItemFields, toggleSourceFields
         function populateBundleSelects() {
             const bundles = getBundles();
             const selectBundle = document.getElementById('itemBundleSelect');
@@ -458,8 +479,9 @@
             }
         }
 
-        // ====== نماذج الإضافة (لم تتغير) ======
+        // ====== نماذج الإضافة ======
         function setupForms() {
+            // addBundleForm
             document.getElementById('addBundleForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bundleTitle').value.trim();
@@ -474,6 +496,7 @@
                 populateBundleSelects();
             });
 
+            // addItemForm
             document.getElementById('addItemForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const bundleId = document.getElementById('itemBundleSelect').value;
@@ -551,7 +574,7 @@
                 loadBundlesTable();
             });
 
-            // إضافة محاضرة
+            // addCourseForm
             document.getElementById('addCourseForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('courseTitle').value.trim();
@@ -586,7 +609,7 @@
                 }
             });
 
-            // إضافة كتاب
+            // addBookForm
             document.getElementById('addBookForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const title = document.getElementById('bookTitle').value.trim();
@@ -621,7 +644,7 @@
                 }
             });
 
-            // إضافة مدرس
+            // addTeacherForm
             document.getElementById('addTeacherForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const name = document.getElementById('teacherName').value.trim();
@@ -654,7 +677,7 @@
             });
         }
 
-        // ====== منطق الاختبارات (لم يتغير) ======
+        // ====== منطق الاختبارات ======
         function generateQuestionBoxes() {
             const count = parseInt(document.getElementById('examQuestionCount').value);
             const title = document.getElementById('examTitle').value.trim();
