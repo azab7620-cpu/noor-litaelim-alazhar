@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        /* ====== كل الـ CSS الخاص بـ admin ====== */
+        /* ====== كل الـ CSS ====== */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -49,6 +49,7 @@
         .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
             .add-form .form-grid { grid-template-columns: 1fr; }
@@ -76,6 +77,7 @@
             <button onclick="showTab('courses')">📹 المحاضرات</button>
             <button onclick="showTab('books')">📚 الكتب</button>
             <button onclick="showTab('teachers')">👨‍🏫 المدرسون</button>
+            <button onclick="showTab('exams')">📝 الاختبارات</button>  <!-- ✅ جديد -->
             <button onclick="showTab('addCourse')">➕ إضافة محاضرة</button>
             <button onclick="showTab('addBook')">➕ إضافة كتاب</button>
             <button onclick="showTab('addTeacher')">➕ إضافة مدرس</button>
@@ -94,7 +96,7 @@
             </table>
         </div>
 
-        <!-- باقي التابات -->
+        <!-- الحزم والوحدات -->
         <div id="tabBundles" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
@@ -102,6 +104,7 @@
             </table>
         </div>
 
+        <!-- المحاضرات -->
         <div id="tabCourses" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
@@ -109,6 +112,7 @@
             </table>
         </div>
 
+        <!-- الكتب -->
         <div id="tabBooks" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
@@ -116,10 +120,20 @@
             </table>
         </div>
 
+        <!-- المدرسون -->
         <div id="tabTeachers" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
                 <tbody id="teachersTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- ✅ تبويب الاختبارات (جديد) -->
+        <div id="tabExams" class="tab-content">
+            <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 قائمة الاختبارات</h4>
+            <table class="admin-table">
+                <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>عدد الأسئلة</th><th>إجراءات</th></tr></thead>
+                <tbody id="examsTableBody"></tbody>
             </table>
         </div>
 
@@ -338,6 +352,7 @@
             });
         }
 
+        // ---------- الطلاب ----------
         async function loadStudentsTable() {
             const allUsers = await getUsers();
             const students = allUsers.filter(u => u.role === 'student');
@@ -382,6 +397,7 @@
             loadStudentsTable();
         }
 
+        // ---------- الحزم ----------
         async function loadBundlesTable() {
             const bundles = await getBundles();
             const tbody = document.getElementById('bundlesTableBody');
@@ -447,6 +463,62 @@
             const sourceType = document.getElementById('sourceType').value;
             document.getElementById('manualFields').style.display = (sourceType === 'platform') ? 'none' : 'block';
             document.getElementById('platformFields').style.display = (sourceType === 'platform') ? 'block' : 'none';
+        }
+
+        // ---------- المحاضرات ----------
+        async function loadCoursesTable() {
+            const courses = await getCourses();
+            const tbody = document.getElementById('coursesTableBody');
+            tbody.innerHTML = courses.length ? courses.map(c => `<tr><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد محاضرات</td></tr>';
+        }
+        async function deleteCourse(id) { let c = await getCourses(); await setCourses(c.filter(x => x.id !== id)); loadCoursesTable(); populateBundleSelects(); }
+
+        // ---------- الكتب ----------
+        async function loadBooksTable() {
+            const books = await getBooks();
+            const tbody = document.getElementById('booksTableBody');
+            tbody.innerHTML = books.length ? books.map(b => `<tr><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد كتب</td></tr>';
+        }
+        async function deleteBook(id) { let b = await getBooks(); await setBooks(b.filter(x => x.id !== id)); loadBooksTable(); populateBundleSelects(); }
+
+        // ---------- المدرسون ----------
+        async function loadTeachersTable() {
+            const teachers = await getTeachers();
+            const tbody = document.getElementById('teachersTableBody');
+            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
+        }
+        async function deleteTeacher(id) { let t = await getTeachers(); await setTeachers(t.filter(x => x.id !== id)); loadTeachersTable(); }
+
+        // ---------- ✅ الاختبارات (جديد) ----------
+        async function loadExamsTable() {
+            const exams = await getExams();
+            const tbody = document.getElementById('examsTableBody');
+            if (!exams.length) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-info" style="margin:10px 0;">📭 لا توجد اختبارات حتى الآن.</div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = exams.map((exam, idx) => `
+                <tr>
+                    <td>${idx+1}</td>
+                    <td><strong>${exam.title}</strong></td>
+                    <td>${exam.grade}</td>
+                    <td>${exam.questions ? exam.questions.length : 0}</td>
+                    <td>
+                        <button onclick="deleteExam('${exam.id}')" class="btn-card btn-delete">🗑️ حذف</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteExam(id) {
+            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الاختبار نهائياً؟')) return;
+            let exams = await getExams();
+            const newExams = exams.filter(e => e.id !== id);
+            if (newExams.length === exams.length) { alert('الاختبار غير موجود.'); return; }
+            await setExams(newExams);
+            alert('✅ تم حذف الاختبار بنجاح.');
+            loadExamsTable();
+            populateBundleSelects(); // تحديث القوائم في حال كان الاختبار مستخدماً في وحدات
         }
 
         // ============================================================
@@ -639,7 +711,7 @@
         }
 
         // ============================================================
-        //  منطق الاختبارات
+        //  منطق الاختبارات (إضافة جديدة)
         // ============================================================
         function generateQuestionBoxes() {
             const count = parseInt(document.getElementById('examQuestionCount').value);
@@ -698,32 +770,9 @@
             alert('✅ تم إنشاء الاختبار بنجاح!');
             document.getElementById('examSetupForm').reset();
             populateBundleSelects();
+            loadExamsTable(); // تحديث جدول الاختبارات
             window.scrollTo(0,0);
         }
-
-        // ============================================================
-        //  جداول العرض
-        // ============================================================
-        async function loadCoursesTable() {
-            const courses = await getCourses();
-            const tbody = document.getElementById('coursesTableBody');
-            tbody.innerHTML = courses.length ? courses.map(c => `<tr><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد محاضرات</td></tr>';
-        }
-        async function deleteCourse(id) { let c = await getCourses(); await setCourses(c.filter(x => x.id !== id)); loadCoursesTable(); populateBundleSelects(); }
-
-        async function loadBooksTable() {
-            const books = await getBooks();
-            const tbody = document.getElementById('booksTableBody');
-            tbody.innerHTML = books.length ? books.map(b => `<tr><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد كتب</td></tr>';
-        }
-        async function deleteBook(id) { let b = await getBooks(); await setBooks(b.filter(x => x.id !== id)); loadBooksTable(); populateBundleSelects(); }
-
-        async function loadTeachersTable() {
-            const teachers = await getTeachers();
-            const tbody = document.getElementById('teachersTableBody');
-            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
-        }
-        async function deleteTeacher(id) { let t = await getTeachers(); await setTeachers(t.filter(x => x.id !== id)); loadTeachersTable(); }
 
         // ============================================================
         //  التبويبات
@@ -737,6 +786,7 @@
             if (tabId === 'courses') loadCoursesTable();
             if (tabId === 'books') loadBooksTable();
             if (tabId === 'teachers') loadTeachersTable();
+            if (tabId === 'exams') loadExamsTable();   // ✅ جديد
             if (tabId === 'addBundle') populateBundleSelects();
         }
 
@@ -750,6 +800,7 @@
             loadCoursesTable();
             loadBooksTable();
             loadTeachersTable();
+            loadExamsTable();    // ✅ تحميل الاختبارات عند بدء التشغيل
             populateBundleSelects();
             setupForms();
             toggleItemFields();
