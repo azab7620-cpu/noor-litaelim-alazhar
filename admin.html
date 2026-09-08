@@ -832,4 +832,78 @@
         async function loadTeachersTable() {
             const teachers = await getTeachers();
             const tbody = document.getElementById('teachersTableBody');
-            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td
+            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
+        }
+        async function deleteTeacher(id) { let t = await getTeachers(); await setTeachers(t.filter(x => x.id !== id)); loadTeachersTable(); }
+
+        // ============================================================
+        //  عرض وحذف الاختبارات
+        // ============================================================
+        async function loadExamsTable() {
+            const exams = await getExams();
+            const tbody = document.getElementById('examsTableBody');
+            if (!exams.length) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-info" style="margin:10px 0;">📭 لا توجد اختبارات حتى الآن.</div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = exams.map((exam, idx) => `
+                <tr>
+                    <td>${idx+1}</td>
+                    <td><strong>${exam.title}</strong></td>
+                    <td>${exam.grade}</td>
+                    <td>${exam.questions ? exam.questions.length : 0}</td>
+                    <td>
+                        <button onclick="deleteExam('${exam.id}')" class="btn-card btn-delete">🗑️ حذف</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteExam(id) {
+            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الاختبار نهائياً؟')) return;
+            let exams = await getExams();
+            const newExams = exams.filter(e => e.id !== id);
+            if (newExams.length === exams.length) { alert('الاختبار غير موجود.'); return; }
+            await setExams(newExams);
+            alert('✅ تم حذف الاختبار بنجاح.');
+            loadExamsTable();
+            populateBundleSelects();
+        }
+
+        // ============================================================
+        //  التبويبات
+        // ============================================================
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
+            if (tabId === 'students') loadStudentsTable();
+            if (tabId === 'bundles') loadBundlesTable();
+            if (tabId === 'courses') loadCoursesTable();
+            if (tabId === 'books') loadBooksTable();
+            if (tabId === 'teachers') loadTeachersTable();
+            if (tabId === 'exams') loadExamsTable();
+            if (tabId === 'addBundle') populateBundleSelects();
+        }
+
+        // ============================================================
+        //  التهيئة
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDarkModePreference();
+            initGrades();
+            loadStudentsTable();
+            loadBundlesTable();
+            loadCoursesTable();
+            loadBooksTable();
+            loadTeachersTable();
+            loadExamsTable();
+            populateBundleSelects();
+            setupForms();
+            toggleItemFields();
+        });
+
+        function logout() { sessionStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+    </script>
+</body>
+</html>
