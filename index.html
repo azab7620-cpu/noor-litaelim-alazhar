@@ -366,7 +366,7 @@
         </div>
     </div>
 
-    <!-- صفحة الامتحان (تم تعديلها) -->
+    <!-- صفحة الامتحان -->
     <div id="examPage">
         <div class="exam-header">
             <h2 id="examTitleHeader">عنوان الاختبار</h2>
@@ -378,7 +378,6 @@
             <div class="q-text" id="qTextDisplay">السؤال هنا</div>
             <ul class="options-list" id="optionsList"></ul>
         </div>
-        <!-- ✅ زر التسليم القديم تم حذفه، وأصبح التسليم من زر "التالي" في آخر سؤال -->
         <div class="nav-btns">
             <button class="btn-nav btn-prev" id="prevBtn" onclick="prevQuestion()">السابق</button>
             <button class="btn-nav btn-next" id="nextBtn" onclick="handleNextOrFinish()">التالي</button>
@@ -691,7 +690,6 @@
             const exams = (await getExams()).filter(e => e.grade === user.grade);
             const completed = user.completedExams || [];
 
-            // ✅ عرض الاختبارات مع كشف اختبارات المرة الواحدة
             document.getElementById('studentExams').innerHTML = exams.length ? exams.map(ex => {
                 const isOneTime = ex.oneTimeOnly === true;
                 const alreadyTaken = isOneTime && completed.includes(ex.id);
@@ -710,7 +708,6 @@
                     </div>`;
             }).join('') : '<p style="color:#888;">لا توجد اختبارات لصفك بعد.</p>';
 
-            // ✅ عرض الوحدات
             const bundles = (await getBundles()).filter(b => b.grade === user.grade);
             const bundlesDiv = document.getElementById('studentBundles');
             if (bundles.length) {
@@ -760,7 +757,7 @@
         }
 
         // ============================================================
-        //  منطق الاختبار (بعد التعديل)
+        //  منطق الاختبار
         // ============================================================
         let currentUser = null;
         let currentExam = null;
@@ -768,7 +765,6 @@
         let answers = [];
 
         function startExam(examId) {
-            // التأكد من أن الاختبار لمرة واحدة لم يسبق تسليمه
             if (currentUser) {
                 const completed = currentUser.completedExams || [];
                 getExams().then(exams => {
@@ -813,7 +809,6 @@
             });
             document.getElementById('optionsList').innerHTML = optionsHTML;
 
-            // ✅ تحديث زر "التالي" / "تسليم الاختبار"
             const nextBtn = document.getElementById('nextBtn');
             if (nextBtn) {
                 if (currentQIndex === currentExam.questions.length - 1) {
@@ -828,7 +823,6 @@
                 }
             }
 
-            // ✅ زر السابق يختفي في السؤال الأول
             const prevBtn = document.getElementById('prevBtn');
             if (prevBtn) {
                 prevBtn.style.visibility = currentQIndex === 0 ? 'hidden' : 'visible';
@@ -854,14 +848,11 @@
             }
         }
 
-        // ✅ دالة الزر الموحد (التالي / تسليم)
         function handleNextOrFinish() {
             if (currentQIndex < currentExam.questions.length - 1) {
-                // لسه فيه أسئلة → ننتقل للسؤال التالي
                 currentQIndex++;
                 renderQuestion();
             } else {
-                // آخر سؤال → تسليم
                 const answeredCount = answers.filter(a => a !== null).length;
                 if (answeredCount < currentExam.questions.length) {
                     const remaining = currentExam.questions.length - answeredCount;
@@ -881,7 +872,8 @@
 
             currentExam.questions.forEach((q, i) => {
                 let studentAnswer = answers[i];
-                let correctAnswer = q.correct;
+                // ✅ التصحيح المهم: طرح 1 لأن إجابة الأدمن مخزنة 1-4، وإجابة الطالب مخزنة 0-3
+                let correctAnswer = q.correct - 1;
                 if (studentAnswer === null) unanswered++;
                 else if (studentAnswer === correctAnswer) correctCount++;
                 else wrongCount++;
@@ -907,7 +899,6 @@
                 const newAvg = Math.round(((Number(oldAttempts.avg) * Number(oldAttempts.solved)) + (correctCount / currentExam.questions.length * 100)) / newSolved);
                 user.attempts = { avg: newAvg, solved: newSolved, total: newTotal, pending: Math.max(0, (Number(oldAttempts.pending) || 0) - currentExam.questions.length) };
 
-                // ✅ تسجيل الاختبار المُسلَّم (لو كان لمرة واحدة)
                 if (currentExam.oneTimeOnly) {
                     if (!user.completedExams) user.completedExams = [];
                     if (!user.completedExams.includes(currentExam.id)) {
@@ -916,7 +907,6 @@
                 }
                 await setUsers(users);
 
-                // تحديث بيانات المستخدم الحالي
                 currentUser = user;
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
             }
@@ -1006,7 +996,7 @@
                     active: false,
                     attempts: { avg: 0, solved: 0, total: 0, pending: 0 },
                     exams: [],
-                    completedExams: [], // ✅ الحقل الجديد
+                    completedExams: [],
                     completedLessons: 0,
                     totalLessons: 38
                 };
