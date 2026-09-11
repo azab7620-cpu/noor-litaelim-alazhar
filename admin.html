@@ -33,6 +33,7 @@
         body.dark-mode .btn-logout { background: var(--gold); color: #1a1a2e; }
         body.dark-mode .btn-logout:hover { background: var(--gold-dark); }
         body.dark-mode .admin-tabs button { background: var(--bg-card); border-color: var(--border-color); color: var(--text-secondary); }
+        body.dark-mode .admin-tabs button:hover { border-color: var(--gold); }
         body.dark-mode .admin-tabs button.active { background: var(--gold); color: #1a1a2e; border-color: var(--gold); }
         body.dark-mode .tab-content { background: var(--bg-card); }
         body.dark-mode .admin-table th { background: var(--gold); color: #1a1a2e; }
@@ -54,6 +55,15 @@
         body.dark-mode .detail-row { border-bottom-color: var(--border-color); }
         body.dark-mode .detail-label { color: var(--text-secondary); }
         body.dark-mode .detail-value { color: var(--text-primary); }
+        body.dark-mode .detail-row:hover { background: rgba(212,175,55,0.05); }
+        body.dark-mode #studentSearchInput {
+            background: var(--input-bg) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--gold) !important;
+        }
+        body.dark-mode #studentSearchInput::placeholder { color: var(--text-secondary); }
+        body.dark-mode #searchResultsCount { color: var(--gold) !important; }
+        body.dark-mode .modal-header { border-bottom-color: var(--border-color); }
 
         /* زر الدارك مود */
         .btn-dark-mode {
@@ -74,6 +84,7 @@
         }
         .btn-dark-mode:hover { transform: scale(1.1) rotate(10deg); }
         body.dark-mode .btn-dark-mode { border-color: #d4af37; color: #d4af37; }
+        body.dark-mode .btn-dark-mode:hover { background: rgba(212,175,55,0.1); }
 
         header { background: #fff; border-bottom: 3px solid #d4af37; padding: 12px 20px; transition: 0.3s; }
         .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
@@ -81,6 +92,7 @@
         .logo-text span { font-size: 11px; color: #888; }
         .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { background: #520e0e; }
         .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.3s; }
         .btn-home:hover { background: #c99e00; }
 
@@ -110,6 +122,7 @@
         .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; transition: 0.3s; }
         .add-form input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); }
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        .btn-submit:hover { transform: scale(1.03); }
         .bundle-container-box { border: 2px dashed #ddd; padding: 20px; border-radius: 12px; margin-bottom: 15px; transition: 0.3s; }
         .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 20px; transition: 0.3s; }
         .question-box-generator h4 { color: #3b0a0a; }
@@ -118,7 +131,7 @@
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
-        /* ====== MODAL (تفاصيل الطالب) ====== */
+        /* ====== MODAL ====== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -196,8 +209,9 @@
             padding: 12px 15px;
             border-bottom: 1px dashed #f0ede8;
             transition: background 0.3s;
+            border-radius: 8px;
         }
-        .detail-row:hover { background: #f9f6f0; border-radius: 8px; }
+        .detail-row:hover { background: #f9f6f0; }
         .detail-row:last-child { border-bottom: none; }
         .detail-label {
             font-weight: 700;
@@ -268,13 +282,32 @@
             <div class="alert alert-success" style="margin-bottom:15px;">
                 ⚠️ <strong>مهم جداً:</strong> بعد إضافة المحاضرات والكتب والاختبارات، يجب أن تضغط زر <strong>"تفعيل"</strong> بجانب الطالب ليرى المحتوى الخاص بصفه.
             </div>
+            
+            <!-- ✅ مربع البحث -->
+            <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <div style="flex:1; min-width:280px; position:relative;">
+                    <input 
+                        type="text" 
+                        id="studentSearchInput" 
+                        placeholder="🔍 ابحث بالاسم أو رقم الطالب أو رقم ولي الأمر..." 
+                        oninput="searchStudents()"
+                        style="width:100%; padding:14px 45px 14px 18px; border:2px solid #d4af37; border-radius:12px; font-size:15px; font-family:'Cairo',sans-serif; outline:none; transition:0.3s; background:#fff;"
+                        onfocus="this.style.boxShadow='0 0 0 4px rgba(212,175,55,0.15)'"
+                        onblur="this.style.boxShadow='none'"
+                    >
+                    <span style="position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:20px; color:#d4af37;">🔍</span>
+                </div>
+                <button onclick="clearSearch()" class="btn-card" style="background:#555; color:#fff; padding:12px 20px; font-size:14px;">✖ مسح البحث</button>
+                <span id="searchResultsCount" style="font-weight:700; color:#3b0a0a; font-size:14px;"></span>
+            </div>
+
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
                 <tbody id="studentsTableBody"></tbody>
             </table>
         </div>
 
-        <!-- باقي التابات -->
+        <!-- الحزم والوحدات -->
         <div id="tabBundles" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
@@ -282,6 +315,7 @@
             </table>
         </div>
 
+        <!-- المحاضرات -->
         <div id="tabCourses" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
@@ -289,6 +323,7 @@
             </table>
         </div>
 
+        <!-- الكتب -->
         <div id="tabBooks" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
@@ -296,6 +331,7 @@
             </table>
         </div>
 
+        <!-- المدرسون -->
         <div id="tabTeachers" class="tab-content">
             <table class="admin-table">
                 <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
@@ -303,6 +339,7 @@
             </table>
         </div>
 
+        <!-- الاختبارات -->
         <div id="tabExams" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 قائمة الاختبارات</h4>
             <table class="admin-table">
@@ -457,7 +494,7 @@
         </div>
     </div>
 
-    <!-- ✅ MODAL تفاصيل الطالب -->
+    <!-- MODAL تفاصيل الطالب -->
     <div id="studentDetailsModal" class="modal-overlay" onclick="closeStudentModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -554,17 +591,62 @@
         }
 
         // ============================================================
+        //  🔍 دوال البحث
+        // ============================================================
+        function searchStudents() {
+            loadStudentsTable();
+        }
+        function clearSearch() {
+            const input = document.getElementById('studentSearchInput');
+            if (input) {
+                input.value = '';
+                loadStudentsTable();
+            }
+        }
+
+        // ============================================================
         //  الطلاب + تفاصيل
         // ============================================================
         async function loadStudentsTable() {
             const allUsers = await getUsers();
             const students = allUsers.filter(u => u.role === 'student');
             const tbody = document.getElementById('studentsTableBody');
+
+            // ✅ فلترة البحث
+            const searchInput = document.getElementById('studentSearchInput');
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            let displayStudents = students;
+            if (query) {
+                displayStudents = students.filter(u => {
+                    const name = (u.name || '').toLowerCase();
+                    const phone = (u.phone || '').toLowerCase();
+                    const parentPhone = (u.parentPhone || '').toLowerCase();
+                    return name.includes(query) || phone.includes(query) || parentPhone.includes(query);
+                });
+            }
+
+            // ✅ عرض عدد النتائج
+            const countEl = document.getElementById('searchResultsCount');
+            if (countEl) {
+                if (query) {
+                    countEl.textContent = `📊 عدد النتائج: ${displayStudents.length} من ${students.length}`;
+                } else {
+                    countEl.textContent = `📊 إجمالي الطلاب: ${students.length}`;
+                }
+            }
+
             if (!students.length) {
                 tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-info" style="margin:10px 0;">📭 لا يوجد طلاب مسجلون حتى الآن.</div></td></tr>';
                 return;
             }
-            tbody.innerHTML = students.map((u, idx) => `
+
+            if (!displayStudents.length) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-warning" style="margin:10px 0;">🔍 لا توجد نتائج مطابقة للبحث.</div></td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = displayStudents.map((u, idx) => `
                 <tr>
                     <td>${idx+1}</td>
                     <td>${u.name}</td>
@@ -581,7 +663,7 @@
             `).join('');
         }
 
-        // ✅ دالة عرض تفاصيل الطالب
+        // ✅ عرض تفاصيل الطالب
         async function showStudentDetails(id) {
             const users = await getUsers();
             const u = users.find(x => x.id === id);
@@ -678,7 +760,7 @@
         }
 
         // ============================================================
-        //  باقي الدوال (نفس الكود السابق)
+        //  الحزم
         // ============================================================
         async function loadBundlesTable() {
             const bundles = await getBundles();
@@ -747,6 +829,9 @@
             document.getElementById('platformFields').style.display = (sourceType === 'platform') ? 'block' : 'none';
         }
 
+        // ============================================================
+        //  نماذج الإضافة
+        // ============================================================
         function setupForms() {
             document.getElementById('addBundleForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
