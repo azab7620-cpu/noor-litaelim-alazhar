@@ -335,6 +335,13 @@
     <header>
         <div class="nav-container">
             <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>منصة الطالب والأدمن</span></div></div>
+            <!-- ✅ تم إضافة id="navLinks" للتحكم في ظهورها -->
+            <ul class="nav-links" id="navLinks">
+                <li><a onclick="showHome()">الرئيسية</a></li>
+                <li><a onclick="showHome()">الكورسات</a></li>
+                <li><a onclick="showHome()">المدرسون</a></li>
+                <li><a onclick="showHome()">الكتب</a></li>
+            </ul>
             <div class="nav-buttons" id="navButtons">
                 <button onclick="toggleDarkMode()" class="btn-dark-mode" title="تبديل الوضع الداكن">🌙</button>
                 <a onclick="showAuthPage('login')" class="btn-login">دخول</a>
@@ -694,6 +701,18 @@
             if (needUpdate) await setUsers(users);
         }
 
+        // ============================================================
+        //  🌟 دوال التحكم في ظهور الـ nav-links
+        // ============================================================
+        function showNavLinks() {
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks) navLinks.style.display = 'flex';
+        }
+        function hideNavLinks() {
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks) navLinks.style.display = 'none';
+        }
+
         // العرض العام
         async function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
@@ -750,6 +769,7 @@
             document.querySelector('header').style.display = 'block';
             document.querySelector('footer').style.display = 'block';
             document.querySelector('.support-float-btn').style.display = 'flex';
+            showNavLinks(); // ✅ إظهار الاختصارات في الصفحة الرئيسية
             renderTeachers(); renderCourses(); renderBooks();
             window.scrollTo(0,0);
         }
@@ -760,6 +780,7 @@
             document.getElementById('studentDashboard').classList.remove('active');
             document.getElementById('courseDetailView').classList.remove('active');
             document.getElementById('examPage').classList.remove('active');
+            hideNavLinks(); // ✅ إخفاء الاختصارات في صفحة الدخول
             switchAuthView(mode);
             window.scrollTo(0,0);
         }
@@ -942,6 +963,7 @@
             
             document.getElementById('studentDashboard').classList.remove('active');
             document.getElementById('courseDetailView').classList.add('active');
+            hideNavLinks(); // ✅ إخفاء الاختصارات في صفحة تفاصيل الكورس
             window.scrollTo(0,0);
         }
 
@@ -1025,6 +1047,7 @@
                     document.getElementById('studentDashboard').classList.remove('active');
                     document.getElementById('courseDetailView').classList.remove('active');
                     document.getElementById('examPage').classList.add('active');
+                    hideNavLinks(); // ✅ إخفاء الاختصارات في صفحة الاختبار
                     
                     document.getElementById('examTitleHeader').textContent = currentExam.title + (currentExam.oneTimeOnly ? ' 🔒' : '');
                     renderQuestion();
@@ -1262,6 +1285,7 @@
                 document.getElementById('navButtons').style.display = 'none';
                 document.getElementById('navUser').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
+                hideNavLinks(); // ✅ إخفاء الاختصارات بعد تسجيل الدخول
 
                 if (user.role === 'admin') {
                     document.getElementById('adminLinkBtn').style.display = 'inline-block';
@@ -1281,6 +1305,7 @@
                 document.getElementById('navButtons').style.display = 'none';
                 document.getElementById('navUser').style.display = 'flex';
                 document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
+                hideNavLinks(); // ✅ إخفاء الاختصارات لو المستخدم مسجل دخول بالفعل
                 if (user.role === 'admin') {
                     document.getElementById('adminLinkBtn').style.display = 'inline-block';
                     window.location.href = 'admin.html';
@@ -1306,6 +1331,7 @@
             document.getElementById('examPage').classList.remove('active');
             document.getElementById('homeSection').style.display = 'block';
             document.getElementById('authSection').style.display = 'none';
+            showNavLinks(); // ✅ إظهار الاختصارات بعد تسجيل الخروج
             window.scrollTo(0,0);
         }
 
