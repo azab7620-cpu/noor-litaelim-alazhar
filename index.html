@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نور تعليم الأزهر</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- 🌟 إضافة خط عريف رقعة (شبيه بخط الثلث) و خط القاهرة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
@@ -24,7 +25,19 @@
         }
         body.dark-mode { background: var(--bg-primary); color: var(--text-primary); }
         body.dark-mode header { background: var(--bg-header); border-bottom-color: var(--gold); }
-        body.dark-mode .logo-text h1 { color: var(--gold); }
+        
+        /* 🌟 تعديل خط اللوجو */
+        .logo-text h1 { 
+            font-family: 'Aref Ruqaa', serif; 
+            font-size: 28px; 
+            color: #3b0a0a; 
+            font-weight: 700; 
+            text-shadow: 1px 1px 3px rgba(212,175,55,0.4);
+            margin-bottom: 2px;
+        }
+        .logo-text span { font-size: 11px; color: #888; font-family: 'Cairo', sans-serif; }
+        
+        body.dark-mode .logo-text h1 { color: var(--gold); text-shadow: none; }
         body.dark-mode .logo-text span { color: var(--text-secondary); }
         body.dark-mode .nav-links a { color: var(--text-secondary); }
         body.dark-mode .nav-links a:hover { color: var(--gold); }
@@ -335,12 +348,12 @@
     <header>
         <div class="nav-container">
             <div class="logo-area"><div class="logo-text"><h1>نور تعليم الأزهر</h1><span>منصة الطالب والأدمن</span></div></div>
-            <!-- ✅ تم إضافة id="navLinks" للتحكم في ظهورها -->
+            <!-- ✅ روابط التنقل مع التمرير السلس -->
             <ul class="nav-links" id="navLinks">
                 <li><a onclick="showHome()">الرئيسية</a></li>
-                <li><a onclick="showHome()">الكورسات</a></li>
-                <li><a onclick="showHome()">المدرسون</a></li>
-                <li><a onclick="showHome()">الكتب</a></li>
+                <li><a onclick="scrollToSection('coursesSection')">الكورسات</a></li>
+                <li><a onclick="scrollToSection('teachersSection')">المدرسون</a></li>
+                <li><a onclick="scrollToSection('booksSection')">الكتب</a></li>
             </ul>
             <div class="nav-buttons" id="navButtons">
                 <button onclick="toggleDarkMode()" class="btn-dark-mode" title="تبديل الوضع الداكن">🌙</button>
@@ -374,6 +387,7 @@
                 <div class="card animate-scale delay-3"><div style="font-size:40px;">⏱️</div><h4>تعلم في أي وقت</h4><p>من موبايلك أو لابتوبك.</p></div>
             </div>
         </div>
+        <!-- ✅ تم إضافة id للأقسام لسهولة التمرير -->
         <div class="section-container animate-fade" id="teachersSection">
             <div class="section-header"><span>المدرسون</span><h3>مدرسين نور تعليم الأزهر</h3></div>
             <div class="card-grid" id="teachersGrid"></div>
@@ -672,7 +686,7 @@
         async function getCourses() { return await getCollection('courses'); }
         async function setCourses(d) { await setCollection('courses', d); }
         async function getBooks() { return await getCollection('books'); }
-        async function setBooks(d) { await setCollection('books', d); }
+        async function setBooks(d) { return await setCollection('books', d); }
         async function getTeachers() { return await getCollection('teachers'); }
         async function setTeachers(d) { await setCollection('teachers', d); }
         async function getExams() { return await getCollection('exams'); }
@@ -702,7 +716,7 @@
         }
 
         // ============================================================
-        //  🌟 دوال التحكم في ظهور الـ nav-links
+        //  🌟 دوال التحكم في ظهور الـ nav-links والتمرير السلس
         // ============================================================
         function showNavLinks() {
             const navLinks = document.getElementById('navLinks');
@@ -711,6 +725,21 @@
         function hideNavLinks() {
             const navLinks = document.getElementById('navLinks');
             if (navLinks) navLinks.style.display = 'none';
+        }
+        
+        // 🌟 دالة التمرير السلس
+        function scrollToSection(sectionId) {
+            // تأكد أولاً أننا في الصفحة الرئيسية
+            if (document.getElementById('homeSection').style.display === 'none') {
+                showHome();
+            }
+            // انتظر قليلاً حتى تظهر العناصر ثم مرر
+            setTimeout(() => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
         }
 
         // العرض العام
