@@ -3,13 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة الأدمن - نور تعليم الأزهر</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <title>لوحة الأدمن - نُورُ تَعْلِيمِ الأَزْهَرِ</title>
+    <!-- 🌟 إضافة خط عريف رقعة (شبيه بخط الثلث) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+        body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; font-size: 14px; }
+
+        /* 🌟 تنسيق خط الثلث */
+        .thuluth-text { 
+            font-family: 'Aref Ruqaa', serif; 
+            font-weight: 700; 
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+        }
 
         body.dark-mode {
             --bg-primary: #1a1a2e;
@@ -25,7 +34,7 @@
         }
         body.dark-mode { background: var(--bg-primary); color: var(--text-primary); }
         body.dark-mode header { background: var(--bg-header); border-bottom-color: var(--gold); }
-        body.dark-mode .logo-text h1 { color: var(--gold); }
+        body.dark-mode .logo-text h1 { color: var(--gold); text-shadow: none; }
         body.dark-mode .logo-text span { color: var(--text-secondary); }
         body.dark-mode .btn-home { background: var(--gold); color: #1a1a2e; }
         body.dark-mode .btn-logout { background: var(--gold); color: #1a1a2e; }
@@ -60,57 +69,84 @@
 
         .btn-dark-mode {
             background: transparent;
-            border: 1.5px solid #3b0a0a;
+            border: 2px solid #3b0a0a;
             color: #3b0a0a;
-            padding: 7px 15px;
+            padding: 6px 12px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
             transition: 0.3s;
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             line-height: 1;
         }
-        .btn-dark-mode:hover { transform: scale(1.1) rotate(10deg); }
+        .btn-dark-mode:hover { transform: scale(1.1) rotate(10deg); background: #f4edd3; }
         body.dark-mode .btn-dark-mode { border-color: #d4af37; color: #d4af37; }
+        body.dark-mode .btn-dark-mode:hover { background: rgba(212,175,55,0.1); }
 
-        header { background: #fff; border-bottom: 3px solid #d4af37; padding: 12px 20px; transition: 0.3s; }
+        /* 🌟 الهيدر بحواف دائرية وحجم أصغر */
+        header { background: #fff; border-bottom: 3px solid #d4af37; padding: 10px 20px; transition: 0.3s; border-radius: 0 0 24px 24px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 15px; }
         .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; }
-        .logo-text span { font-size: 11px; color: #888; }
-        .nav-buttons { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        .admin-tabs { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; }
-        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 28px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .admin-tabs button:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
-        .tab-content { display: none; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); transition: background 0.3s; }
+        .logo-text h1 { font-size: 22px; color: #3b0a0a; font-weight: 900; margin-bottom: 2px; }
+        .logo-text span { font-size: 10px; color: #888; }
+        .nav-buttons { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .btn-logout { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px; box-shadow: 0 4px 10px rgba(59,10,10,0.2); }
+        .btn-logout:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(59,10,10,0.3); }
+        .btn-home { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px; box-shadow: 0 4px 10px rgba(212,175,55,0.3); }
+        .btn-home:hover { background: #e0c060; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(212,175,55,0.4); }
+        
+        .dashboard-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .dashboard-container h2 { font-size: 20px; }
+        
+        /* 🌟 التبويبات */
+        .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 9px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px; box-shadow: 0 3px 8px rgba(0,0,0,0.03); }
+        .admin-tabs button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; box-shadow: 0 6px 15px rgba(59,10,10,0.3); }
+        
+        /* 🌟 محتوى التبويبات */
+        .tab-content { display: none; background: #fff; padding: 22px; border-radius: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); transition: background 0.3s; }
         .tab-content.active { display: block; }
-        .admin-table { width: 100%; border-collapse: collapse; }
-        .admin-table th { background: #3b0a0a; color: #d4af37; padding: 14px; text-align: center; }
-        .admin-table td { padding: 14px; text-align: center; border-bottom: 1px solid #f0ede8; }
-        .admin-table tr:hover { background: #f9f6f0; }
-        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 13px; }
-        .btn-card:hover { transform: scale(1.05); }
-        .btn-danger { background: #a00; color: #fff; }
-        .btn-success { background: #2a7a2a; color: #fff; }
-        .btn-delete { background: #8b0000; color: #fff; }
-        .btn-details { background: #1e5a8a; color: #fff; }
-        .add-form { margin-top: 20px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        /* 🌟 الجداول */
+        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .admin-table th { background: #3b0a0a; color: #d4af37; padding: 12px; text-align: center; font-size: 13px; }
+        .admin-table th:first-child { border-radius: 0 16px 0 0; }
+        .admin-table th:last-child { border-radius: 16px 0 0 0; }
+        .admin-table td { padding: 12px; text-align: center; border-bottom: 1px solid #f0ede8; font-size: 13px; }
+        .admin-table tr:hover td { background: #f9f6f0; }
+        
+        /* 🌟 الأزرار */
+        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 16px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; font-size: 12px; transition: 0.3s; box-shadow: 0 3px 8px rgba(59,10,10,0.15); }
+        .btn-card:hover { transform: scale(1.05); box-shadow: 0 5px 12px rgba(59,10,10,0.25); }
+        .btn-danger { background: #a00; color: #fff; box-shadow: 0 3px 8px rgba(170,0,0,0.2); }
+        .btn-success { background: #2a7a2a; color: #fff; box-shadow: 0 3px 8px rgba(42,122,42,0.2); }
+        .btn-delete { background: #8b0000; color: #fff; box-shadow: 0 3px 8px rgba(139,0,0,0.2); }
+        .btn-details { background: #1e5a8a; color: #fff; box-shadow: 0 3px 8px rgba(30,90,138,0.2); }
+        
+        /* 🌟 الفورم */
+        .add-form { margin-top: 15px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .full-width { grid-column: 1 / -1; }
-        .add-form label { display: block; font-weight: 700; font-size: 14px; color: #3b0a0a; margin-bottom: 5px; }
-        .add-form input, .add-form select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; }
-        .add-form input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); }
-        .btn-submit { background: #3b0a0a; color: #d4af37; padding: 12px 40px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; }
-        .bundle-container-box { border: 2px dashed #ddd; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
-        .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        .alert { padding: 12px 20px; border-radius: 10px; margin-bottom: 15px; font-weight: 600; }
+        .add-form label { display: block; font-weight: 700; font-size: 13px; color: #3b0a0a; margin-bottom: 5px; }
+        .add-form input, .add-form select { width: 100%; padding: 11px 14px; border: 2px solid #eadacc; border-radius: 14px; font-size: 13px; font-family: 'Cairo', sans-serif; outline: none; transition: 0.3s; }
+        .add-form input:focus, .add-form select:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212,175,55,0.1); }
+        .add-form input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); accent-color: #d4af37; }
+        .btn-submit { background: #3b0a0a; color: #d4af37; padding: 11px 32px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; font-size: 14px; box-shadow: 0 5px 15px rgba(59,10,10,0.2); }
+        .btn-submit:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,10,10,0.3); }
+        
+        /* 🌟 صناديق الوحدات */
+        .bundle-container-box { border: 2px dashed #ddd; padding: 18px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; }
+        .bundle-container-box:hover { border-color: #d4af37; }
+        
+        /* 🌟 صناديق الأسئلة */
+        .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 16px; padding: 15px; margin-bottom: 15px; transition: 0.3s; }
+        
+        /* 🌟 التنبيهات */
+        .alert { padding: 12px 18px; border-radius: 16px; margin-bottom: 15px; font-weight: 600; font-size: 13px; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
@@ -121,8 +157,8 @@
             align-items: center;
             gap: 12px;
             background: #fff9e6;
-            padding: 15px 18px;
-            border-radius: 12px;
+            padding: 14px 18px;
+            border-radius: 16px;
             border: 2px dashed #d4af37;
             cursor: pointer;
             transition: 0.3s;
@@ -132,8 +168,8 @@
             transform: scale(1.01);
         }
         .exam-one-time-box input {
-            width: 24px !important;
-            height: 24px !important;
+            width: 22px !important;
+            height: 22px !important;
             margin: 0 !important;
             cursor: pointer;
             accent-color: #d4af37;
@@ -143,20 +179,32 @@
             color: #3b0a0a !important;
             margin: 0 !important;
             cursor: pointer;
-            font-size: 15px !important;
+            font-size: 14px !important;
         }
+
+        /* 🌟 المودال */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #fff; border-radius: 28px; padding: 28px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid #d4af37; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f4edd3; padding-bottom: 15px; }
+        .modal-close { background: #a00; color: #fff; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; font-weight: 900; transition: 0.3s; box-shadow: 0 3px 8px rgba(170,0,0,0.3); }
+        .modal-close:hover { transform: scale(1.1) rotate(90deg); background: #d4af37; color: #3b0a0a; }
+
+        /* 🌟 تفاصيل الطالب */
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px dashed #f0ede8; font-size: 13px; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
             .add-form .form-grid { grid-template-columns: 1fr; }
-            .admin-table { font-size: 12px; }
+            .admin-table { font-size: 11px; }
+            .admin-table th, .admin-table td { padding: 8px 5px; }
+            .logo-text h1 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
     <header>
         <div class="nav-container">
-            <div class="logo-text"><h1>نور تعليم الأزهر</h1><span>لوحة الأدمن</span></div>
+            <div class="logo-text"><h1 class="thuluth-text">نُورُ تَعْلِيمِ الأَزْهَرِ</h1><span>لوحة الأدمن</span></div>
             <div class="nav-buttons">
                 <button onclick="toggleDarkMode()" class="btn-dark-mode" title="تبديل الوضع الداكن">🌙</button>
                 <button onclick="window.open('index.html', '_self')" class="btn-home">🏠 فتح الرئيسية</button>
@@ -166,7 +214,7 @@
     </header>
 
     <div class="dashboard-container">
-        <h2 style="color:#3b0a0a; margin-bottom:20px;">⚙️ لوحة تحكم الأدمن</h2>
+        <h2 style="color:#3b0a0a; margin-bottom:18px;">⚙️ لوحة تحكم الأدمن</h2>
 
         <div class="admin-tabs">
             <button class="active" onclick="showTab('students')">👥 الطلاب</button>
@@ -190,63 +238,75 @@
 
             <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                 <div style="flex:1; min-width:280px; position:relative;">
-                    <input type="text" id="studentSearchInput" placeholder="🔍 ابحث بالاسم أو رقم الطالب أو رقم ولي الأمر..." oninput="searchStudents()" style="width:100%; padding:14px 45px 14px 18px; border:2px solid #d4af37; border-radius:12px; font-size:15px; font-family:'Cairo',sans-serif; outline:none; background:#fff;">
-                    <span style="position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:20px; color:#d4af37;">🔍</span>
+                    <input type="text" id="studentSearchInput" placeholder="🔍 ابحث بالاسم أو رقم الطالب أو رقم ولي الأمر..." oninput="searchStudents()" style="width:100%; padding:13px 42px 13px 16px; border:2px solid #d4af37; border-radius:16px; font-size:14px; font-family:'Cairo',sans-serif; outline:none; background:#fff;">
+                    <span style="position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:18px; color:#d4af37;">🔍</span>
                 </div>
-                <button onclick="clearSearch()" class="btn-card" style="background:#555; color:#fff; padding:12px 20px; font-size:14px;">✖ مسح البحث</button>
-                <span id="searchResultsCount" style="font-weight:700; color:#3b0a0a; font-size:14px;"></span>
+                <button onclick="clearSearch()" class="btn-card" style="background:#555; color:#fff; padding:12px 20px; font-size:13px;">✖ مسح البحث</button>
+                <span id="searchResultsCount" style="font-weight:700; color:#3b0a0a; font-size:13px;"></span>
             </div>
 
-            <table class="admin-table">
-                <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-                <tbody id="studentsTableBody"></tbody>
-            </table>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                    <tbody id="studentsTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="tabBundles" class="tab-content">
-            <table class="admin-table">
-                <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
-                <tbody id="bundlesTableBody"></tbody>
-            </table>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead><tr><th>#</th><th>اسم الوحدة</th><th>الصف</th><th>العناصر</th><th>إجراءات</th></tr></thead>
+                    <tbody id="bundlesTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="tabCourses" class="tab-content">
-            <table class="admin-table">
-                <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
-                <tbody id="coursesTableBody"></tbody>
-            </table>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
+                    <tbody id="coursesTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="tabBooks" class="tab-content">
-            <table class="admin-table">
-                <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
-                <tbody id="booksTableBody"></tbody>
-            </table>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead><tr><th>#</th><th>العنوان</th><th>الصف</th><th>الرابط</th><th>إجراءات</th></tr></thead>
+                    <tbody id="booksTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="tabTeachers" class="tab-content">
-            <table class="admin-table">
-                <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
-                <tbody id="teachersTableBody"></tbody>
-            </table>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead><tr><th>#</th><th>الاسم</th><th>الصورة</th><th>إجراءات</th></tr></thead>
+                    <tbody id="teachersTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- ✅ الاختبارات -->
         <div id="tabExams" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 قائمة الاختبارات</h4>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>العنوان</th>
-                        <th>الصف</th>
-                        <th>عدد الأسئلة</th>
-                        <th>النوع</th>
-                        <th>إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody id="examsTableBody"></tbody>
-            </table>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>العنوان</th>
+                            <th>الصف</th>
+                            <th>عدد الأسئلة</th>
+                            <th>النوع</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="examsTableBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- إضافة محاضرة -->
@@ -264,7 +324,7 @@
                         <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="courseShowInHome" style="width:20px; height:20px; margin:0;">
-                            <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
+                            <label for="courseShowInHome" style="font-weight:700; color:#3b0a0a; margin:0; font-size:13px;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
                         </div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المحاضرة</button>
@@ -285,7 +345,7 @@
                         <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
-                            <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
+                            <label for="bookShowInHome" style="font-weight:700; color:#3b0a0a; margin:0; font-size:13px;">🌐 ظهور في الصفحة الرئيسية (للجميع)</label>
                         </div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة الكتاب</button>
@@ -315,7 +375,7 @@
         <div id="tabAddBundle" class="tab-content">
             <div class="bundle-container-box">
                 <div class="add-form">
-                    <h5 style="color:#555; margin-bottom:10px;">1. أنشئ الوحدة الجديدة:</h5>
+                    <h5 style="color:#555; margin-bottom:10px; font-size:14px;">1. أنشئ الوحدة الجديدة:</h5>
                     <form id="addBundleForm">
                         <div class="form-grid">
                             <div><label>اسم الوحدة</label><input type="text" id="bundleTitle" required></div>
@@ -328,7 +388,7 @@
             </div>
             <div class="bundle-container-box">
                 <div class="add-form">
-                    <h5 style="color:#555; margin-bottom:10px;">2. أضف عناصر داخل الوحدة:</h5>
+                    <h5 style="color:#555; margin-bottom:10px; font-size:14px;">2. أضف عناصر داخل الوحدة:</h5>
                     <form id="addItemForm">
                         <div class="form-grid">
                             <div><label>اختر الوحدة</label><select id="itemBundleSelect" required></select></div>
@@ -401,17 +461,17 @@
                 </form>
                 <div id="questionsContainer"></div>
                 <div id="examAddMsg" style="margin-top:15px;"></div>
-                <button type="button" onclick="saveFullExam()" id="saveExamBtn" style="display:none; width:100%; background:#2a7a2a; color:#fff; padding:15px; border:none; border-radius:12px; font-weight:900; font-size:18px; margin-top:20px; cursor:pointer;">💾 حفظ الاختبار بالكامل</button>
+                <button type="button" onclick="saveFullExam()" id="saveExamBtn" style="display:none; width:100%; background:#2a7a2a; color:#fff; padding:15px; border:none; border-radius:50px; font-weight:900; font-size:16px; margin-top:20px; cursor:pointer; box-shadow: 0 6px 15px rgba(42,122,42,0.3);">💾 حفظ الاختبار بالكامل</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL تفاصيل الطالب -->
-    <div id="studentDetailsModal" class="modal-overlay" onclick="closeStudentModal(event)" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:10000; justify-content:center; align-items:center; padding:20px;">
-        <div class="modal-content" onclick="event.stopPropagation()" style="background:#fff; border-radius:20px; padding:30px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto; border:2px solid #d4af37;">
-            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:2px solid #f4edd3; padding-bottom:15px;">
-                <h3 style="color:#3b0a0a;">👤 تفاصيل الطالب</h3>
-                <button class="modal-close" onclick="closeStudentModal()" style="background:#a00; color:#fff; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; font-weight:900;">✕</button>
+    <div id="studentDetailsModal" class="modal-overlay" onclick="closeStudentModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 style="color:#3b0a0a; font-size:18px;">👤 تفاصيل الطالب</h3>
+                <button class="modal-close" onclick="closeStudentModal()">✕</button>
             </div>
             <div id="studentDetailsContent"></div>
         </div>
@@ -550,19 +610,19 @@
                               u.stage === 'secondary' ? 'ثانوي أزهري' : (u.stage || 'غير محدد');
 
             document.getElementById('studentDetailsContent').innerHTML = `
-                <div style="width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg, #3b0a0a, #d4af37); color:#fff; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:900; margin:0 auto 20px; border:3px solid #d4af37;">${initial}</div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>👤 الاسم</span><strong>${u.name || '—'}</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>📧 البريد</span><span dir="ltr">${u.email || '—'}</span></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>📞 رقم الطالب</span><span dir="ltr">${u.phone || '—'}</span></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>👨‍👦 رقم ولي الأمر</span><span dir="ltr">${u.parentPhone || '—'}</span></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>📍 المحافظة</span><strong>${u.governorate || '—'}</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>🏘️ المركز</span><strong>${u.center || '—'}</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>🌍 صفارة</span><strong>${isOutside}</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>🎓 المرحلة</span><strong>${stageText}</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>📚 الصف</span><strong>${u.grade || '—'}</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>📊 الحالة</span><span class="status-badge ${u.active ? 'status-active' : 'status-pending'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</span></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px; border-bottom:1px dashed #f0ede8;"><span>📈 متوسط الدرجات</span><strong>${u.attempts ? (u.attempts.avg || 0) : 0}%</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:12px 15px;"><span>✅ اختبارات محلولة</span><strong>${u.attempts ? (u.attempts.solved || 0) : 0}</strong></div>
+                <div style="width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg, #3b0a0a, #d4af37); color:#fff; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900; margin:0 auto 18px; border:3px solid #d4af37; box-shadow: 0 5px 15px rgba(212,175,55,0.4);">${initial}</div>
+                <div class="detail-row"><span>👤 الاسم</span><strong>${u.name || '—'}</strong></div>
+                <div class="detail-row"><span>📧 البريد</span><span dir="ltr">${u.email || '—'}</span></div>
+                <div class="detail-row"><span>📞 رقم الطالب</span><span dir="ltr">${u.phone || '—'}</span></div>
+                <div class="detail-row"><span>👨‍👦 رقم ولي الأمر</span><span dir="ltr">${u.parentPhone || '—'}</span></div>
+                <div class="detail-row"><span>📍 المحافظة</span><strong>${u.governorate || '—'}</strong></div>
+                <div class="detail-row"><span>🏘️ المركز</span><strong>${u.center || '—'}</strong></div>
+                <div class="detail-row"><span>🌍 صفارة</span><strong>${isOutside}</strong></div>
+                <div class="detail-row"><span>🎓 المرحلة</span><strong>${stageText}</strong></div>
+                <div class="detail-row"><span>📚 الصف</span><strong>${u.grade || '—'}</strong></div>
+                <div class="detail-row"><span>📊 الحالة</span><strong style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</strong></div>
+                <div class="detail-row"><span>📈 متوسط الدرجات</span><strong>${u.attempts ? (u.attempts.avg || 0) : 0}%</strong></div>
+                <div class="detail-row" style="border-bottom:none;"><span>✅ اختبارات محلولة</span><strong>${u.attempts ? (u.attempts.solved || 0) : 0}</strong></div>
             `;
             document.getElementById('studentDetailsModal').style.display = 'flex';
         }
@@ -829,23 +889,23 @@
             const grade = document.getElementById('examGrade').value;
             if (!title || !grade) { alert('أدخل العنوان واختر الصف'); return; }
             if (!count || count < 1) { alert('أدخل عدد أسئلة صحيح'); return; }
-            let html = '<h4 style="color:#3b0a0a; margin:20px 0; border-top:1px dashed #ddd; padding-top:20px;">الأسئلة:</h4>';
+            let html = '<h4 style="color:#3b0a0a; margin:18px 0; border-top:1px dashed #ddd; padding-top:18px; font-size:16px;">الأسئلة:</h4>';
             for (let i = 0; i < count; i++) {
                 html += `
                     <div class="question-box-generator">
-                        <h4>السؤال ${i + 1}</h4>
-                        <input type="text" class="q-text-input" placeholder="نص السؤال" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px;">
+                        <h4 style="font-size:15px;">السؤال ${i + 1}</h4>
+                        <input type="text" class="q-text-input" placeholder="نص السؤال" style="width:100%; padding:10px; border:2px solid #ddd; border-radius:12px; margin-bottom:10px; font-size:13px;">
                         <div class="option-row" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الأول" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الثاني" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                            <input type="text" class="opt-input" placeholder="الخيار الأول" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
+                            <input type="text" class="opt-input" placeholder="الخيار الثاني" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
                         </div>
                         <div class="option-row" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الثالث" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الرابع" style="padding:10px; border:1px solid #ddd; border-radius:8px;">
+                            <input type="text" class="opt-input" placeholder="الخيار الثالث" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
+                            <input type="text" class="opt-input" placeholder="الخيار الرابع" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
                         </div>
                         <div style="margin-top:10px;">
-                            <label style="font-size:14px; font-weight:700; color:#3b0a0a;">الإجابة الصحيحة:</label>
-                            <select class="correct-select" style="padding:8px; border-radius:8px; border:1px solid #ddd;"><option value="1">الخيار الأول</option><option value="2">الخيار الثاني</option><option value="3">الخيار الثالث</option><option value="4">الخيار الرابع</option></select>
+                            <label style="font-size:13px; font-weight:700; color:#3b0a0a;">الإجابة الصحيحة:</label>
+                            <select class="correct-select" style="padding:8px; border-radius:12px; border:2px solid #ddd; font-size:13px;"><option value="1">الخيار الأول</option><option value="2">الخيار الثاني</option><option value="3">الخيار الثالث</option><option value="4">الخيار الرابع</option></select>
                         </div>
                     </div>`;
             }
@@ -858,7 +918,7 @@
         async function saveFullExam() {
             const title = document.getElementById('examTitle').value.trim();
             const grade = document.getElementById('examGrade').value;
-            const oneTimeOnly = document.getElementById('examOneTimeOnly').checked; // ✅ الخانة الجديدة
+            const oneTimeOnly = document.getElementById('examOneTimeOnly').checked;
             const boxes = document.querySelectorAll('.question-box-generator');
             if (!boxes.length) { alert('قم بتوليد الأسئلة أولاً'); return; }
             let questions = [];
@@ -876,7 +936,7 @@
                 exam = { id: 'exam_' + Date.now(), title, grade, oneTimeOnly: oneTimeOnly, questions: [] };
                 exams.push(exam);
             } else {
-                exam.oneTimeOnly = oneTimeOnly; // ✅ تحديث الإعداد لو الاختبار موجود
+                exam.oneTimeOnly = oneTimeOnly;
             }
             exam.questions = exam.questions.concat(questions);
             await setExams(exams);
@@ -908,7 +968,7 @@
         async function loadTeachersTable() {
             const teachers = await getTeachers();
             const tbody = document.getElementById('teachersTableBody');
-            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
+            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40" style="border-radius:50%;border:2px solid #d4af37;">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
         }
         async function deleteTeacher(id) { let t = await getTeachers(); await setTeachers(t.filter(x => x.id !== id)); loadTeachersTable(); }
 
@@ -926,7 +986,7 @@
                     <td><strong>${exam.title}</strong></td>
                     <td>${exam.grade}</td>
                     <td>${exam.questions ? exam.questions.length : 0}</td>
-                    <td>${exam.oneTimeOnly ? '<span style="background:#d4af37; color:#3b0a0a; padding:4px 10px; border-radius:20px; font-weight:700; font-size:12px;">🔒 مرة واحدة</span>' : '<span style="background:#2a7a2a; color:#fff; padding:4px 10px; border-radius:20px; font-weight:700; font-size:12px;">🔓 متاح دائماً</span>'}</td>
+                    <td>${exam.oneTimeOnly ? '<span style="background:#d4af37; color:#3b0a0a; padding:5px 12px; border-radius:50px; font-weight:700; font-size:11px;">🔒 مرة واحدة</span>' : '<span style="background:#2a7a2a; color:#fff; padding:5px 12px; border-radius:50px; font-weight:700; font-size:11px;">🔓 متاح دائماً</span>'}</td>
                     <td><button onclick="deleteExam('${exam.id}')" class="btn-card btn-delete">🗑️ حذف</button></td>
                 </tr>
             `).join('');
