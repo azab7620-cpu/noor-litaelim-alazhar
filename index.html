@@ -147,6 +147,14 @@
         .btn-item-action.exam:hover { background: #c99e00; }
         .btn-item-action.disabled { background: #ccc; color: #666; cursor: not-allowed; transform: none; }
 
+        /* 🌟 Video Modal (نافذة تشغيل الفيديو) */
+        .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .video-modal-content { background: #fff; padding: 20px; border-radius: 16px; width: 100%; max-width: 900px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .close-video-modal { position: absolute; top: -15px; right: -15px; background: #a00; color: #fff; border: 2px solid #fff; width: 36px; height: 36px; border-radius: 50%; font-weight: 900; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .close-video-modal:hover { transform: scale(1.1) rotate(90deg); background: #d4af37; color: #3b0a0a; }
+        #videoIframe { width: 100%; height: 60vh; border: none; border-radius: 8px; background: #000; }
+        body.dark-mode .video-modal-content { background: var(--bg-card); }
+
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeInUp 0.7s ease forwards; }
         .delay-1 { animation-delay: 0.1s; }
@@ -310,6 +318,7 @@
             .nav-buttons { justify-content: center; }
             .hero h2 { font-size: 30px; }
             .courses-grid { grid-template-columns: 1fr; }
+            #videoIframe { height: 40vh; }
         }
     </style>
 </head>
@@ -572,6 +581,15 @@
         </div>
     </div>
 
+    <!-- 🌟 Video Modal (نافذة تشغيل الفيديو) -->
+    <div id="videoModal" class="video-modal">
+        <div class="video-modal-content">
+            <button class="close-video-modal" onclick="closeVideoModal()">✕</button>
+            <h3 id="videoModalTitle" style="color: #d4af37; margin-bottom: 15px; text-align: center; font-weight: 800;">عنوان الفيديو</h3>
+            <iframe id="videoIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-content">
             <div class="footer-col"><h4>روابط سريعة</h4><ul><li><a onclick="showHome()">الرئيسية</a></li><li><a onclick="showHome()">المدرسون</a></li><li><a onclick="showHome()">الكورسات</a></li></ul></div>
@@ -759,20 +777,17 @@
                 if (item.type === 'exam' && user.completedExams && user.completedExams.includes(item.examId)) {
                     completedItems++;
                 }
-                // يمكنك إضافة منطق لتتبع الفيديوهات والملفات هنا لو أردت
             });
             
             let progress = Math.round((completedItems / totalItems) * 100);
-            return progress > 0 ? progress : (Math.random() * 20 + 5).toFixed(0); // نسبة عشوائية بسيطة لو مفيش تقدم حقيقي عشان الشكل
+            // لو مفيش تقدم حقيقي، نعرض نسبة بسيطة عشان الشكل (ممكن تتشال لو عايز الدقة 100%)
+            return progress > 0 ? progress : (Math.random() * 20 + 5).toFixed(0); 
         }
 
         function switchStudentTab(tabName, btnElement) {
-            // إخفاء كل التبويبات
             document.querySelectorAll('.student-tab-content').forEach(el => el.style.display = 'none');
-            // إظهار التبويب المطلوب
             document.getElementById('tab-' + tabName).style.display = 'block';
             
-            // تحديث شكل الأزرار
             document.querySelectorAll('.dashboard-tabs button').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
         }
@@ -862,10 +877,8 @@
             document.getElementById('detailProgressFill').style.width = progress + '%';
             document.getElementById('detailProgressText').textContent = progress + '%';
             
-            // بناء محتوى الوحدات (الأكورديون)
             const unitsContainer = document.getElementById('unitsContainer');
             if (bundle.items && bundle.items.length > 0) {
-                // تجميع العناصر في وحدة واحدة أو عرضها مباشرة حسب التصميم
                 unitsContainer.innerHTML = `
                     <details class="unit-bundle" open>
                         <summary>
@@ -878,7 +891,6 @@
                         <div class="unit-content">
                             ${bundle.items.map(item => {
                                 if (item.type === 'exam') {
-                                    const isOneTime = item.oneTimeOnly || false; // ممكن نحتاج نجيب بيانات الاختبار
                                     const alreadyTaken = currentUser.completedExams && currentUser.completedExams.includes(item.examId);
                                     if (alreadyTaken) {
                                         return `<div class="unit-item">
@@ -891,9 +903,12 @@
                                         <button class="btn-item-action exam" onclick="startExam('${item.examId}')">ابدأ الاختبار</button>
                                     </div>`;
                                 } else if (item.type === 'video') {
+                                    // 🌟 تعديل: فتح الفيديو في المودال بدل تاب جديد
+                                    const safeLink = encodeURIComponent(item.link);
+                                    const safeTitle = encodeURIComponent(item.title);
                                     return `<div class="unit-item">
                                         <span class="unit-item-title">🎬 ${item.title}</span>
-                                        <a href="${item.link}" target="_blank" class="btn-item-action">مشاهدة</a>
+                                        <button onclick="openVideoModal('${safeLink}', '${safeTitle}')" class="btn-item-action" style="border:none;">مشاهدة</button>
                                     </div>`;
                                 } else {
                                     return `<div class="unit-item">
@@ -909,7 +924,6 @@
                 unitsContainer.innerHTML = '<p style="text-align:center; color:#888;">لا يوجد محتوى مضاف لهذا الكورس بعد.</p>';
             }
             
-            // إخفاء اللوحة الرئيسية وإظهار تفاصيل الكورس
             document.getElementById('studentDashboard').classList.remove('active');
             document.getElementById('courseDetailView').classList.add('active');
             window.scrollTo(0,0);
@@ -918,8 +932,57 @@
         function backToDashboard() {
             document.getElementById('courseDetailView').classList.remove('active');
             document.getElementById('studentDashboard').classList.add('active');
-            loadStudentDashboard(currentUser); // تحديث النسب
+            loadStudentDashboard(currentUser);
             window.scrollTo(0,0);
+        }
+
+        // ============================================================
+        //  🌟 دوال تشغيل الفيديو (Google Drive / YouTube)
+        // ============================================================
+        function getEmbedUrl(url) {
+            if (!url) return '';
+            
+            // 1. Google Drive
+            if (url.includes('drive.google.com')) {
+                let id = '';
+                // صيغة: https://drive.google.com/file/d/xxxx/view?usp=sharing
+                if (url.includes('/file/d/')) {
+                    id = url.split('/file/d/')[1].split('/')[0];
+                } 
+                // صيغة: https://drive.google.com/open?id=xxxx
+                else if (url.includes('id=')) {
+                    id = url.split('id=')[1].split('&')[0];
+                }
+                if (id) return `https://drive.google.com/file/d/${id}/preview`;
+            }
+            
+            // 2. YouTube
+            if (url.includes('youtube.com/watch')) {
+                let id = url.split('v=')[1].split('&')[0];
+                return `https://www.youtube.com/embed/${id}`;
+            }
+            if (url.includes('youtu.be/')) {
+                let id = url.split('youtu.be/')[1].split('?')[0];
+                return `https://www.youtube.com/embed/${id}`;
+            }
+            
+            // 3. روابط مباشرة (MP4) أو أي رابط آخر
+            return url; 
+        }
+
+        function openVideoModal(encodedLink, encodedTitle) {
+            const link = decodeURIComponent(encodedLink);
+            const title = decodeURIComponent(encodedTitle);
+            const embedUrl = getEmbedUrl(link);
+            
+            document.getElementById('videoModalTitle').textContent = title;
+            document.getElementById('videoIframe').src = embedUrl;
+            document.getElementById('videoModal').style.display = 'flex';
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoIframe').src = ''; // إيقاف الفيديو
+            document.getElementById('videoModal').style.display = 'none';
         }
 
         // ============================================================
