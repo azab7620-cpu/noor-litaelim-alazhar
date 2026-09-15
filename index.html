@@ -369,6 +369,10 @@
             .courses-grid { grid-template-columns: 1fr; }
             #videoIframe { height: 35vh; }
             .support-float-btn { bottom: 12px; left: 12px; padding: 8px 16px; }
+            
+            /* ✅ الحل: زيادة المسافة السفلية عشان زر الدعم الفني م يغطيش الكلام */
+            footer { padding-bottom: 120px !important; }
+            .footer-bottom { margin-bottom: 40px; }
         }
     </style>
 </head>
@@ -704,7 +708,7 @@
         async function getCourses() { return await getCollection('courses'); }
         async function setCourses(d) { await setCollection('courses', d); }
         async function getBooks() { return await getCollection('books'); }
-        async function setBooks(d) { await setCollection('books', d); }
+        async function setBooks(d) { return await setCollection('books', d); }
         async function getTeachers() { return await getCollection('teachers'); }
         async function setTeachers(d) { await setCollection('teachers', d); }
         async function getExams() { return await getCollection('exams'); }
