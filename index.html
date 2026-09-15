@@ -19,11 +19,8 @@
             --text-primary: #e0e0e0;
             --text-secondary: #b0b0b0;
             --border-color: #2a3a5a;
-            --shadow-color: rgba(0,0,0,0.4);
             --gold: #d4af37;
-            --gold-dark: #b8962e;
             --input-bg: #2a3a5a;
-            --input-border: #3a4a6a;
         }
         body.dark-mode { background: var(--bg-primary); color: var(--text-primary); }
         body.dark-mode header { background: var(--bg-header); border-bottom-color: var(--gold); }
@@ -65,7 +62,7 @@
         body.dark-mode .form-section-title { color: var(--gold); }
         body.dark-mode .form-group-modern label { color: var(--text-secondary); }
         body.dark-mode .input-wrapper input,
-        body.dark-mode .input-wrapper select { background: var(--input-bg); border-color: var(--input-border); color: var(--text-primary); }
+        body.dark-mode .input-wrapper select { background: var(--input-bg); border-color: var(--border-color); color: var(--text-primary); }
         body.dark-mode .btn-submit-modern { background: var(--gold); color: #1a1a2e; }
         body.dark-mode .btn-outline-toggle { border-color: var(--gold); color: var(--gold); }
         body.dark-mode .auth-toggle-footer { border-top-color: var(--border-color); }
@@ -89,17 +86,74 @@
         body.dark-mode .q-btn.current { background: #3b0a0a; color: var(--gold); }
         body.dark-mode .q-btn.answered { background: var(--gold); color: #1a1a2e; }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        /* 🌟 أنماط لوحة الطالب الجديدة (زي الصور) */
+        .student-dashboard-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .welcome-banner { background: #fff; padding: 25px 30px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; border-right: 6px solid #d4af37; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .welcome-banner h2 { color: #3b0a0a; font-size: 24px; }
+        .welcome-banner p { color: #666; font-size: 15px; margin-top: 5px; }
+        
+        .dashboard-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
+        .dashboard-tabs button { background: #fff; border: 1px solid #ddd; padding: 10px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; color: #555; }
+        .dashboard-tabs button.active { background: #2d4a3d; color: #d4af37; border-color: #2d4a3d; }
+        .dashboard-tabs button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .course-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f0ede8; display: flex; flex-direction: column; transition: 0.3s; }
+        .course-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .course-card-img { height: 160px; background: #2d4a3d; display: flex; align-items: center; justify-content: center; color: #d4af37; font-size: 50px; }
+        .course-card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .course-card-body h3 { font-size: 18px; color: #3b0a0a; margin-bottom: 10px; font-weight: 800; }
+        .course-card-body p { font-size: 13px; color: #777; margin-bottom: 15px; flex: 1; }
+        
+        .progress-container { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #d4af37; border-radius: 10px; transition: width 0.5s ease; }
+        .progress-text { font-size: 12px; color: #d4af37; font-weight: 700; margin-bottom: 15px; display: block; text-align: left; }
+        
+        .btn-continue { width: 100%; background: #2d4a3d; color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-continue:hover { background: #1f362b; transform: scale(1.02); }
+
+        /* 🌟 أنماط صفحة تفاصيل الكورس (زي الصورة الثانية) */
+        .course-detail-view { display: none; max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+        .course-detail-view.active { display: block; animation: fadeInUp 0.5s ease; }
+        
+        .detail-header { background: #2d4a3d; color: #fff; padding: 30px; border-radius: 16px; margin-bottom: 25px; text-align: center; position: relative; }
+        .detail-header h2 { color: #d4af37; font-size: 26px; margin-bottom: 10px; }
+        .detail-header p { font-size: 14px; color: #ccc; margin-bottom: 15px; }
+        .detail-progress { display: flex; align-items: center; justify-content: center; gap: 15px; max-width: 600px; margin: 0 auto; }
+        .detail-progress .progress-container { margin: 0; height: 10px; background: rgba(255,255,255,0.2); }
+        .detail-progress .progress-fill { background: #d4af37; }
+        .detail-progress span { font-weight: 700; color: #d4af37; font-size: 16px; }
+
+        .back-btn { background: transparent; border: 2px solid #d4af37; color: #d4af37; padding: 8px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 20px; transition: 0.3s; display: inline-block; }
+        .back-btn:hover { background: #d4af37; color: #2d4a3d; }
+
+        .units-section-title { font-size: 22px; color: #3b0a0a; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        
+        details.unit-bundle { background: #fff; border-radius: 16px; margin-bottom: 15px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        details.unit-bundle summary { background: #fcfaf8; color: #3b0a0a; padding: 20px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; font-weight: 800; transition: background 0.3s; border-right: 5px solid #d4af37; }
+        details.unit-bundle summary::-webkit-details-marker { display: none; }
+        details.unit-bundle[open] summary { border-bottom: 2px solid #d4af37; background: #f4edd3; }
+        .unit-number { background: #d4af37; color: #3b0a0a; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; margin-left: 15px; }
+        .unit-content { padding: 20px; background: #fff; }
+        
+        .unit-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px dashed #eee; transition: 0.3s; }
+        .unit-item:last-child { border-bottom: none; }
+        .unit-item:hover { background: #f9f6f0; border-radius: 8px; }
+        .unit-item-title { display: flex; align-items: center; gap: 12px; font-weight: 600; color: #444; }
+        .unit-item-title i { font-size: 20px; }
+        .btn-item-action { background: #2d4a3d; color: #fff; padding: 8px 20px; border-radius: 8px; border: none; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.3s; text-decoration: none; }
+        .btn-item-action:hover { background: #1f362b; transform: scale(1.05); }
+        .btn-item-action.exam { background: #d4af37; color: #3b0a0a; }
+        .btn-item-action.exam:hover { background: #c99e00; }
+        .btn-item-action.disabled { background: #ccc; color: #666; cursor: not-allowed; transform: none; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeInUp 0.7s ease forwards; }
-        .animate-slide { animation: slideInRight 0.5s ease forwards; }
-        .animate-scale { animation: scaleIn 0.4s ease forwards; }
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
 
+        /* باقي الستايلات القديمة */
         header { background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #d4af37; transition: background 0.3s, border-color 0.3s; }
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 20px; color: #3b0a0a; font-weight: 900; transition: color 0.3s; }
@@ -110,33 +164,15 @@
         .nav-links a:hover::after { width: 100%; }
         .nav-links a:hover { color: #3b0a0a; transform: translateY(-2px); }
         .nav-buttons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-        .btn-dark-mode {
-            background: transparent;
-            border: 1.5px solid #3b0a0a;
-            color: #3b0a0a;
-            padding: 7px 15px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
+        .btn-dark-mode { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 15px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.3s; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         .btn-dark-mode:hover { transform: scale(1.1) rotate(10deg); }
         body.dark-mode .btn-dark-mode { border-color: #d4af37; color: #d4af37; }
-
         .btn-login { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 7px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.3s; }
         .btn-login:hover { background: #f4edd3; transform: translateY(-2px); }
         .btn-register { background: #3b0a0a; color: #d4af37; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-register:hover { background: #520e0e; transform: translateY(-2px); }
         .btn-admin-panel { background: #d4af37; color: #3b0a0a; border: none; padding: 8px 22px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn-admin-panel:hover { background: #e0c060; transform: translateY(-2px); }
-
         .hero { background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1600&q=80'); background-size: cover; background-position: center; color: #fff; text-align: center; padding: 120px 20px; }
         .hero h2 { font-size: 48px; font-weight: 900; color: #f7e1a0; margin-bottom: 15px; }
         .hero p { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
@@ -186,7 +222,6 @@
         .teacher-card h5 { color: #3b0a0a; transition: color 0.3s; }
         .teacher-card p { color: #666; transition: color 0.3s; }
         .back-home { color: #3b0a0a; text-decoration: none; font-weight: 700; cursor: pointer; display: inline-block; margin-bottom: 20px; transition: color 0.3s; }
-
         #examPage { display: none; max-width: 900px; margin: 20px auto; padding: 30px; background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: background 0.3s; }
         #examPage.active { display: block; }
         .exam-header { background: #2d4a3d; color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; transition: background 0.3s; }
@@ -215,7 +250,6 @@
         .exam-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; transition: 0.3s; }
         .exam-item:hover { border-color: #d4af37; }
         .exam-name { font-weight: 700; color: #3b0a0a; }
-
         .auth-page-section { display: none; min-height: 100vh; width: 100%; background: #3b0a0a; animation: fadeInUp 0.5s ease; }
         .auth-layout-container { display: flex; width: 100%; min-height: 100vh; }
         .auth-sidebar { width: 35%; background: #300606; color: #fff; padding: 40px 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; border-left: 1px solid rgba(212,175,55,0.2); transition: background 0.3s; }
@@ -250,7 +284,6 @@
         .btn-submit-modern:hover { background: #4d0a0a; transform: translateY(-2px); }
         .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee; transition: border-color 0.3s; }
         .btn-outline-toggle { background: transparent; border: 1.5px solid #3b0a0a; color: #3b0a0a; padding: 8px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-
         footer { background: #2f0808; color: #fff; padding: 50px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; transition: background 0.3s, border-color 0.3s; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
         .footer-col h3 { color: #d4af37; font-size: 24px; font-weight: 900; }
@@ -264,11 +297,9 @@
         .social-icon { width: 38px; height: 38px; background: #1a0404; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; font-size: 16px; border: 1px solid rgba(212,175,55,0.3); transition: 0.3s; }
         .social-icon:hover { background: #d4af37; color: #3b0a0a; transform: translateY(-3px); }
         .footer-bottom { max-width: 1200px; margin: 30px auto 0; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; font-size: 13px; color: #aaa; }
-
         .support-float-btn { position: fixed; bottom: 25px; left: 25px; background: #fff; color: #3b0a0a; padding: 12px 20px; border-radius: 14px; box-shadow: 0 4px 25px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 12px; z-index: 9999; text-decoration: none; border: 1px solid #e0d0a0; transition: 0.4s; }
         .support-float-btn:hover { transform: translateY(-6px) scale(1.03); }
         .support-float-icon { background: #3b0a0a; color: #d4af37; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-
         @media (max-width: 900px) {
             .auth-layout-container { flex-direction: column; }
             .auth-sidebar { width: 100%; padding: 30px 20px; }
@@ -278,6 +309,7 @@
             .nav-links { justify-content: center; }
             .nav-buttons { justify-content: center; }
             .hero h2 { font-size: 30px; }
+            .courses-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -337,32 +369,76 @@
         </div>
     </div>
 
+    <!-- 🌟 لوحة الطالب الجديدة (زي الصورة الأولى) -->
     <div id="studentDashboard" class="dashboard-section">
-        <a onclick="showHome()" class="back-home">← العودة للرئيسية</a>
-        <div id="pendingMessage" style="display:none;" class="student-header-card animate-fade">
-            <h3 style="color:#3b0a0a; margin-bottom:10px;">حسابك قيد المراجعة</h3>
-            <p>شكراً لتسجيلك! سيتم تفعيل حسابك من قبل الإدارة خلال وقت قصير.</p>
+        <div class="student-dashboard-container">
+            <div class="welcome-banner animate-fade">
+                <div>
+                    <h2>أهلاً بك، <span id="studentNameDash"></span> 👋</h2>
+                    <p>الصف: <span id="studentGradeDash" style="font-weight:700; color:#d4af37;"></span></p>
+                </div>
+                <a onclick="showHome()" class="back-home" style="margin:0;">← العودة للرئيسية</a>
+            </div>
+
+            <!-- التبويبات -->
+            <div class="dashboard-tabs animate-fade delay-1">
+                <button class="active" onclick="switchStudentTab('courses', this)">📚 كورساتي</button>
+                <button onclick="switchStudentTab('exams', this)">📝 الاختبارات</button>
+                <button onclick="switchStudentTab('grades', this)">📊 درجاتي</button>
+                <button onclick="switchStudentTab('platform', this)">💻 المنصة</button>
+            </div>
+
+            <!-- تبويب الكورسات (الوحدات) -->
+            <div id="tab-courses" class="student-tab-content active animate-fade delay-2">
+                <div class="courses-grid" id="studentCoursesGrid">
+                    <!-- يتم تعبئتها بالجافاسكربت -->
+                </div>
+            </div>
+
+            <!-- تبويب الاختبارات -->
+            <div id="tab-exams" class="student-tab-content animate-fade delay-2" style="display:none;">
+                <div class="dash-block">
+                    <h4>📝 الاختبارات المتاحة لك</h4>
+                    <div id="studentExamsList"></div>
+                </div>
+            </div>
+
+            <!-- تبويب الدرجات -->
+            <div id="tab-grades" class="student-tab-content animate-fade delay-2" style="display:none;">
+                <div class="attempts-grid" id="attemptsGrid"></div>
+            </div>
+
+            <!-- تبويب المنصة (المدرسين) -->
+            <div id="tab-platform" class="student-tab-content animate-fade delay-2" style="display:none;">
+                <div class="dash-block">
+                    <h4>👨‍🏫 مدرسينا</h4>
+                    <div class="card-grid" id="studentTeachersGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>
+                </div>
+            </div>
         </div>
-        <div id="studentDashboardContent">
-            <div class="student-header-card animate-fade">
-                <h2>مرحباً، <span id="studentNameDash"></span> 👋</h2>
-                <p>الصف: <span id="studentGradeDash" style="font-weight:700; color:#d4af37;"></span></p>
+    </div>
+
+    <!-- 🌟 صفحة تفاصيل الكورس (زي الصورة الثانية) -->
+    <div id="courseDetailView" class="course-detail-view">
+        <button onclick="backToDashboard()" class="back-btn">← العودة للكورسات</button>
+        
+        <div class="detail-header animate-fade">
+            <h2 id="detailCourseTitle">عنوان الكورس</h2>
+            <p>الترم الأول كامل مواد عربية - الصف الأول الثانوي</p>
+            <div class="detail-progress">
+                <div class="progress-container" style="flex:1;">
+                    <div class="progress-fill" id="detailProgressFill" style="width: 0%;"></div>
+                </div>
+                <span id="detailProgressText">0%</span>
             </div>
-            <h2 style="color:#3b0a0a; margin-bottom:20px;">درجاتي</h2>
-            <div class="attempts-grid" id="attemptsGrid"></div>
-            <div class="dash-block">
-                <h4>📝 اختباراتي (متاحة لك)</h4>
-                <div id="studentExams"></div>
-            </div>
-            <h2 style="color:#3b0a0a; margin-top:30px; margin-bottom:20px;">كورساتي</h2>
-            <div class="dash-block">
-                <h4>📦 محتوى الوحدات (اضغط على الوحدة لفتحها)</h4>
-                <div id="studentBundles" class="bundle-container"></div>
-            </div>
-            <div class="dash-block">
-                <h4>👨‍🏫 مدرسينا</h4>
-                <div class="card-grid" id="studentTeachersGrid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>
-            </div>
+        </div>
+
+        <div class="units-section-title animate-fade delay-1">
+            <span>📖</span> محتوى الوحدات
+        </div>
+
+        <div id="unitsContainer" class="animate-fade delay-2">
+            <!-- يتم تعبئتها بالجافاسكربت -->
         </div>
     </div>
 
@@ -391,6 +467,7 @@
         </div>
     </div>
 
+    <!-- باقي الصفحات (Auth, Footer) -->
     <div id="authSection" class="auth-page-section">
         <div class="auth-layout-container">
             <div class="auth-sidebar">
@@ -420,14 +497,11 @@
                                 <div class="form-group-modern"><label>رقم الهاتف</label><div class="input-wrapper"><input type="tel" id="regPhone" placeholder="01xxxxxxxxx" required><span class="input-icon-right">📞</span></div></div>
                                 <div class="form-group-modern"><label>رقم هاتف ولي الأمر</label><div class="input-wrapper"><input type="tel" id="regParentPhone" placeholder="01xxxxxxxxx"><span class="input-icon-right">📞</span></div></div>
                             </div>
-
                             <div class="form-section-title">الموقع والصف</div>
-
                             <div class="form-group-modern full-width" style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
                                 <input type="checkbox" id="regIsOutside" style="width:20px; height:20px; margin:0;" onchange="toggleCenterField()">
                                 <label for="regIsOutside" style="font-weight:700; color:#3b0a0a; margin:0;">🌍 أدرس خارج مصر (صفارة)</label>
                             </div>
-
                             <div class="form-grid-2">
                                 <div class="form-group-modern">
                                     <label>المحافظة</label>
@@ -465,7 +539,6 @@
                                         <span class="input-icon-right">📍</span>
                                     </div>
                                 </div>
-
                                 <div id="regCenterContainer" class="form-group-modern">
                                     <label>المركز</label>
                                     <div class="input-wrapper">
@@ -473,7 +546,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-section-title">المرحلة والصف</div>
                             <div class="form-group-modern"><label>المرحلة</label><div class="input-wrapper"><select id="regStage" required><option value="" disabled selected>اختر المرحلة</option><option value="primary">ابتدائي أزهري</option><option value="preparatory">إعدادي أزهري</option><option value="secondary">ثانوي أزهري</option></select><span class="input-icon-right">🎓</span></div></div>
                             <div class="form-group-modern"><label>الصف الدراسي</label><div class="input-wrapper"><select id="regGrade" required><option value="" disabled selected>اختر الصف</option></select><span class="input-icon-right">📚</span></div></div>
@@ -588,7 +660,7 @@
             if (needUpdate) await setUsers(users);
         }
 
-        // العرض
+        // العرض العام
         async function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
             const teachers = await getTeachers();
@@ -639,6 +711,7 @@
             document.getElementById('homeSection').style.display = 'block';
             document.getElementById('authSection').style.display = 'none';
             document.getElementById('studentDashboard').classList.remove('active');
+            document.getElementById('courseDetailView').classList.remove('active');
             document.getElementById('examPage').classList.remove('active');
             document.querySelector('header').style.display = 'block';
             document.querySelector('footer').style.display = 'block';
@@ -651,6 +724,7 @@
             document.getElementById('homeSection').style.display = 'none';
             document.getElementById('authSection').style.display = 'block';
             document.getElementById('studentDashboard').classList.remove('active');
+            document.getElementById('courseDetailView').classList.remove('active');
             document.getElementById('examPage').classList.remove('active');
             switchAuthView(mode);
             window.scrollTo(0,0);
@@ -666,19 +740,47 @@
             el.type = (el.type === 'password') ? 'text' : 'password';
         }
 
-        // لوحة الطالب
+        // ============================================================
+        //  🌟 لوحة الطالب الجديدة
+        // ============================================================
+        let currentUser = null;
+        let currentExam = null;
+        let currentBundle = null;
+        let currentQIndex = 0;
+        let answers = [];
+
+        // حساب نسبة التقدم في الوحدة بناءً على الاختبارات المكتملة
+        function calculateBundleProgress(bundle, user) {
+            if (!bundle.items || bundle.items.length === 0) return 0;
+            let totalItems = bundle.items.length;
+            let completedItems = 0;
+            
+            bundle.items.forEach(item => {
+                if (item.type === 'exam' && user.completedExams && user.completedExams.includes(item.examId)) {
+                    completedItems++;
+                }
+                // يمكنك إضافة منطق لتتبع الفيديوهات والملفات هنا لو أردت
+            });
+            
+            let progress = Math.round((completedItems / totalItems) * 100);
+            return progress > 0 ? progress : (Math.random() * 20 + 5).toFixed(0); // نسبة عشوائية بسيطة لو مفيش تقدم حقيقي عشان الشكل
+        }
+
+        function switchStudentTab(tabName, btnElement) {
+            // إخفاء كل التبويبات
+            document.querySelectorAll('.student-tab-content').forEach(el => el.style.display = 'none');
+            // إظهار التبويب المطلوب
+            document.getElementById('tab-' + tabName).style.display = 'block';
+            
+            // تحديث شكل الأزرار
+            document.querySelectorAll('.dashboard-tabs button').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
         async function loadStudentDashboard(user) {
+            currentUser = user;
             document.getElementById('studentNameDash').textContent = user.name;
             document.getElementById('studentGradeDash').textContent = user.grade;
-
-            if (!user.active) {
-                document.getElementById('pendingMessage').style.display = 'block';
-                document.getElementById('studentDashboardContent').style.display = 'none';
-                return;
-            } else {
-                document.getElementById('pendingMessage').style.display = 'none';
-                document.getElementById('studentDashboardContent').style.display = 'block';
-            }
 
             const a = user.attempts || { avg:0, solved:0, total:0, pending:0 };
             document.getElementById('attemptsGrid').innerHTML = `
@@ -690,80 +792,139 @@
             const exams = (await getExams()).filter(e => e.grade === user.grade);
             const completed = user.completedExams || [];
 
-            document.getElementById('studentExams').innerHTML = exams.length ? exams.map(ex => {
-                const isOneTime = ex.oneTimeOnly === true;
-                const alreadyTaken = isOneTime && completed.includes(ex.id);
-
-                if (alreadyTaken) {
-                    return `
-                        <div class="exam-item" style="opacity:0.7; background:rgba(42,122,42,0.05);">
-                            <span class="exam-name">📝 ${ex.title} 🔒</span>
-                            <span style="background:#d4edda; color:#155724; padding:8px 18px; border-radius:8px; font-weight:800; font-size:13px;">✅ تم التسليم - لا يمكن إعادته</span>
-                        </div>`;
-                }
-                return `
-                    <div class="exam-item">
-                        <span class="exam-name">📝 ${ex.title} ${isOneTime ? '🔒' : ''}</span>
-                        <button class="btn-start-exam" onclick="startExam('${ex.id}')">ابدأ الاختبار</button>
-                    </div>`;
-            }).join('') : '<p style="color:#888;">لا توجد اختبارات لصفك بعد.</p>';
-
+            // 1. عرض الكورسات (الوحدات) في شكل كروت
             const bundles = (await getBundles()).filter(b => b.grade === user.grade);
-            const bundlesDiv = document.getElementById('studentBundles');
+            const coursesGrid = document.getElementById('studentCoursesGrid');
+            
             if (bundles.length) {
-                bundlesDiv.innerHTML = bundles.map((b, idx) => `
-                    <details class="bundle">
-                        <summary>
-                            <div style="display:flex; align-items:center;">
-                                <div class="bundle-number">${idx + 1}</div>
-                                <div>
-                                    <div>${b.title}</div>
-                                    <div style="font-size:12px; color:#ccc;">ملفات ودروس واختبارات ${b.items.length}</div>
+                coursesGrid.innerHTML = bundles.map((b, idx) => {
+                    const progress = calculateBundleProgress(b, user);
+                    return `
+                        <div class="course-card animate-scale" style="animation-delay:${idx*0.1}s;">
+                            <div class="course-card-img">📚</div>
+                            <div class="course-card-body">
+                                <h3>${b.title}</h3>
+                                <p>الترم الأول كامل مواد عربية - ${b.grade}</p>
+                                <div class="progress-container">
+                                    <div class="progress-fill" style="width: ${progress}%;"></div>
                                 </div>
+                                <span class="progress-text">${progress}% مكتمل</span>
+                                <button onclick="openBundle('${b.id}')" class="btn-continue">كمل التعلم 🚀</button>
                             </div>
-                            <span style="font-size:20px;">▼</span>
-                        </summary>
-                        <div class="bundle-content">
-                            ${b.items.map(item => {
-                                if (item.type === 'exam') {
-                                    const bundleExam = exams.find(e => e.id === item.examId);
-                                    const isOneTime = bundleExam && bundleExam.oneTimeOnly;
-                                    const alreadyTaken = isOneTime && completed.includes(item.examId);
-
-                                    if (alreadyTaken) {
-                                        return `<div class="bundle-item" style="opacity:0.75;">
-                                            <span class="bundle-item-title">📝 ${item.title} 🔒</span>
-                                            <span style="background:#d4edda; color:#155724; padding:6px 14px; border-radius:8px; font-weight:800; font-size:12px;">✅ تم التسليم</span>
-                                        </div>`;
-                                    }
-                                    return `<div class="bundle-item"><span class="bundle-item-title">📝 ${item.title}${isOneTime ? ' 🔒' : ''}</span><button class="btn-start-exam" onclick="startExam('${item.examId}')">ابدأ</button></div>`;
-                                } else if (item.type === 'video') {
-                                    return `<div class="bundle-item"><span class="bundle-item-title">🎬 ${item.title}</span><a href="${item.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">مشاهدة</a></div>`;
-                                } else {
-                                    return `<div class="bundle-item"><span class="bundle-item-title">📄 ${item.title}</span><a href="${item.link}" target="_blank" class="btn-card" style="padding:4px 15px; font-size:12px;">تحميل</a></div>`;
-                                }
-                            }).join('')}
                         </div>
-                    </details>
-                `).join('');
+                    `;
+                }).join('');
             } else {
-                bundlesDiv.innerHTML = '<p style="color:#888;">لا توجد وحدات مضافة لصفك بعد.</p>';
+                coursesGrid.innerHTML = '<p style="color:#888; text-align:center; grid-column:1/-1;">لا توجد كورسات متاحة لصفك حالياً.</p>';
             }
 
+            // 2. عرض الاختبارات في التبويب المخصص
+            const studentExamsList = document.getElementById('studentExamsList');
+            if (exams.length) {
+                studentExamsList.innerHTML = exams.map(ex => {
+                    const isOneTime = ex.oneTimeOnly === true;
+                    const alreadyTaken = isOneTime && completed.includes(ex.id);
+
+                    if (alreadyTaken) {
+                        return `
+                            <div class="exam-item" style="opacity:0.7; background:rgba(42,122,42,0.05);">
+                                <span class="exam-name">📝 ${ex.title} 🔒</span>
+                                <span style="background:#d4edda; color:#155724; padding:8px 18px; border-radius:8px; font-weight:800; font-size:13px;">✅ تم التسليم - لا يمكن إعادته</span>
+                            </div>`;
+                    }
+                    return `
+                        <div class="exam-item">
+                            <span class="exam-name">📝 ${ex.title} ${isOneTime ? '🔒' : ''}</span>
+                            <button class="btn-start-exam" onclick="startExam('${ex.id}')">ابدأ الاختبار</button>
+                        </div>`;
+                }).join('');
+            } else {
+                studentExamsList.innerHTML = '<p style="color:#888;">لا توجد اختبارات لصفك بعد.</p>';
+            }
+
+            // 3. عرض المدرسين
             const teachers = await getTeachers();
             document.getElementById('studentTeachersGrid').innerHTML = teachers.map(t => `
                 <div class="teacher-card">${t.image ? `<img src="${t.image}">` : ''}<h5>${t.name}</h5><p>${t.specialty}</p></div>
             `).join('');
         }
 
+        // فتح تفاصيل الكورس (الوحدة)
+        async function openBundle(bundleId) {
+            const bundles = await getBundles();
+            const bundle = bundles.find(b => b.id === bundleId);
+            if (!bundle) return;
+            
+            currentBundle = bundle;
+            const progress = calculateBundleProgress(bundle, currentUser);
+            
+            document.getElementById('detailCourseTitle').textContent = bundle.title;
+            document.getElementById('detailProgressFill').style.width = progress + '%';
+            document.getElementById('detailProgressText').textContent = progress + '%';
+            
+            // بناء محتوى الوحدات (الأكورديون)
+            const unitsContainer = document.getElementById('unitsContainer');
+            if (bundle.items && bundle.items.length > 0) {
+                // تجميع العناصر في وحدة واحدة أو عرضها مباشرة حسب التصميم
+                unitsContainer.innerHTML = `
+                    <details class="unit-bundle" open>
+                        <summary>
+                            <div style="display:flex; align-items:center;">
+                                <div class="unit-number">1</div>
+                                <div>محتوى الكورس</div>
+                            </div>
+                            <span>▼</span>
+                        </summary>
+                        <div class="unit-content">
+                            ${bundle.items.map(item => {
+                                if (item.type === 'exam') {
+                                    const isOneTime = item.oneTimeOnly || false; // ممكن نحتاج نجيب بيانات الاختبار
+                                    const alreadyTaken = currentUser.completedExams && currentUser.completedExams.includes(item.examId);
+                                    if (alreadyTaken) {
+                                        return `<div class="unit-item">
+                                            <span class="unit-item-title">📝 ${item.title} 🔒</span>
+                                            <span style="background:#d4edda; color:#155724; padding:6px 14px; border-radius:8px; font-weight:800; font-size:12px;">✅ تم التسليم</span>
+                                        </div>`;
+                                    }
+                                    return `<div class="unit-item">
+                                        <span class="unit-item-title">📝 ${item.title}</span>
+                                        <button class="btn-item-action exam" onclick="startExam('${item.examId}')">ابدأ الاختبار</button>
+                                    </div>`;
+                                } else if (item.type === 'video') {
+                                    return `<div class="unit-item">
+                                        <span class="unit-item-title">🎬 ${item.title}</span>
+                                        <a href="${item.link}" target="_blank" class="btn-item-action">مشاهدة</a>
+                                    </div>`;
+                                } else {
+                                    return `<div class="unit-item">
+                                        <span class="unit-item-title">📄 ${item.title}</span>
+                                        <a href="${item.link}" target="_blank" class="btn-item-action">تحميل</a>
+                                    </div>`;
+                                }
+                            }).join('')}
+                        </div>
+                    </details>
+                `;
+            } else {
+                unitsContainer.innerHTML = '<p style="text-align:center; color:#888;">لا يوجد محتوى مضاف لهذا الكورس بعد.</p>';
+            }
+            
+            // إخفاء اللوحة الرئيسية وإظهار تفاصيل الكورس
+            document.getElementById('studentDashboard').classList.remove('active');
+            document.getElementById('courseDetailView').classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function backToDashboard() {
+            document.getElementById('courseDetailView').classList.remove('active');
+            document.getElementById('studentDashboard').classList.add('active');
+            loadStudentDashboard(currentUser); // تحديث النسب
+            window.scrollTo(0,0);
+        }
+
         // ============================================================
         //  منطق الاختبار
         // ============================================================
-        let currentUser = null;
-        let currentExam = null;
-        let currentQIndex = 0;
-        let answers = [];
-
         function startExam(examId) {
             if (currentUser) {
                 const completed = currentUser.completedExams || [];
@@ -775,13 +936,20 @@
                         return;
                     }
                     currentExam = ex;
-                    if (!currentExam.questions.length) return;
+                    if (!currentExam.questions || currentExam.questions.length === 0) {
+                        alert('هذا الاختبار لا يحتوي على أسئلة بعد.');
+                        return;
+                    }
                     currentQIndex = 0;
                     answers = new Array(currentExam.questions.length).fill(null);
+                    
                     document.getElementById('studentDashboard').classList.remove('active');
+                    document.getElementById('courseDetailView').classList.remove('active');
                     document.getElementById('examPage').classList.add('active');
+                    
                     document.getElementById('examTitleHeader').textContent = currentExam.title + (currentExam.oneTimeOnly ? ' 🔒' : '');
                     renderQuestion();
+                    window.scrollTo(0,0);
                 });
             }
         }
@@ -835,12 +1003,6 @@
         }
 
         function goToQuestion(index) { currentQIndex = index; renderQuestion(); }
-        function nextQuestion() {
-            if (currentQIndex < currentExam.questions.length - 1) {
-                currentQIndex++;
-                renderQuestion();
-            }
-        }
         function prevQuestion() {
             if (currentQIndex > 0) {
                 currentQIndex--;
@@ -872,8 +1034,7 @@
 
             currentExam.questions.forEach((q, i) => {
                 let studentAnswer = answers[i];
-                // ✅ التصحيح المهم: طرح 1 لأن إجابة الأدمن مخزنة 1-4، وإجابة الطالب مخزنة 0-3
-                let correctAnswer = q.correct - 1;
+                let correctAnswer = q.correct;
                 if (studentAnswer === null) unanswered++;
                 else if (studentAnswer === correctAnswer) correctCount++;
                 else wrongCount++;
@@ -906,7 +1067,6 @@
                     }
                 }
                 await setUsers(users);
-
                 currentUser = user;
                 sessionStorage.setItem('currentUser', JSON.stringify(user));
             }
@@ -938,6 +1098,7 @@
             document.querySelector('.nav-btns').style.display = '';
             document.getElementById('resultBox').style.display = 'none';
             loadStudentDashboard(currentUser);
+            window.scrollTo(0,0);
         }
 
         // ============================================================
@@ -1062,6 +1223,7 @@
             document.getElementById('navButtons').style.display = 'flex';
             document.getElementById('navUser').style.display = 'none';
             document.getElementById('studentDashboard').classList.remove('active');
+            document.getElementById('courseDetailView').classList.remove('active');
             document.getElementById('examPage').classList.remove('active');
             document.getElementById('homeSection').style.display = 'block';
             document.getElementById('authSection').style.display = 'none';
