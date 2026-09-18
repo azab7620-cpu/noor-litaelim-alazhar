@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>لوحة الأدمن - نُورُ تَعْلِيمِ الأَزْهَرِ</title>
-    <!-- 🌟 إضافة خط عريف رقعة (شبيه بخط الثلث) -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- 🔒 وحدة الأمان -->
+    <script src="security.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; font-size: 14px; }
 
-        /* 🌟 تنسيق خط الثلث */
         .thuluth-text { 
             font-family: 'Aref Ruqaa', serif; 
             font-weight: 700; 
@@ -87,7 +89,6 @@
         body.dark-mode .btn-dark-mode { border-color: #d4af37; color: #d4af37; }
         body.dark-mode .btn-dark-mode:hover { background: rgba(212,175,55,0.1); }
 
-        /* 🌟 الهيدر بحواف دائرية وحجم أصغر */
         header { background: #fff; border-bottom: 3px solid #d4af37; padding: 10px 20px; transition: 0.3s; border-radius: 0 0 24px 24px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 15px; }
         .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .logo-text h1 { font-size: 22px; color: #3b0a0a; font-weight: 900; margin-bottom: 2px; }
@@ -101,17 +102,14 @@
         .dashboard-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
         .dashboard-container h2 { font-size: 20px; }
         
-        /* 🌟 التبويبات */
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
         .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 9px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px; box-shadow: 0 3px 8px rgba(0,0,0,0.03); }
         .admin-tabs button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; box-shadow: 0 6px 15px rgba(59,10,10,0.3); }
         
-        /* 🌟 محتوى التبويبات */
         .tab-content { display: none; background: #fff; padding: 22px; border-radius: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); transition: background 0.3s; }
         .tab-content.active { display: block; }
         
-        /* 🌟 الجداول */
         .admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
         .admin-table th { background: #3b0a0a; color: #d4af37; padding: 12px; text-align: center; font-size: 13px; }
         .admin-table th:first-child { border-radius: 0 16px 0 0; }
@@ -119,7 +117,6 @@
         .admin-table td { padding: 12px; text-align: center; border-bottom: 1px solid #f0ede8; font-size: 13px; }
         .admin-table tr:hover td { background: #f9f6f0; }
         
-        /* 🌟 الأزرار */
         .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 16px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; font-size: 12px; transition: 0.3s; box-shadow: 0 3px 8px rgba(59,10,10,0.15); }
         .btn-card:hover { transform: scale(1.05); box-shadow: 0 5px 12px rgba(59,10,10,0.25); }
         .btn-danger { background: #a00; color: #fff; box-shadow: 0 3px 8px rgba(170,0,0,0.2); }
@@ -127,7 +124,6 @@
         .btn-delete { background: #8b0000; color: #fff; box-shadow: 0 3px 8px rgba(139,0,0,0.2); }
         .btn-details { background: #1e5a8a; color: #fff; box-shadow: 0 3px 8px rgba(30,90,138,0.2); }
         
-        /* 🌟 الفورم */
         .add-form { margin-top: 15px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .full-width { grid-column: 1 / -1; }
@@ -138,20 +134,16 @@
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 11px 32px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; font-size: 14px; box-shadow: 0 5px 15px rgba(59,10,10,0.2); }
         .btn-submit:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,10,10,0.3); }
         
-        /* 🌟 صناديق الوحدات */
         .bundle-container-box { border: 2px dashed #ddd; padding: 18px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; }
         .bundle-container-box:hover { border-color: #d4af37; }
         
-        /* 🌟 صناديق الأسئلة */
         .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 16px; padding: 15px; margin-bottom: 15px; transition: 0.3s; }
         
-        /* 🌟 التنبيهات */
         .alert { padding: 12px 18px; border-radius: 16px; margin-bottom: 15px; font-weight: 600; font-size: 13px; }
         .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
-        /* ✅ صندوق "اختبار لمرة واحدة" */
         .exam-one-time-box {
             display: flex;
             align-items: center;
@@ -182,15 +174,28 @@
             font-size: 14px !important;
         }
 
-        /* 🌟 المودال */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: #fff; border-radius: 28px; padding: 28px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid #d4af37; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f4edd3; padding-bottom: 15px; }
         .modal-close { background: #a00; color: #fff; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; font-weight: 900; transition: 0.3s; box-shadow: 0 3px 8px rgba(170,0,0,0.3); }
         .modal-close:hover { transform: scale(1.1) rotate(90deg); background: #d4af37; color: #3b0a0a; }
 
-        /* 🌟 تفاصيل الطالب */
         .detail-row { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px dashed #f0ede8; font-size: 13px; }
+
+        /* شاشة تحميل/رفض الوصول */
+        #accessDenied {
+            display: none;
+            position: fixed; inset: 0;
+            background: #f8f6f2;
+            z-index: 99999;
+            justify-content: center; align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 30px;
+        }
+        #accessDenied h1 { color: #3b0a0a; margin-bottom: 15px; font-size: 26px; }
+        #accessDenied p { color: #666; margin-bottom: 25px; font-size: 15px; }
+        #accessDenied button { background: #3b0a0a; color: #d4af37; padding: 12px 30px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; font-size: 15px; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -202,6 +207,13 @@
     </style>
 </head>
 <body>
+    <!-- 🛡️ شاشة رفض الوصول (لو المستخدم مش أدمن) -->
+    <div id="accessDenied">
+        <h1>🚫 غير مصرح بالدخول</h1>
+        <p>هذه الصفحة مخصصة للمشرفين فقط. يرجى تسجيل الدخول بحساب أدمن.</p>
+        <button onclick="window.location.href='index.html'">العودة للرئيسية</button>
+    </div>
+
     <header>
         <div class="nav-container">
             <div class="logo-text"><h1 class="thuluth-text">نُورُ تَعْلِيمِ الأَزْهَرِ</h1><span>لوحة الأدمن</span></div>
@@ -238,7 +250,7 @@
 
             <div style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                 <div style="flex:1; min-width:280px; position:relative;">
-                    <input type="text" id="studentSearchInput" placeholder="🔍 ابحث بالاسم أو رقم الطالب أو رقم ولي الأمر..." oninput="searchStudents()" style="width:100%; padding:13px 42px 13px 16px; border:2px solid #d4af37; border-radius:16px; font-size:14px; font-family:'Cairo',sans-serif; outline:none; background:#fff;">
+                    <input type="text" id="studentSearchInput" placeholder="🔍 ابحث بالاسم أو رقم الطالب أو رقم ولي الأمر..." oninput="searchStudents()" maxlength="100" style="width:100%; padding:13px 42px 13px 16px; border:2px solid #d4af37; border-radius:16px; font-size:14px; font-family:'Cairo',sans-serif; outline:none; background:#fff;">
                     <span style="position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:18px; color:#d4af37;">🔍</span>
                 </div>
                 <button onclick="clearSearch()" class="btn-card" style="background:#555; color:#fff; padding:12px 20px; font-size:13px;">✖ مسح البحث</button>
@@ -313,13 +325,13 @@
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
-                <form id="addCourseForm">
+                <form id="addCourseForm" autocomplete="off">
                     <div class="form-grid">
-                        <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
+                        <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" maxlength="150" required></div>
                         <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
                         <div class="full-width">
                             <label>رابط المحاضرة (يفضل Google Drive أو YouTube)</label>
-                            <input type="url" id="courseLink" placeholder="https://drive.google.com/file/d/xxxx/view?usp=sharing">
+                            <input type="url" id="courseLink" maxlength="500" placeholder="https://drive.google.com/file/d/xxxx/view?usp=sharing">
                         </div>
                         <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
@@ -337,11 +349,11 @@
         <div id="tabAddBook" class="tab-content">
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
-                <form id="addBookForm">
+                <form id="addBookForm" autocomplete="off">
                     <div class="form-grid">
-                        <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
+                        <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" maxlength="150" required></div>
                         <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink"></div>
+                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink" maxlength="500"></div>
                         <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
@@ -358,11 +370,11 @@
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
-                <form id="addTeacherForm">
+                <form id="addTeacherForm" autocomplete="off">
                     <div class="form-grid">
-                        <div><label>اسم المدرس</label><input type="text" id="teacherName" required></div>
-                        <div><label>التخصص</label><input type="text" id="teacherSpecialty"></div>
-                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage"></div>
+                        <div><label>اسم المدرس</label><input type="text" id="teacherName" maxlength="80" required></div>
+                        <div><label>التخصص</label><input type="text" id="teacherSpecialty" maxlength="80"></div>
+                        <div class="full-width"><label>رابط صورة المدرس</label><input type="url" id="teacherImage" maxlength="500"></div>
                         <div class="full-width"><label>أو ارفع صورة من جهازك</label><input type="file" id="teacherImageFile" accept="image/*"></div>
                     </div>
                     <button type="submit" class="btn-submit">إضافة المدرس</button>
@@ -376,9 +388,9 @@
             <div class="bundle-container-box">
                 <div class="add-form">
                     <h5 style="color:#555; margin-bottom:10px; font-size:14px;">1. أنشئ الوحدة الجديدة:</h5>
-                    <form id="addBundleForm">
+                    <form id="addBundleForm" autocomplete="off">
                         <div class="form-grid">
-                            <div><label>اسم الوحدة</label><input type="text" id="bundleTitle" required></div>
+                            <div><label>اسم الوحدة</label><input type="text" id="bundleTitle" maxlength="150" required></div>
                             <div><label>الصف الدراسي</label><select id="bundleGrade" required><option value="">اختر الصف</option></select></div>
                         </div>
                         <button type="submit" class="btn-submit">إنشاء الوحدة</button>
@@ -389,7 +401,7 @@
             <div class="bundle-container-box">
                 <div class="add-form">
                     <h5 style="color:#555; margin-bottom:10px; font-size:14px;">2. أضف عناصر داخل الوحدة:</h5>
-                    <form id="addItemForm">
+                    <form id="addItemForm" autocomplete="off">
                         <div class="form-grid">
                             <div><label>اختر الوحدة</label><select id="itemBundleSelect" required></select></div>
                             <div><label>نوع العنصر</label>
@@ -409,10 +421,10 @@
                             </div>
                             <div id="manualFields" class="full-width" style="display:none;">
                                 <div class="form-grid">
-                                    <div><label>عنوان العنصر</label><input type="text" id="itemTitle"></div>
+                                    <div><label>عنوان العنصر</label><input type="text" id="itemTitle" maxlength="150"></div>
                                     <div>
                                         <label>الرابط (يفضل Google Drive أو YouTube للفيديوهات)</label>
-                                        <input type="url" id="itemLink" placeholder="https://drive.google.com/file/d/xxxx/view?usp=sharing">
+                                        <input type="url" id="itemLink" maxlength="500" placeholder="https://drive.google.com/file/d/xxxx/view?usp=sharing">
                                     </div>
                                     <div class="full-width"><label>أو ارفع ملف من جهازك</label><input type="file" id="itemFile"></div>
                                 </div>
@@ -424,7 +436,7 @@
                         </div>
                         <div id="examFields" class="full-width" style="display:none; margin-top:15px;">
                             <div class="form-grid">
-                                <div><label>عنوان الاختبار</label><input type="text" id="examItemTitle"></div>
+                                <div><label>عنوان الاختبار</label><input type="text" id="examItemTitle" maxlength="150"></div>
                                 <div><label>اختر الاختبار</label><select id="itemExamSelect"></select></div>
                             </div>
                         </div>
@@ -440,13 +452,12 @@
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد</h4>
                 <div class="alert alert-success">💡 الاختبار لا يظهر في الصفحة الرئيسية، بل يظهر للطلاب "المفعلين" فقط.</div>
-                <form id="examSetupForm">
+                <form id="examSetupForm" autocomplete="off">
                     <div class="form-grid">
-                        <div><label>عنوان الاختبار</label><input type="text" id="examTitle" required></div>
+                        <div><label>عنوان الاختبار</label><input type="text" id="examTitle" maxlength="150" required></div>
                         <div><label>الصف الدراسي</label><select id="examGrade" required><option value="">اختر الصف</option></select></div>
                         <div><label>عدد الأسئلة</label><input type="number" id="examQuestionCount" min="1" max="50" placeholder="مثال: 5"></div>
 
-                        <!-- ✅ الخانة الجديدة: اختبار لمرة واحدة -->
                         <div class="full-width">
                             <label class="exam-one-time-box">
                                 <input type="checkbox" id="examOneTimeOnly">
@@ -478,7 +489,9 @@
     </div>
 
     <script>
-        // 🌙 دارك مود
+        /* ============================================================
+           🌙 دارك مود
+           ============================================================ */
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? 'true' : 'false');
@@ -493,7 +506,9 @@
             updateDarkModeButtons();
         }
 
-        // 🔥 Firebase
+        /* ============================================================
+           🔥 Firebase
+           ============================================================ */
         const firebaseConfig = {
             apiKey: "AIzaSyD-7DnDsopGu1ztOdnSm-lHYw-ECk-UpII",
             authDomain: "noor-litaelim-alazhar.firebaseapp.com",
@@ -505,7 +520,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // دوال مساعدة
         async function getCollection(name) {
             const snap = await db.collection(name).get();
             return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -531,10 +545,42 @@
         async function getBundles() { return await getCollection('bundles'); }
         async function setBundles(d) { await setCollection('bundles', d); }
 
+        /* ============================================================
+           🛡️ التحقق من صلاحيات الأدمن (Guard)
+           ============================================================ */
+        let currentAdmin = null;
+
+        function checkAdminAccess() {
+            try {
+                const raw = sessionStorage.getItem('currentUser');
+                if (!raw) return false;
+                const user = JSON.parse(raw);
+                if (!user || user.role !== 'admin' || !user.active) return false;
+                currentAdmin = user;
+                return true;
+            } catch (e) {
+                logError('checkAdminAccess', e);
+                return false;
+            }
+        }
+
+        function enforceAdminAccess() {
+            if (!checkAdminAccess()) {
+                document.getElementById('accessDenied').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                return false;
+            }
+            return true;
+        }
+
+        /* ============================================================
+           📚 الصفوف
+           ============================================================ */
         function initGrades() {
             const grades = ['الأول ابتدائي','الثاني ابتدائي','الثالث ابتدائي','الرابع ابتدائي','الخامس ابتدائي','السادس ابتدائي','الأول إعدادي','الثاني إعدادي','الثالث إعدادي','الأول ثانوي','الثاني ثانوي','الثالث ثانوي'];
             ['bundleGrade', 'bookGrade', 'examGrade', 'courseGrade'].forEach(id => {
                 const select = document.getElementById(id);
+                if (!select) return;
                 grades.forEach(g => {
                     const opt = document.createElement('option');
                     opt.value = 'الصف ' + g;
@@ -544,159 +590,204 @@
             });
         }
 
-        // 🔍 البحث
+        /* ============================================================
+           🔍 البحث
+           ============================================================ */
         function searchStudents() { loadStudentsTable(); }
         function clearSearch() {
             const input = document.getElementById('studentSearchInput');
             if (input) { input.value = ''; loadStudentsTable(); }
         }
 
-        // الطلاب
+        /* ============================================================
+           👥 الطلاب
+           ============================================================ */
         async function loadStudentsTable() {
-            const allUsers = await getUsers();
-            const students = allUsers.filter(u => u.role === 'student');
-            const tbody = document.getElementById('studentsTableBody');
+            try {
+                const allUsers = await getUsers();
+                const students = allUsers.filter(u => u.role === 'student');
+                const tbody = document.getElementById('studentsTableBody');
 
-            const searchInput = document.getElementById('studentSearchInput');
-            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
-            let displayStudents = students;
-            if (query) {
-                displayStudents = students.filter(u => {
-                    const name = (u.name || '').toLowerCase();
-                    const phone = (u.phone || '').toLowerCase();
-                    const parentPhone = (u.parentPhone || '').toLowerCase();
-                    return name.includes(query) || phone.includes(query) || parentPhone.includes(query);
-                });
-            }
+                const searchInput = document.getElementById('studentSearchInput');
+                const query = searchInput ? sanitizeInput(searchInput.value, 100).toLowerCase() : '';
+                let displayStudents = students;
+                if (query) {
+                    displayStudents = students.filter(u => {
+                        const name = String(u.name || '').toLowerCase();
+                        const phone = String(u.phone || '').toLowerCase();
+                        const parentPhone = String(u.parentPhone || '').toLowerCase();
+                        return name.includes(query) || phone.includes(query) || parentPhone.includes(query);
+                    });
+                }
 
-            const countEl = document.getElementById('searchResultsCount');
-            if (countEl) {
-                countEl.textContent = query ? `📊 عدد النتائج: ${displayStudents.length} من ${students.length}` : `📊 إجمالي الطلاب: ${students.length}`;
-            }
+                const countEl = document.getElementById('searchResultsCount');
+                if (countEl) {
+                    countEl.textContent = query
+                        ? `📊 عدد النتائج: ${displayStudents.length} من ${students.length}`
+                        : `📊 إجمالي الطلاب: ${students.length}`;
+                }
 
-            if (!students.length) {
-                tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-info" style="margin:10px 0;">📭 لا يوجد طلاب مسجلون حتى الآن.</div></td></tr>';
-                return;
-            }
-            if (!displayStudents.length) {
-                tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-warning" style="margin:10px 0;">🔍 لا توجد نتائج مطابقة للبحث.</div></td></tr>';
-                return;
-            }
+                if (!students.length) {
+                    tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-info" style="margin:10px 0;">📭 لا يوجد طلاب مسجلون حتى الآن.</div></td></tr>';
+                    return;
+                }
+                if (!displayStudents.length) {
+                    tbody.innerHTML = '<tr><td colspan="5"><div class="alert alert-warning" style="margin:10px 0;">🔍 لا توجد نتائج مطابقة للبحث.</div></td></tr>';
+                    return;
+                }
 
-            tbody.innerHTML = displayStudents.map((u, idx) => `
-                <tr>
-                    <td>${idx+1}</td>
-                    <td>${u.name}</td>
-                    <td>${u.grade || 'غير محدد'}</td>
-                    <td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td>
-                    <td style="white-space: nowrap;">
-                        <button onclick="showStudentDetails('${u.id}')" class="btn-card btn-details">📋 تفاصيل</button>
-                        <button onclick="toggleStudent('${u.id}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}" style="margin-right:5px;">${u.active ? 'إلغاء' : 'تفعيل'}</button>
-                        <button onclick="deleteStudent('${u.id}')" class="btn-card btn-delete" style="margin-right:5px;">🗑️</button>
-                    </td>
-                </tr>
-            `).join('');
+                tbody.innerHTML = displayStudents.map((u, idx) => {
+                    const safeId = escapeHtml(u.id);
+                    return `
+                    <tr>
+                        <td>${idx+1}</td>
+                        <td>${escapeHtml(u.name)}</td>
+                        <td>${escapeHtml(u.grade || 'غير محدد')}</td>
+                        <td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td>
+                        <td style="white-space: nowrap;">
+                            <button onclick="showStudentDetails('${safeId}')" class="btn-card btn-details">📋 تفاصيل</button>
+                            <button onclick="toggleStudent('${safeId}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}" style="margin-right:5px;">${u.active ? 'إلغاء' : 'تفعيل'}</button>
+                            <button onclick="deleteStudent('${safeId}')" class="btn-card btn-delete" style="margin-right:5px;">🗑️</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            } catch (e) {
+                logError('loadStudentsTable', e);
+                alert('تعذر تحميل بيانات الطلاب. حاول لاحقاً.');
+            }
         }
 
         async function showStudentDetails(id) {
-            const users = await getUsers();
-            const u = users.find(x => x.id === id);
-            if (!u) { alert('الطالب غير موجود.'); return; }
+            try {
+                id = sanitizeInput(id, 100);
+                const users = await getUsers();
+                const u = users.find(x => x.id === id);
+                if (!u) { alert('الطالب غير موجود.'); return; }
 
-            const initial = (u.name || '؟').charAt(0);
-            const isOutside = u.isOutside ? 'نعم 🌍 (صفارة)' : 'لا 🇪🇬';
-            const stageText = u.stage === 'primary' ? 'ابتدائي أزهري' :
-                              u.stage === 'preparatory' ? 'إعدادي أزهري' :
-                              u.stage === 'secondary' ? 'ثانوي أزهري' : (u.stage || 'غير محدد');
+                const initial = escapeHtml((u.name || '؟').charAt(0));
+                const isOutside = u.isOutside ? 'نعم 🌍 (صفارة)' : 'لا 🇪🇬';
+                const stageText = u.stage === 'primary' ? 'ابتدائي أزهري' :
+                                  u.stage === 'preparatory' ? 'إعدادي أزهري' :
+                                  u.stage === 'secondary' ? 'ثانوي أزهري' : (u.stage || 'غير محدد');
 
-            document.getElementById('studentDetailsContent').innerHTML = `
-                <div style="width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg, #3b0a0a, #d4af37); color:#fff; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900; margin:0 auto 18px; border:3px solid #d4af37; box-shadow: 0 5px 15px rgba(212,175,55,0.4);">${initial}</div>
-                <div class="detail-row"><span>👤 الاسم</span><strong>${u.name || '—'}</strong></div>
-                <div class="detail-row"><span>📧 البريد</span><span dir="ltr">${u.email || '—'}</span></div>
-                <div class="detail-row"><span>📞 رقم الطالب</span><span dir="ltr">${u.phone || '—'}</span></div>
-                <div class="detail-row"><span>👨‍👦 رقم ولي الأمر</span><span dir="ltr">${u.parentPhone || '—'}</span></div>
-                <div class="detail-row"><span>📍 المحافظة</span><strong>${u.governorate || '—'}</strong></div>
-                <div class="detail-row"><span>🏘️ المركز</span><strong>${u.center || '—'}</strong></div>
-                <div class="detail-row"><span>🌍 صفارة</span><strong>${isOutside}</strong></div>
-                <div class="detail-row"><span>🎓 المرحلة</span><strong>${stageText}</strong></div>
-                <div class="detail-row"><span>📚 الصف</span><strong>${u.grade || '—'}</strong></div>
-                <div class="detail-row"><span>📊 الحالة</span><strong style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</strong></div>
-                <div class="detail-row"><span>📈 متوسط الدرجات</span><strong>${u.attempts ? (u.attempts.avg || 0) : 0}%</strong></div>
-                <div class="detail-row" style="border-bottom:none;"><span>✅ اختبارات محلولة</span><strong>${u.attempts ? (u.attempts.solved || 0) : 0}</strong></div>
-            `;
-            document.getElementById('studentDetailsModal').style.display = 'flex';
+                document.getElementById('studentDetailsContent').innerHTML = `
+                    <div style="width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg, #3b0a0a, #d4af37); color:#fff; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:900; margin:0 auto 18px; border:3px solid #d4af37; box-shadow: 0 5px 15px rgba(212,175,55,0.4);">${initial}</div>
+                    <div class="detail-row"><span>👤 الاسم</span><strong>${escapeHtml(u.name || '—')}</strong></div>
+                    <div class="detail-row"><span>📧 البريد</span><span dir="ltr">${escapeHtml(u.email || '—')}</span></div>
+                    <div class="detail-row"><span>📞 رقم الطالب</span><span dir="ltr">${escapeHtml(u.phone || '—')}</span></div>
+                    <div class="detail-row"><span>👨‍👦 رقم ولي الأمر</span><span dir="ltr">${escapeHtml(u.parentPhone || '—')}</span></div>
+                    <div class="detail-row"><span>📍 المحافظة</span><strong>${escapeHtml(u.governorate || '—')}</strong></div>
+                    <div class="detail-row"><span>🏘️ المركز</span><strong>${escapeHtml(u.center || '—')}</strong></div>
+                    <div class="detail-row"><span>🌍 صفارة</span><strong>${isOutside}</strong></div>
+                    <div class="detail-row"><span>🎓 المرحلة</span><strong>${escapeHtml(stageText)}</strong></div>
+                    <div class="detail-row"><span>📚 الصف</span><strong>${escapeHtml(u.grade || '—')}</strong></div>
+                    <div class="detail-row"><span>📊 الحالة</span><strong style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</strong></div>
+                    <div class="detail-row"><span>📈 متوسط الدرجات</span><strong>${u.attempts ? (Number(u.attempts.avg) || 0) : 0}%</strong></div>
+                    <div class="detail-row" style="border-bottom:none;"><span>✅ اختبارات محلولة</span><strong>${u.attempts ? (Number(u.attempts.solved) || 0) : 0}</strong></div>
+                `;
+                document.getElementById('studentDetailsModal').style.display = 'flex';
+            } catch (e) { logError('showStudentDetails', e); }
         }
+
         function closeStudentModal(event) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById('studentDetailsModal').style.display = 'none';
         }
 
         async function toggleStudent(id) {
-            let users = await getUsers();
-            let u = users.find(x => x.id === id);
-            if (!u) return;
-            u.active = !u.active;
-            await setUsers(users);
-            alert(u.active ? '✅ تم تفعيل الطالب' : '❌ تم إلغاء التفعيل');
-            loadStudentsTable();
+            try {
+                id = sanitizeInput(id, 100);
+                let users = await getUsers();
+                let u = users.find(x => x.id === id);
+                if (!u) return;
+                u.active = !u.active;
+                await setUsers(users);
+                alert(u.active ? '✅ تم تفعيل الطالب' : '❌ تم إلغاء التفعيل');
+                loadStudentsTable();
+            } catch (e) { logError('toggleStudent', e); alert('تعذر تنفيذ العملية.'); }
         }
+
         async function deleteStudent(id) {
-            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟')) return;
-            let users = await getUsers();
-            await setUsers(users.filter(u => u.id !== id));
-            alert('✅ تم حذف الطالب.');
-            loadStudentsTable();
+            try {
+                id = sanitizeInput(id, 100);
+                if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟')) return;
+                let users = await getUsers();
+                await setUsers(users.filter(u => u.id !== id));
+                alert('✅ تم حذف الطالب.');
+                loadStudentsTable();
+            } catch (e) { logError('deleteStudent', e); alert('تعذر الحذف.'); }
         }
 
-        // الحزم
+        /* ============================================================
+           📦 الحزم
+           ============================================================ */
         async function loadBundlesTable() {
-            const bundles = await getBundles();
-            const tbody = document.getElementById('bundlesTableBody');
-            tbody.innerHTML = bundles.length ? bundles.map((b, idx) => `
-                <tr><td>${idx+1}</td><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.items.length} عنصر</td><td><button onclick="deleteBundle('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>
-            `).join('') : '<tr><td colspan="5">لا توجد وحدات.</td></tr>';
+            try {
+                const bundles = await getBundles();
+                const tbody = document.getElementById('bundlesTableBody');
+                tbody.innerHTML = bundles.length ? bundles.map((b, idx) => {
+                    const safeId = escapeHtml(b.id);
+                    const itemCount = (b.items && b.items.length) ? b.items.length : 0;
+                    return `<tr>
+                        <td>${idx+1}</td>
+                        <td><strong>${escapeHtml(b.title)}</strong></td>
+                        <td>${escapeHtml(b.grade)}</td>
+                        <td>${itemCount} عنصر</td>
+                        <td><button onclick="deleteBundle('${safeId}')" class="btn-card btn-danger">🗑️</button></td>
+                    </tr>`;
+                }).join('') : '<tr><td colspan="5">لا توجد وحدات.</td></tr>';
+            } catch (e) { logError('loadBundlesTable', e); }
         }
+
         async function deleteBundle(id) {
-            let bundles = await getBundles();
-            await setBundles(bundles.filter(b => b.id !== id));
-            loadBundlesTable();
-            populateBundleSelects();
+            try {
+                id = sanitizeInput(id, 100);
+                let bundles = await getBundles();
+                await setBundles(bundles.filter(b => b.id !== id));
+                loadBundlesTable();
+                populateBundleSelects();
+            } catch (e) { logError('deleteBundle', e); }
         }
+
         async function populateBundleSelects() {
-            const bundles = await getBundles();
-            const sel = document.getElementById('itemBundleSelect');
-            sel.innerHTML = '<option value="">اختر وحدة</option>';
-            bundles.forEach(b => {
-                const o = document.createElement('option');
-                o.value = b.id; o.textContent = b.title;
-                sel.appendChild(o);
-            });
+            try {
+                const bundles = await getBundles();
+                const sel = document.getElementById('itemBundleSelect');
+                sel.innerHTML = '<option value="">اختر وحدة</option>';
+                bundles.forEach(b => {
+                    const o = document.createElement('option');
+                    o.value = b.id;
+                    o.textContent = b.title;
+                    sel.appendChild(o);
+                });
 
-            const exams = await getExams();
-            const selExam = document.getElementById('itemExamSelect');
-            selExam.innerHTML = '<option value="">اختر اختبار</option>';
-            exams.forEach(e => {
-                const o = document.createElement('option');
-                o.value = e.id; o.textContent = e.title;
-                selExam.appendChild(o);
-            });
+                const exams = await getExams();
+                const selExam = document.getElementById('itemExamSelect');
+                selExam.innerHTML = '<option value="">اختر اختبار</option>';
+                exams.forEach(e => {
+                    const o = document.createElement('option');
+                    o.value = e.id;
+                    o.textContent = e.title;
+                    selExam.appendChild(o);
+                });
 
-            const courses = await getCourses();
-            const books = await getBooks();
-            const selP = document.getElementById('platformItemSelect');
-            selP.innerHTML = '<option value="">اختر عنصراً من المنصة</option>';
-            courses.forEach(c => {
-                const o = document.createElement('option');
-                o.value = JSON.stringify({ source: 'course', id: c.id });
-                o.textContent = '🎬 ' + c.title;
-                selP.appendChild(o);
-            });
-            books.forEach(b => {
-                const o = document.createElement('option');
-                o.value = JSON.stringify({ source: 'book', id: b.id });
-                o.textContent = '📄 ' + b.title;
-                selP.appendChild(o);
-            });
+                const courses = await getCourses();
+                const books = await getBooks();
+                const selP = document.getElementById('platformItemSelect');
+                selP.innerHTML = '<option value="">اختر عنصراً من المنصة</option>';
+                courses.forEach(c => {
+                    const o = document.createElement('option');
+                    o.value = JSON.stringify({ source: 'course', id: c.id });
+                    o.textContent = '🎬 ' + c.title;
+                    selP.appendChild(o);
+                });
+                books.forEach(b => {
+                    const o = document.createElement('option');
+                    o.value = JSON.stringify({ source: 'book', id: b.id });
+                    o.textContent = '📄 ' + b.title;
+                    selP.appendChild(o);
+                });
+            } catch (e) { logError('populateBundleSelects', e); }
         }
 
         function toggleItemFields() {
@@ -711,12 +802,16 @@
             document.getElementById('platformFields').style.display = (t === 'platform') ? 'block' : 'none';
         }
 
-        // النماذج
+        /* ============================================================
+           📝 النماذج
+           ============================================================ */
         function setupForms() {
-            document.getElementById('addBundleForm').addEventListener('submit', async function(e) {
+
+            /* ---------- إضافة وحدة ---------- */
+            document.getElementById('addBundleForm').addEventListener('submit', safeAsync(async function(e) {
                 e.preventDefault();
-                const title = document.getElementById('bundleTitle').value.trim();
-                const grade = document.getElementById('bundleGrade').value;
+                const title = sanitizeInput(document.getElementById('bundleTitle').value, 150);
+                const grade = sanitizeInput(document.getElementById('bundleGrade').value, 40);
                 if (!title || !grade) { alert('املأ الحقول'); return; }
                 let bundles = await getBundles();
                 bundles.push({ id: 'bundle_' + Date.now(), title, grade, items: [] });
@@ -725,18 +820,21 @@
                 this.reset();
                 loadBundlesTable();
                 populateBundleSelects();
-            });
+            }, 'تعذر إنشاء الوحدة.'));
 
-            document.getElementById('addItemForm').addEventListener('submit', async function(e) {
+            /* ---------- إضافة عنصر للوحدة ---------- */
+            document.getElementById('addItemForm').addEventListener('submit', safeAsync(async function(e) {
                 e.preventDefault();
-                const bundleId = document.getElementById('itemBundleSelect').value;
-                const type = document.getElementById('itemType').value;
+                const bundleId = sanitizeInput(document.getElementById('itemBundleSelect').value, 100);
+                const type = sanitizeInput(document.getElementById('itemType').value, 20);
                 if (!bundleId) { alert('اختر وحدة أولاً'); return; }
                 let bundles = await getBundles();
                 let bundle = bundles.find(b => b.id === bundleId);
+                if (!bundle) { alert('الوحدة غير موجودة'); return; }
+
                 if (type === 'exam') {
-                    const examId = document.getElementById('itemExamSelect').value;
-                    const title = document.getElementById('examItemTitle').value.trim();
+                    const examId = sanitizeInput(document.getElementById('itemExamSelect').value, 100);
+                    const title = sanitizeInput(document.getElementById('examItemTitle').value, 150);
                     if (!examId || !title) { alert('املأ بيانات الاختبار'); return; }
                     bundle.items.push({ type: 'exam', title, examId });
                     await setBundles(bundles);
@@ -745,26 +843,39 @@
                     loadBundlesTable();
                     return;
                 }
-                const sourceType = document.getElementById('sourceType').value;
+
+                const sourceType = sanitizeInput(document.getElementById('sourceType').value, 20);
                 let title = '', link = '', itemType = type;
+
                 if (sourceType === 'platform') {
                     const pv = document.getElementById('platformItemSelect').value;
                     if (!pv) { alert('اختر عنصراً'); return; }
-                    const po = JSON.parse(pv);
+                    let po;
+                    try { po = JSON.parse(pv); } catch (_) { alert('عنصر غير صالح'); return; }
                     if (po.source === 'course') {
                         let s = (await getCourses()).find(c => c.id === po.id);
+                        if (!s) { alert('العنصر غير موجود'); return; }
                         title = s.title; link = s.link; itemType = 'video';
                     } else {
                         let s = (await getBooks()).find(b => b.id === po.id);
+                        if (!s) { alert('العنصر غير موجود'); return; }
                         title = s.title; link = s.link; itemType = 'pdf';
                     }
-                } else {
-                    title = document.getElementById('itemTitle').value.trim();
-                    const f = document.getElementById('itemFile');
-                    const l = document.getElementById('itemLink').value.trim();
-                    if (f.files.length > 0) {
-                        const reader = new FileReader();
-                        reader.onload = async function(ev) {
+                    bundle.items.push({ type: itemType, title, link });
+                    await setBundles(bundles);
+                    document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة!</div>';
+                    loadBundlesTable();
+                    return;
+                }
+
+                title = sanitizeInput(document.getElementById('itemTitle').value, 150);
+                const f = document.getElementById('itemFile');
+                const l = sanitizeUrl(document.getElementById('itemLink').value.trim());
+
+                if (f.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = async function(ev) {
+                        try {
                             link = ev.target.result;
                             if (!title || !link) { alert('املأ البيانات'); return; }
                             bundle.items.push({ type: itemType, title, link });
@@ -774,13 +885,13 @@
                             document.getElementById('itemLink').value = '';
                             document.getElementById('itemFile').value = '';
                             loadBundlesTable();
-                        };
-                        reader.readAsDataURL(f.files[0]);
-                        return;
-                    } else {
-                        link = l;
-                        if (!title || !link) { alert('املأ البيانات'); return; }
-                    }
+                        } catch (err) { logError('addItem-upload', err); }
+                    };
+                    reader.readAsDataURL(f.files[0]);
+                    return;
+                } else {
+                    link = l;
+                    if (!title || !link) { alert('املأ البيانات أو ضع رابطاً صحيحاً'); return; }
                 }
                 bundle.items.push({ type: itemType, title, link });
                 await setBundles(bundles);
@@ -789,28 +900,19 @@
                 document.getElementById('itemLink').value = '';
                 document.getElementById('itemFile').value = '';
                 loadBundlesTable();
-            });
+            }, 'تعذر إضافة العنصر.'));
 
-            document.getElementById('addCourseForm').addEventListener('submit', async function(e) {
+            /* ---------- إضافة محاضرة ---------- */
+            document.getElementById('addCourseForm').addEventListener('submit', safeAsync(async function(e) {
                 e.preventDefault();
-                const title = document.getElementById('courseTitle').value.trim();
-                const grade = document.getElementById('courseGrade').value;
-                const link = document.getElementById('courseLink').value.trim();
+                const title = sanitizeInput(document.getElementById('courseTitle').value, 150);
+                const grade = sanitizeInput(document.getElementById('courseGrade').value, 40);
+                const link = sanitizeUrl(document.getElementById('courseLink').value.trim());
                 const f = document.getElementById('courseFile');
                 const showInHome = document.getElementById('courseShowInHome').checked;
-                let finalLink = link;
-                if (f.files.length > 0) {
-                    const reader = new FileReader();
-                    reader.onload = async function(ev) {
-                        finalLink = ev.target.result;
-                        await saveCourse(title, grade, finalLink, showInHome);
-                    };
-                    reader.readAsDataURL(f.files[0]);
-                } else {
-                    await saveCourse(title, grade, finalLink, showInHome);
-                }
+
                 async function saveCourse(t, g, l, sh) {
-                    if (!t || !g || !l) { alert('املأ الحقول'); return; }
+                    if (!t || !g || !l) { alert('املأ الحقول أو ضع رابطاً صحيحاً'); return; }
                     let courses = await getCourses();
                     courses.push({ id: 'c_' + Date.now(), title: t, grade: g, link: l, showInHome: sh });
                     await setCourses(courses);
@@ -820,28 +922,30 @@
                     loadCoursesTable();
                     populateBundleSelects();
                 }
-            });
 
-            document.getElementById('addBookForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const title = document.getElementById('bookTitle').value.trim();
-                const grade = document.getElementById('bookGrade').value;
-                const link = document.getElementById('bookLink').value.trim();
-                const f = document.getElementById('bookFile');
-                const showInHome = document.getElementById('bookShowInHome').checked;
-                let finalLink = link;
                 if (f.files.length > 0) {
                     const reader = new FileReader();
                     reader.onload = async function(ev) {
-                        finalLink = ev.target.result;
-                        await saveBook(title, grade, finalLink, showInHome);
+                        try { await saveCourse(title, grade, ev.target.result, showInHome); }
+                        catch (err) { logError('saveCourse', err); }
                     };
                     reader.readAsDataURL(f.files[0]);
                 } else {
-                    await saveBook(title, grade, finalLink, showInHome);
+                    await saveCourse(title, grade, link, showInHome);
                 }
+            }, 'تعذر إضافة المحاضرة.'));
+
+            /* ---------- إضافة كتاب ---------- */
+            document.getElementById('addBookForm').addEventListener('submit', safeAsync(async function(e) {
+                e.preventDefault();
+                const title = sanitizeInput(document.getElementById('bookTitle').value, 150);
+                const grade = sanitizeInput(document.getElementById('bookGrade').value, 40);
+                const link = sanitizeUrl(document.getElementById('bookLink').value.trim());
+                const f = document.getElementById('bookFile');
+                const showInHome = document.getElementById('bookShowInHome').checked;
+
                 async function saveBook(t, g, l, sh) {
-                    if (!t || !g || !l) { alert('املأ الحقول'); return; }
+                    if (!t || !g || !l) { alert('املأ الحقول أو ضع رابطاً صحيحاً'); return; }
                     let books = await getBooks();
                     books.push({ id: 'b_' + Date.now(), title: t, grade: g, link: l, showInHome: sh });
                     await setBooks(books);
@@ -851,15 +955,29 @@
                     loadBooksTable();
                     populateBundleSelects();
                 }
-            });
 
-            document.getElementById('addTeacherForm').addEventListener('submit', async function(e) {
+                if (f.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = async function(ev) {
+                        try { await saveBook(title, grade, ev.target.result, showInHome); }
+                        catch (err) { logError('saveBook', err); }
+                    };
+                    reader.readAsDataURL(f.files[0]);
+                } else {
+                    await saveBook(title, grade, link, showInHome);
+                }
+            }, 'تعذر إضافة الكتاب.'));
+
+            /* ---------- إضافة مدرس ---------- */
+            document.getElementById('addTeacherForm').addEventListener('submit', safeAsync(async function(e) {
                 e.preventDefault();
-                const name = document.getElementById('teacherName').value.trim();
-                const specialty = document.getElementById('teacherSpecialty').value.trim();
-                const imageUrl = document.getElementById('teacherImage').value.trim();
+                const name = sanitizeInput(document.getElementById('teacherName').value, 80);
+                const specialty = sanitizeInput(document.getElementById('teacherSpecialty').value, 80);
+                const imageUrl = sanitizeUrl(document.getElementById('teacherImage').value.trim());
                 const f = document.getElementById('teacherImageFile');
-                let finalImage = imageUrl || 'https://via.placeholder.com/150/3b0a0a/d4af37?text=' + encodeURIComponent(name.charAt(0));
+
+                let finalImage = imageUrl || ('https://via.placeholder.com/150/3b0a0a/d4af37?text=' + encodeURIComponent((name || '؟').charAt(0)));
+
                 async function saveTeacher(n, s, i) {
                     if (!n) { alert('ادخل الاسم'); return; }
                     let teachers = await getTeachers();
@@ -869,152 +987,244 @@
                     document.getElementById('addTeacherForm').reset();
                     loadTeachersTable();
                 }
+
                 if (f.files.length > 0) {
                     const reader = new FileReader();
                     reader.onload = async function(ev) {
-                        finalImage = ev.target.result;
-                        await saveTeacher(name, specialty, finalImage);
+                        try { await saveTeacher(name, specialty, ev.target.result); }
+                        catch (err) { logError('saveTeacher', err); }
                     };
                     reader.readAsDataURL(f.files[0]);
                 } else {
                     await saveTeacher(name, specialty, finalImage);
                 }
-            });
+            }, 'تعذر إضافة المدرس.'));
         }
 
-        // الاختبارات
+        /* ============================================================
+           📝 توليد أسئلة الاختبار
+           ============================================================ */
         function generateQuestionBoxes() {
-            const count = parseInt(document.getElementById('examQuestionCount').value);
-            const title = document.getElementById('examTitle').value.trim();
-            const grade = document.getElementById('examGrade').value;
-            if (!title || !grade) { alert('أدخل العنوان واختر الصف'); return; }
-            if (!count || count < 1) { alert('أدخل عدد أسئلة صحيح'); return; }
-            let html = '<h4 style="color:#3b0a0a; margin:18px 0; border-top:1px dashed #ddd; padding-top:18px; font-size:16px;">الأسئلة:</h4>';
-            for (let i = 0; i < count; i++) {
-                html += `
-                    <div class="question-box-generator">
-                        <h4 style="font-size:15px;">السؤال ${i + 1}</h4>
-                        <input type="text" class="q-text-input" placeholder="نص السؤال" style="width:100%; padding:10px; border:2px solid #ddd; border-radius:12px; margin-bottom:10px; font-size:13px;">
-                        <div class="option-row" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الأول" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الثاني" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
-                        </div>
-                        <div class="option-row" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الثالث" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
-                            <input type="text" class="opt-input" placeholder="الخيار الرابع" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
-                        </div>
-                        <div style="margin-top:10px;">
-                            <label style="font-size:13px; font-weight:700; color:#3b0a0a;">الإجابة الصحيحة:</label>
-                            <select class="correct-select" style="padding:8px; border-radius:12px; border:2px solid #ddd; font-size:13px;"><option value="1">الخيار الأول</option><option value="2">الخيار الثاني</option><option value="3">الخيار الثالث</option><option value="4">الخيار الرابع</option></select>
-                        </div>
-                    </div>`;
-            }
-            document.getElementById('questionsContainer').innerHTML = html;
-            document.getElementById('saveExamBtn').style.display = 'block';
-            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم توليد ' + count + ' أسئلة.</div>';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            try {
+                const count = parseInt(document.getElementById('examQuestionCount').value, 10);
+                const title = sanitizeInput(document.getElementById('examTitle').value, 150);
+                const grade = sanitizeInput(document.getElementById('examGrade').value, 40);
+                if (!title || !grade) { alert('أدخل العنوان واختر الصف'); return; }
+                if (!count || count < 1 || count > 50) { alert('أدخل عدد أسئلة صحيح (1 - 50)'); return; }
+
+                let html = '<h4 style="color:#3b0a0a; margin:18px 0; border-top:1px dashed #ddd; padding-top:18px; font-size:16px;">الأسئلة:</h4>';
+                for (let i = 0; i < count; i++) {
+                    html += `
+                        <div class="question-box-generator">
+                            <h4 style="font-size:15px;">السؤال ${i + 1}</h4>
+                            <input type="text" class="q-text-input" maxlength="500" placeholder="نص السؤال" style="width:100%; padding:10px; border:2px solid #ddd; border-radius:12px; margin-bottom:10px; font-size:13px;">
+                            <div class="option-row" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                <input type="text" class="opt-input" maxlength="200" placeholder="الخيار الأول" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
+                                <input type="text" class="opt-input" maxlength="200" placeholder="الخيار الثاني" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
+                            </div>
+                            <div class="option-row" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                                <input type="text" class="opt-input" maxlength="200" placeholder="الخيار الثالث" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
+                                <input type="text" class="opt-input" maxlength="200" placeholder="الخيار الرابع" style="padding:10px; border:2px solid #ddd; border-radius:12px; font-size:13px;">
+                            </div>
+                            <div style="margin-top:10px;">
+                                <label style="font-size:13px; font-weight:700; color:#3b0a0a;">الإجابة الصحيحة:</label>
+                                <select class="correct-select" style="padding:8px; border-radius:12px; border:2px solid #ddd; font-size:13px;"><option value="1">الخيار الأول</option><option value="2">الخيار الثاني</option><option value="3">الخيار الثالث</option><option value="4">الخيار الرابع</option></select>
+                            </div>
+                        </div>`;
+                }
+                document.getElementById('questionsContainer').innerHTML = html;
+                document.getElementById('saveExamBtn').style.display = 'block';
+                document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم توليد ' + count + ' أسئلة.</div>';
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            } catch (e) { logError('generateQuestionBoxes', e); }
         }
 
         async function saveFullExam() {
-            const title = document.getElementById('examTitle').value.trim();
-            const grade = document.getElementById('examGrade').value;
-            const oneTimeOnly = document.getElementById('examOneTimeOnly').checked;
-            const boxes = document.querySelectorAll('.question-box-generator');
-            if (!boxes.length) { alert('قم بتوليد الأسئلة أولاً'); return; }
-            let questions = [];
-            for (let i = 0; i < boxes.length; i++) {
-                const box = boxes[i];
-                const q = box.querySelector('.q-text-input').value.trim();
-                const opts = Array.from(box.querySelectorAll('.opt-input')).map(x => x.value.trim());
-                const correct = parseInt(box.querySelector('.correct-select').value);
-                if (!q || opts.includes('')) { alert('يرجى ملء جميع بيانات السؤال رقم ' + (i + 1)); return; }
-                questions.push({ q, options: opts, correct });
-            }
-            let exams = await getExams();
-            let exam = exams.find(e => e.title === title && e.grade === grade);
-            if (!exam) {
-                exam = { id: 'exam_' + Date.now(), title, grade, oneTimeOnly: oneTimeOnly, questions: [] };
-                exams.push(exam);
-            } else {
-                exam.oneTimeOnly = oneTimeOnly;
-            }
-            exam.questions = exam.questions.concat(questions);
-            await setExams(exams);
-            document.getElementById('questionsContainer').innerHTML = '';
-            document.getElementById('saveExamBtn').style.display = 'none';
-            document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح!' + (oneTimeOnly ? ' (لمرة واحدة 🔒)' : '') + '</div>';
-            alert('✅ تم إنشاء الاختبار بنجاح!' + (oneTimeOnly ? '\n🔒 لمرة واحدة فقط' : ''));
-            document.getElementById('examSetupForm').reset();
-            populateBundleSelects();
-            loadExamsTable();
-            window.scrollTo(0,0);
+            try {
+                const title = sanitizeInput(document.getElementById('examTitle').value, 150);
+                const grade = sanitizeInput(document.getElementById('examGrade').value, 40);
+                const oneTimeOnly = document.getElementById('examOneTimeOnly').checked;
+                if (!title || !grade) { alert('أدخل العنوان واختر الصف'); return; }
+
+                const boxes = document.querySelectorAll('.question-box-generator');
+                if (!boxes.length) { alert('قم بتوليد الأسئلة أولاً'); return; }
+
+                let questions = [];
+                for (let i = 0; i < boxes.length; i++) {
+                    const box = boxes[i];
+                    const q = sanitizeInput(box.querySelector('.q-text-input').value, 500);
+                    const opts = Array.from(box.querySelectorAll('.opt-input')).map(x => sanitizeInput(x.value, 200));
+                    const correct = parseInt(box.querySelector('.correct-select').value, 10);
+                    if (!q || opts.includes('') || opts.length < 4) { alert('يرجى ملء جميع بيانات السؤال رقم ' + (i + 1)); return; }
+                    if (isNaN(correct) || correct < 1 || correct > 4) { alert('الإجابة الصحيحة غير صالحة في السؤال رقم ' + (i + 1)); return; }
+                    questions.push({ q, options: opts, correct });
+                }
+
+                let exams = await getExams();
+                let exam = exams.find(e => e.title === title && e.grade === grade);
+                if (!exam) {
+                    exam = { id: 'exam_' + Date.now(), title, grade, oneTimeOnly, questions: [] };
+                    exams.push(exam);
+                } else {
+                    exam.oneTimeOnly = oneTimeOnly;
+                    if (!Array.isArray(exam.questions)) exam.questions = [];
+                }
+                exam.questions = exam.questions.concat(questions);
+                await setExams(exams);
+
+                document.getElementById('questionsContainer').innerHTML = '';
+                document.getElementById('saveExamBtn').style.display = 'none';
+                document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح!' + (oneTimeOnly ? ' (لمرة واحدة 🔒)' : '') + '</div>';
+                alert('✅ تم إنشاء الاختبار بنجاح!' + (oneTimeOnly ? '\n🔒 لمرة واحدة فقط' : ''));
+                document.getElementById('examSetupForm').reset();
+                populateBundleSelects();
+                loadExamsTable();
+                window.scrollTo(0,0);
+            } catch (e) { logError('saveFullExam', e); alert('تعذر حفظ الاختبار.'); }
         }
 
-        // الجداول
+        /* ============================================================
+           📊 الجداول
+           ============================================================ */
         async function loadCoursesTable() {
-            const courses = await getCourses();
-            const tbody = document.getElementById('coursesTableBody');
-            tbody.innerHTML = courses.length ? courses.map(c => `<tr><td><strong>${c.title}</strong></td><td>${c.grade}</td><td>${c.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteCourse('${c.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد محاضرات</td></tr>';
+            try {
+                const courses = await getCourses();
+                const tbody = document.getElementById('coursesTableBody');
+                tbody.innerHTML = courses.length ? courses.map(c => {
+                    const safeId = escapeHtml(c.id);
+                    return `<tr>
+                        <td><strong>${escapeHtml(c.title)}</strong></td>
+                        <td>${escapeHtml(c.grade)}</td>
+                        <td>${c.link ? 'موجود' : 'لا يوجد'}</td>
+                        <td><button onclick="deleteCourse('${safeId}')" class="btn-card btn-danger">🗑️</button></td>
+                    </tr>`;
+                }).join('') : '<tr><td colspan="4">لا توجد محاضرات</td></tr>';
+            } catch (e) { logError('loadCoursesTable', e); }
         }
-        async function deleteCourse(id) { let c = await getCourses(); await setCourses(c.filter(x => x.id !== id)); loadCoursesTable(); populateBundleSelects(); }
+        async function deleteCourse(id) {
+            try {
+                id = sanitizeInput(id, 100);
+                let c = await getCourses();
+                await setCourses(c.filter(x => x.id !== id));
+                loadCoursesTable();
+                populateBundleSelects();
+            } catch (e) { logError('deleteCourse', e); }
+        }
 
         async function loadBooksTable() {
-            const books = await getBooks();
-            const tbody = document.getElementById('booksTableBody');
-            tbody.innerHTML = books.length ? books.map(b => `<tr><td><strong>${b.title}</strong></td><td>${b.grade}</td><td>${b.link ? 'موجود' : 'لا يوجد'}</td><td><button onclick="deleteBook('${b.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد كتب</td></tr>';
+            try {
+                const books = await getBooks();
+                const tbody = document.getElementById('booksTableBody');
+                tbody.innerHTML = books.length ? books.map(b => {
+                    const safeId = escapeHtml(b.id);
+                    return `<tr>
+                        <td><strong>${escapeHtml(b.title)}</strong></td>
+                        <td>${escapeHtml(b.grade)}</td>
+                        <td>${b.link ? 'موجود' : 'لا يوجد'}</td>
+                        <td><button onclick="deleteBook('${safeId}')" class="btn-card btn-danger">🗑️</button></td>
+                    </tr>`;
+                }).join('') : '<tr><td colspan="4">لا توجد كتب</td></tr>';
+            } catch (e) { logError('loadBooksTable', e); }
         }
-        async function deleteBook(id) { let b = await getBooks(); await setBooks(b.filter(x => x.id !== id)); loadBooksTable(); populateBundleSelects(); }
+        async function deleteBook(id) {
+            try {
+                id = sanitizeInput(id, 100);
+                let b = await getBooks();
+                await setBooks(b.filter(x => x.id !== id));
+                loadBooksTable();
+                populateBundleSelects();
+            } catch (e) { logError('deleteBook', e); }
+        }
 
         async function loadTeachersTable() {
-            const teachers = await getTeachers();
-            const tbody = document.getElementById('teachersTableBody');
-            tbody.innerHTML = teachers.length ? teachers.map(t => `<tr><td>${t.name}</td><td>${t.image ? '<img src="'+t.image+'" width="40" style="border-radius:50%;border:2px solid #d4af37;">' : 'لا توجد'}</td><td><button onclick="deleteTeacher('${t.id}')" class="btn-card btn-danger">🗑️</button></td></tr>`).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
+            try {
+                const teachers = await getTeachers();
+                const tbody = document.getElementById('teachersTableBody');
+                tbody.innerHTML = teachers.length ? teachers.map(t => {
+                    const safeId = escapeHtml(t.id);
+                    const safeImg = sanitizeUrl(t.image);
+                    const imgHtml = safeImg
+                        ? `<img src="${escapeHtml(safeImg)}" alt="" width="40" style="border-radius:50%;border:2px solid #d4af37;">`
+                        : 'لا توجد';
+                    return `<tr>
+                        <td>${escapeHtml(t.name)}</td>
+                        <td>${imgHtml}</td>
+                        <td><button onclick="deleteTeacher('${safeId}')" class="btn-card btn-danger">🗑️</button></td>
+                    </tr>`;
+                }).join('') : '<tr><td colspan="3">لا يوجد مدرسين</td></tr>';
+            } catch (e) { logError('loadTeachersTable', e); }
         }
-        async function deleteTeacher(id) { let t = await getTeachers(); await setTeachers(t.filter(x => x.id !== id)); loadTeachersTable(); }
+        async function deleteTeacher(id) {
+            try {
+                id = sanitizeInput(id, 100);
+                let t = await getTeachers();
+                await setTeachers(t.filter(x => x.id !== id));
+                loadTeachersTable();
+            } catch (e) { logError('deleteTeacher', e); }
+        }
 
-        // ✅ جدول الاختبارات مع عمود النوع
         async function loadExamsTable() {
-            const exams = await getExams();
-            const tbody = document.getElementById('examsTableBody');
-            if (!exams.length) {
-                tbody.innerHTML = '<tr><td colspan="6"><div class="alert alert-info" style="margin:10px 0;">📭 لا توجد اختبارات حتى الآن.</div></td></tr>';
-                return;
-            }
-            tbody.innerHTML = exams.map((exam, idx) => `
-                <tr>
-                    <td>${idx+1}</td>
-                    <td><strong>${exam.title}</strong></td>
-                    <td>${exam.grade}</td>
-                    <td>${exam.questions ? exam.questions.length : 0}</td>
-                    <td>${exam.oneTimeOnly ? '<span style="background:#d4af37; color:#3b0a0a; padding:5px 12px; border-radius:50px; font-weight:700; font-size:11px;">🔒 مرة واحدة</span>' : '<span style="background:#2a7a2a; color:#fff; padding:5px 12px; border-radius:50px; font-weight:700; font-size:11px;">🔓 متاح دائماً</span>'}</td>
-                    <td><button onclick="deleteExam('${exam.id}')" class="btn-card btn-delete">🗑️ حذف</button></td>
-                </tr>
-            `).join('');
+            try {
+                const exams = await getExams();
+                const tbody = document.getElementById('examsTableBody');
+                if (!exams.length) {
+                    tbody.innerHTML = '<tr><td colspan="6"><div class="alert alert-info" style="margin:10px 0;">📭 لا توجد اختبارات حتى الآن.</div></td></tr>';
+                    return;
+                }
+                tbody.innerHTML = exams.map((exam, idx) => {
+                    const safeId = escapeHtml(exam.id);
+                    const qCount = Array.isArray(exam.questions) ? exam.questions.length : 0;
+                    return `
+                    <tr>
+                        <td>${idx+1}</td>
+                        <td><strong>${escapeHtml(exam.title)}</strong></td>
+                        <td>${escapeHtml(exam.grade)}</td>
+                        <td>${qCount}</td>
+                        <td>${exam.oneTimeOnly ? '<span style="background:#d4af37; color:#3b0a0a; padding:5px 12px; border-radius:50px; font-weight:700; font-size:11px;">🔒 مرة واحدة</span>' : '<span style="background:#2a7a2a; color:#fff; padding:5px 12px; border-radius:50px; font-weight:700; font-size:11px;">🔓 متاح دائماً</span>'}</td>
+                        <td><button onclick="deleteExam('${safeId}')" class="btn-card btn-delete">🗑️ حذف</button></td>
+                    </tr>`;
+                }).join('');
+            } catch (e) { logError('loadExamsTable', e); }
         }
         async function deleteExam(id) {
-            if (!confirm('⚠️ هل أنت متأكد من حذف هذا الاختبار نهائياً؟')) return;
-            let exams = await getExams();
-            await setExams(exams.filter(e => e.id !== id));
-            alert('✅ تم الحذف.');
-            loadExamsTable();
-            populateBundleSelects();
+            try {
+                id = sanitizeInput(id, 100);
+                if (!confirm('⚠️ هل أنت متأكد من حذف هذا الاختبار نهائياً؟')) return;
+                let exams = await getExams();
+                await setExams(exams.filter(e => e.id !== id));
+                alert('✅ تم الحذف.');
+                loadExamsTable();
+                populateBundleSelects();
+            } catch (e) { logError('deleteExam', e); }
         }
 
+        /* ============================================================
+           🌟 التبويبات
+           ============================================================ */
         function showTab(tabId) {
+            const safeId = sanitizeInput(tabId, 40);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
-            if (tabId === 'students') loadStudentsTable();
-            if (tabId === 'bundles') loadBundlesTable();
-            if (tabId === 'courses') loadCoursesTable();
-            if (tabId === 'books') loadBooksTable();
-            if (tabId === 'teachers') loadTeachersTable();
-            if (tabId === 'exams') loadExamsTable();
-            if (tabId === 'addBundle') populateBundleSelects();
+            const el = document.getElementById('tab' + safeId.charAt(0).toUpperCase() + safeId.slice(1));
+            if (el) el.classList.add('active');
+            if (safeId === 'students') loadStudentsTable();
+            if (safeId === 'bundles') loadBundlesTable();
+            if (safeId === 'courses') loadCoursesTable();
+            if (safeId === 'books') loadBooksTable();
+            if (safeId === 'teachers') loadTeachersTable();
+            if (safeId === 'exams') loadExamsTable();
+            if (safeId === 'addBundle') populateBundleSelects();
         }
 
+        /* ============================================================
+           🚀 DOMContentLoaded
+           ============================================================ */
         document.addEventListener('DOMContentLoaded', function() {
             loadDarkModePreference();
+
+            // 🛡️ التحقق من صلاحيات الأدمن أولاً
+            if (!enforceAdminAccess()) return;
+
             initGrades();
             loadStudentsTable();
             loadBundlesTable();
@@ -1027,7 +1237,10 @@
             toggleItemFields();
         });
 
-        function logout() { sessionStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
