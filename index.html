@@ -46,6 +46,9 @@
         body.dark-mode .btn-card { background: var(--gold); color: #1a1a2e; }
         body.dark-mode .section-header h3 { color: var(--gold); }
         body.dark-mode .section-header p { color: var(--text-secondary); }
+        body.dark-mode .student-header-card { background: var(--bg-card); border-right-color: var(--gold); }
+        body.dark-mode .student-header-card h2 { color: var(--gold); }
+        body.dark-mode .student-header-card p { color: var(--text-secondary); }
         body.dark-mode .attempt-card { background: var(--bg-card); border-color: var(--border-color); }
         body.dark-mode .attempt-card .value { color: var(--gold); }
         body.dark-mode .attempt-card .label { color: var(--text-secondary); }
@@ -90,7 +93,6 @@
         body.dark-mode .q-btn { background: var(--bg-card); border-color: var(--border-color); color: var(--text-primary); }
         body.dark-mode .q-btn.current { background: #3b0a0a; color: var(--gold); }
         body.dark-mode .q-btn.answered { background: var(--gold); color: #1a1a2e; }
-        body.dark-mode .captcha-box { background: #2a3a5a !important; color: var(--gold) !important; }
 
         .student-dashboard-container { max-width: 1100px; margin: 15px auto; padding: 0 18px; }
         .welcome-banner { background: #fff; padding: 18px 22px; border-radius: 24px; box-shadow: 0 6px 20px rgba(0,0,0,0.04); margin-bottom: 22px; border-right: 6px solid #d4af37; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
@@ -312,12 +314,6 @@
         .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 2px dashed #eee; transition: border-color 0.3s; }
         .btn-outline-toggle { background: transparent; border: 2px solid #3b0a0a; color: #3b0a0a; padding: 10px 28px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-
-        /* 🔒 Captcha Styles */
-        .captcha-row { display: flex; gap: 10px; align-items: center; }
-        .captcha-box { background: #f4edd3; padding: 11px 16px; border-radius: 12px; font-weight: 800; color: #3b0a0a; min-width: 110px; text-align: center; font-size: 15px; letter-spacing: 1px; user-select: none; font-family: 'Aref Ruqaa', serif; }
-        .captcha-refresh { background: #3b0a0a; color: #d4af37; border: none; padding: 11px 14px; border-radius: 12px; cursor: pointer; transition: 0.3s; font-size: 15px; }
-        .captcha-refresh:hover { background: #520e0e; transform: rotate(180deg); }
 
         /* 🔒 Password Strength Indicator */
         .pwd-strength-bar { height: 5px; background: #eee; border-radius: 10px; margin-top: 6px; overflow: hidden; }
@@ -594,16 +590,6 @@
                                 <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" required maxlength="128"><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regConfirmPass')">👁️</span></div></div>
                             </div>
 
-                            <!-- 🔒 Captcha Register -->
-                            <div class="form-group-modern">
-                                <label>التحقق الأمني</label>
-                                <div class="captcha-row">
-                                    <span id="regCaptchaBox" class="captcha-box" data-answer="">— + — = ؟</span>
-                                    <input type="number" id="regCaptcha" placeholder="الإجابة" required style="flex:1; padding:11px; border:2px solid #eadacc; border-radius:14px; font-family:'Cairo';">
-                                    <button type="button" class="captcha-refresh" onclick="refreshCaptcha('reg')" title="تجديد">🔄</button>
-                                </div>
-                            </div>
-
                             <button type="submit" class="btn-submit-modern">إنشاء الحساب ←</button>
                         </form>
                         <div class="auth-toggle-footer"><p>لديك حساب بالفعل؟</p><button class="btn-outline-toggle" onclick="switchAuthView('login')">تسجيل الدخول</button></div>
@@ -613,16 +599,6 @@
                         <form id="loginForm" autocomplete="off">
                             <div class="form-group-modern"><label>رقم الهاتف أو البريد</label><div class="input-wrapper"><input type="text" id="loginEmailOrPhone" placeholder="أدخل البريد أو رقم الهاتف" required maxlength="120"><span class="input-icon-right">👤</span></div></div>
                             <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="loginPass" placeholder="كلمة المرور" required maxlength="128"><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('loginPass')">👁️</span></div></div>
-
-                            <!-- 🔒 Captcha Login -->
-                            <div class="form-group-modern">
-                                <label>التحقق الأمني</label>
-                                <div class="captcha-row">
-                                    <span id="loginCaptchaBox" class="captcha-box" data-answer="">— + — = ؟</span>
-                                    <input type="number" id="loginCaptcha" placeholder="الإجابة" required style="flex:1; padding:11px; border:2px solid #eadacc; border-radius:14px; font-family:'Cairo';">
-                                    <button type="button" class="captcha-refresh" onclick="refreshCaptcha('login')" title="تجديد">🔄</button>
-                                </div>
-                            </div>
 
                             <button type="submit" class="btn-submit-modern">تسجيل الدخول ←</button>
                         </form>
@@ -750,27 +726,6 @@
             else { const d = JSON.parse(raw); d.count += 1; localStorage.setItem(RATE_LIMIT.KEY, JSON.stringify(d)); }
         }
         function clearAttempts() { localStorage.removeItem(RATE_LIMIT.KEY); }
-        function generateCaptcha() {
-            const a = Math.floor(Math.random() * 9) + 2;
-            const b = Math.floor(Math.random() * 9) + 2;
-            const ops = ['+', '×'];
-            const op = ops[Math.floor(Math.random() * ops.length)];
-            const answer = op === '+' ? a + b : a * b;
-            return { question: `${a} ${op} ${b} = ؟`, answer };
-        }
-        function refreshCaptcha(prefix) {
-            const { question, answer } = generateCaptcha();
-            const box = document.getElementById(prefix + 'CaptchaBox');
-            if (box) { box.textContent = question; box.dataset.answer = answer; }
-            const inp = document.getElementById(prefix + 'Captcha');
-            if (inp) inp.value = '';
-        }
-        function verifyCaptcha(prefix) {
-            const inp = document.getElementById(prefix + 'Captcha');
-            const box = document.getElementById(prefix + 'CaptchaBox');
-            if (!inp || !box) return false;
-            return parseInt(inp.value) === parseInt(box.dataset.answer);
-        }
         const SECURE_LOG_KEY = 'app_error_log_v2';
         function logSecureError(context, error) {
             const entry = {
@@ -853,10 +808,6 @@
         async function setExams(d) { await setCollection('exams', d); }
         async function getBundles() { return await getCollection('bundles'); }
         async function setBundles(d) { await setCollection('bundles', d); }
-
-        // ⚠️ تم إزالة الـ ADMINS array لأن الباسوردات دي كان مكتوبة صريحة في الكود
-        // الحل: أنشئ الأدمن من Firebase Console مباشرة + استخدام Firestore Rules
-        // لو محتاج تعملهم يدوياً: استخدم دالة createAdmin من الـ console
 
         /* ============================================================
            🌟 NAV & NAVIGATION
@@ -945,15 +896,11 @@
             document.getElementById('examPage').classList.remove('active');
             hideNavLinks();
             switchAuthView(mode);
-            if (mode === 'login') refreshCaptcha('login');
-            if (mode === 'register') { refreshCaptcha('reg'); updatePwdStrength(); }
             window.scrollTo(0,0);
         }
         function switchAuthView(mode) {
             document.getElementById('registerFormContainer').style.display = (mode === 'register') ? 'block' : 'none';
             document.getElementById('loginFormContainer').style.display = (mode === 'login') ? 'block' : 'none';
-            if (mode === 'login') refreshCaptcha('login');
-            if (mode === 'register') refreshCaptcha('reg');
         }
         function togglePassword(id) {
             const el = document.getElementById(id);
@@ -1303,8 +1250,6 @@
            ============================================================ */
         document.addEventListener('DOMContentLoaded', async function() {
             loadDarkModePreference();
-            refreshCaptcha('login');
-            refreshCaptcha('reg');
             updatePwdStrength();
 
             try {
@@ -1337,12 +1282,6 @@
             document.getElementById('registerForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 try {
-                    if (!verifyCaptcha('reg')) {
-                        alert('❌ إجابة التحقق الأمني خاطئة.');
-                        refreshCaptcha('reg');
-                        return;
-                    }
-
                     const name = sanitizeInput(document.getElementById('regName').value);
                     const email = sanitizeInput(document.getElementById('regEmail').value).toLowerCase();
                     const phone = sanitizeInput(document.getElementById('regPhone').value);
@@ -1391,7 +1330,6 @@
                     await setUsers(users);
                     alert('✅ تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل من الإدارة.');
                     document.getElementById('registerForm').reset();
-                    refreshCaptcha('reg');
                     updatePwdStrength();
                     switchAuthView('login');
                 } catch (err) {
@@ -1407,13 +1345,6 @@
                     const rl = checkRateLimit();
                     if (!rl.allowed) { alert('🔒 ' + rl.message); return; }
 
-                    if (!verifyCaptcha('login')) {
-                        alert('❌ إجابة التحقق الأمني خاطئة.');
-                        recordFailedAttempt();
-                        refreshCaptcha('login');
-                        return;
-                    }
-
                     const loginId = sanitizeInput(document.getElementById('loginEmailOrPhone').value).toLowerCase();
                     const password = document.getElementById('loginPass').value;
 
@@ -1423,7 +1354,6 @@
                     if (!user) {
                         recordFailedAttempt();
                         alert('بيانات الدخول غير صحيحة.');
-                        refreshCaptcha('login');
                         return;
                     }
 
@@ -1445,7 +1375,6 @@
                     if (!ok) {
                         recordFailedAttempt();
                         alert('بيانات الدخول غير صحيحة.');
-                        refreshCaptcha('login');
                         return;
                     }
                     if (!user.active) { alert('الحساب غير مفعّل. يرجى التواصل مع الأدمن.'); return; }
