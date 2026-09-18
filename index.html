@@ -1015,9 +1015,26 @@
             window.scrollTo(0,0);
         }
 
+        // ============================================================
+        //  🌟 دوال تشغيل الفيديو (Google Drive / YouTube / Terabox)
+        // ============================================================
+        
+        // ✅ دالة للتعرف على روابط Terabox
+        function isTeraboxLink(url) {
+            if (!url) return false;
+            return url.includes('terabox.com') || 
+                   url.includes('teraboxapp.com') || 
+                   url.includes('1024terabox.com') || 
+                   url.includes('terabox.app') ||
+                   url.includes('4funbox.com') ||
+                   url.includes('mirrobox.com') ||
+                   url.includes('nephobox.com');
+        }
+        
         function getEmbedUrl(url) {
             if (!url) return '';
             
+            // 1. Google Drive
             if (url.includes('drive.google.com')) {
                 let id = '';
                 if (url.includes('/file/d/')) {
@@ -1029,6 +1046,7 @@
                 if (id) return `https://drive.google.com/file/d/${id}/preview`;
             }
             
+            // 2. YouTube
             if (url.includes('youtube.com/watch')) {
                 let id = url.split('v=')[1].split('&')[0];
                 return `https://www.youtube.com/embed/${id}`;
@@ -1038,14 +1056,24 @@
                 return `https://www.youtube.com/embed/${id}`;
             }
             
+            // 3. روابط مباشرة (MP4) أو أي رابط آخر
             return url; 
         }
 
         function openVideoModal(encodedLink, encodedTitle) {
             const link = decodeURIComponent(encodedLink);
             const title = decodeURIComponent(encodedTitle);
-            const embedUrl = getEmbedUrl(link);
             
+            // ✅ لو الرابط Terabox، افتحه في نافذة جديدة
+            if (isTeraboxLink(link)) {
+                if (confirm('📺 سيتم فتح الفيديو من Terabox في نافذة جديدة.\nهل تريد المتابعة؟')) {
+                    window.open(link, '_blank');
+                }
+                return;
+            }
+            
+            // باقي الروابط تفتح في المودال
+            const embedUrl = getEmbedUrl(link);
             document.getElementById('videoModalTitle').textContent = title;
             document.getElementById('videoIframe').src = embedUrl;
             document.getElementById('videoModal').style.display = 'flex';
