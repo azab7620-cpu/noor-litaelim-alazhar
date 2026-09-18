@@ -6,6 +6,7 @@
     <title>نُورُ تَعْلِيمِ الأَزْهَرِ</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
@@ -46,9 +47,6 @@
         body.dark-mode .btn-card { background: var(--gold); color: #1a1a2e; }
         body.dark-mode .section-header h3 { color: var(--gold); }
         body.dark-mode .section-header p { color: var(--text-secondary); }
-        body.dark-mode .student-header-card { background: var(--bg-card); border-right-color: var(--gold); }
-        body.dark-mode .student-header-card h2 { color: var(--gold); }
-        body.dark-mode .student-header-card p { color: var(--text-secondary); }
         body.dark-mode .attempt-card { background: var(--bg-card); border-color: var(--border-color); }
         body.dark-mode .attempt-card .value { color: var(--gold); }
         body.dark-mode .attempt-card .label { color: var(--text-secondary); }
@@ -311,16 +309,24 @@
 
         .btn-submit-modern { width: 100%; background: #310606; color: #fff; padding: 13px; border: none; border-radius: 50px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.3s; box-shadow: 0 6px 15px rgba(49,6,6,0.2); }
         .btn-submit-modern:hover { background: #4d0a0a; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(49,6,6,0.3); }
+        .btn-submit-modern:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .auth-toggle-footer { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 2px dashed #eee; transition: border-color 0.3s; }
         .btn-outline-toggle { background: transparent; border: 2px solid #3b0a0a; color: #3b0a0a; padding: 10px 28px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-        /* 🔒 Password Strength Indicator */
         .pwd-strength-bar { height: 5px; background: #eee; border-radius: 10px; margin-top: 6px; overflow: hidden; }
         .pwd-strength-fill { height: 100%; width: 0%; transition: 0.3s; border-radius: 10px; }
         .pwd-hint { font-size: 11px; color: #888; margin-top: 5px; line-height: 1.6; }
         .pwd-hint.ok { color: #2a7a2a; }
         .pwd-hint.bad { color: #a00; }
+
+        .forgot-link { display: block; text-align: left; margin-top: 8px; font-size: 12px; color: #3b0a0a; cursor: pointer; font-weight: 700; }
+        .forgot-link:hover { color: #d4af37; text-decoration: underline; }
+
+        .alert-inline { padding: 10px 14px; border-radius: 12px; font-size: 13px; margin-bottom: 15px; display: none; }
+        .alert-inline.error { background: #fde8e8; color: #9b1c1c; border: 1px solid #f8b4b4; display: block; }
+        .alert-inline.success { background: #def7ec; color: #03543f; border: 1px solid #84e1bc; display: block; }
+        .alert-inline.info { background: #e1effe; color: #1e429f; border: 1px solid #a4cafe; display: block; }
 
         footer { background: #2f0808; color: #fff; padding: 45px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; transition: background 0.3s, border-color 0.3s; border-radius: 40px 40px 0 0; box-shadow: 0 -8px 25px rgba(0,0,0,0.1); }
         .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
@@ -347,6 +353,13 @@
         .support-float-btn:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
         .support-float-icon { background: #3b0a0a; color: #d4af37; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 3px 8px rgba(59,10,10,0.3); }
 
+        /* 🔒 Loading overlay */
+        .loading-overlay { position: fixed; inset: 0; background: #f8f6f2; z-index: 99998; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 15px; }
+        .loading-overlay.hidden { display: none; }
+        .loading-spinner { width: 50px; height: 50px; border: 5px solid #eadacc; border-top-color: #d4af37; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-overlay p { color: #3b0a0a; font-weight: 700; font-size: 14px; }
+
         @media (max-width: 900px) {
             .auth-layout-container { flex-direction: column; }
             .auth-sidebar { width: 100%; padding: 30px 20px; border-radius: 0 0 32px 32px; border-left: none; border-bottom: 2px solid rgba(212,175,55,0.2); }
@@ -366,6 +379,13 @@
     </style>
 </head>
 <body>
+
+    <!-- 🔒 شاشة تحميل أولية -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>جارٍ التحقق من الحساب...</p>
+    </div>
+
     <header>
         <div class="nav-container">
             <div class="logo-area"><div class="logo-text"><h1 class="thuluth-text">نُورُ تَعْلِيمِ الأَزْهَرِ</h1><span>منصة الطالب والأدمن</span></div></div>
@@ -518,8 +538,11 @@
             </div>
             <div class="auth-main-content">
                 <div class="auth-card-modern">
+
+                    <!-- ════════════ تسجيل حساب ════════════ -->
                     <div id="registerFormContainer">
                         <div class="auth-card-header"><h3>انضم لمنصتنا</h3><p>أنشئ حسابك كطالب</p><div class="gold-divider-line"></div></div>
+                        <div id="regAlert" class="alert-inline"></div>
                         <form id="registerForm" autocomplete="off">
                             <div class="form-section-title">البيانات الشخصية</div>
                             <div class="form-grid-2">
@@ -590,20 +613,30 @@
                                 <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" required maxlength="128"><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regConfirmPass')">👁️</span></div></div>
                             </div>
 
-                            <button type="submit" class="btn-submit-modern">إنشاء الحساب ←</button>
+                            <button type="submit" id="regSubmitBtn" class="btn-submit-modern">إنشاء الحساب ←</button>
                         </form>
                         <div class="auth-toggle-footer"><p>لديك حساب بالفعل؟</p><button class="btn-outline-toggle" onclick="switchAuthView('login')">تسجيل الدخول</button></div>
                     </div>
-                    <div id="loginFormContainer" style="display:none;">
-                        <div class="auth-card-header"><h3>أهلاً بك مجدداً</h3><p>سجل دخولك</p><div class="gold-divider-line"></div></div>
-                        <form id="loginForm" autocomplete="off">
-                            <div class="form-group-modern"><label>رقم الهاتف أو البريد</label><div class="input-wrapper"><input type="text" id="loginEmailOrPhone" placeholder="أدخل البريد أو رقم الهاتف" required maxlength="120"><span class="input-icon-right">👤</span></div></div>
-                            <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="loginPass" placeholder="كلمة المرور" required maxlength="128"><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('loginPass')">👁️</span></div></div>
 
-                            <button type="submit" class="btn-submit-modern">تسجيل الدخول ←</button>
+                    <!-- ════════════ تسجيل دخول ════════════ -->
+                    <div id="loginFormContainer" style="display:none;">
+                        <div class="auth-card-header"><h3>أهلاً بك مجدداً</h3><p>سجل دخولك بالبريد أو رقم الهاتف</p><div class="gold-divider-line"></div></div>
+                        <div id="loginAlert" class="alert-inline"></div>
+                        <form id="loginForm" autocomplete="off">
+                            <div class="form-group-modern">
+                                <label>رقم الهاتف أو البريد الإلكتروني</label>
+                                <div class="input-wrapper"><input type="text" id="loginEmailOrPhone" placeholder="01xxxxxxxxx أو example@email.com" required maxlength="120"><span class="input-icon-right">👤</span></div>
+                            </div>
+                            <div class="form-group-modern">
+                                <label>كلمة المرور</label>
+                                <div class="input-wrapper"><input type="password" id="loginPass" placeholder="كلمة المرور" required maxlength="128"><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('loginPass')">👁️</span></div>
+                                <span class="forgot-link" onclick="forgotPassword()">نسيت كلمة المرور؟</span>
+                            </div>
+                            <button type="submit" id="loginSubmitBtn" class="btn-submit-modern">تسجيل الدخول ←</button>
                         </form>
                         <div class="auth-toggle-footer"><p>ليس لديك حساب؟</p><button class="btn-outline-toggle" onclick="switchAuthView('register')">إنشاء حساب جديد</button></div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -651,27 +684,6 @@
             if (str === null || str === undefined) return '';
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
-        async function hashPassword(password, salt = null) {
-            const enc = new TextEncoder();
-            if (!salt) {
-                const arr = crypto.getRandomValues(new Uint8Array(16));
-                salt = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
-            }
-            let data = enc.encode(salt + '::' + password + '::noor');
-            let hash = await crypto.subtle.digest('SHA-256', data);
-            for (let i = 0; i < 5000; i++) {
-                const combined = new Uint8Array(hash.byteLength + data.byteLength);
-                combined.set(new Uint8Array(hash), 0);
-                combined.set(data, hash.byteLength);
-                hash = await crypto.subtle.digest('SHA-256', combined);
-            }
-            const hashHex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-            return { hash: hashHex, salt };
-        }
-        async function verifyPassword(password, storedHash, storedSalt) {
-            const { hash } = await hashPassword(password, storedSalt);
-            return hash === storedHash;
-        }
         function validateStrongPassword(pwd) {
             const errors = [];
             if (pwd.length < 8) errors.push('8 أحرف على الأقل');
@@ -703,21 +715,21 @@
             hint.textContent = pwd ? texts[s] : '8+ أحرف، حرف كبير وصغير، رقم، ورمز';
             hint.className = 'pwd-hint ' + (s >= 5 ? 'ok' : (pwd ? 'bad' : ''));
         }
-        const RATE_LIMIT = { MAX_ATTEMPTS: 5, LOCK_MINUTES: 15, KEY: 'login_attempts_v2' };
+        const RATE_LIMIT = { MAX_ATTEMPTS: 5, LOCK_MINUTES: 15, KEY: 'login_attempts_v3' };
         function checkRateLimit() {
             const raw = localStorage.getItem(RATE_LIMIT.KEY);
-            if (!raw) return { allowed: true, remaining: RATE_LIMIT.MAX_ATTEMPTS };
+            if (!raw) return { allowed: true };
             const data = JSON.parse(raw);
             const now = Date.now();
             if (now - data.firstAttempt > RATE_LIMIT.LOCK_MINUTES * 60 * 1000) {
                 localStorage.removeItem(RATE_LIMIT.KEY);
-                return { allowed: true, remaining: RATE_LIMIT.MAX_ATTEMPTS };
+                return { allowed: true };
             }
             if (data.count >= RATE_LIMIT.MAX_ATTEMPTS) {
                 const minsLeft = Math.ceil((RATE_LIMIT.LOCK_MINUTES * 60 * 1000 - (now - data.firstAttempt)) / 60000);
                 return { allowed: false, message: `تم حظر تسجيل الدخول مؤقتاً. حاول بعد ${minsLeft} دقيقة.` };
             }
-            return { allowed: true, remaining: RATE_LIMIT.MAX_ATTEMPTS - data.count };
+            return { allowed: true };
         }
         function recordFailedAttempt() {
             const raw = localStorage.getItem(RATE_LIMIT.KEY);
@@ -726,13 +738,13 @@
             else { const d = JSON.parse(raw); d.count += 1; localStorage.setItem(RATE_LIMIT.KEY, JSON.stringify(d)); }
         }
         function clearAttempts() { localStorage.removeItem(RATE_LIMIT.KEY); }
-        const SECURE_LOG_KEY = 'app_error_log_v2';
+        const SECURE_LOG_KEY = 'app_error_log_v3';
         function logSecureError(context, error) {
             const entry = {
                 time: new Date().toISOString(),
                 context,
                 message: (error && error.message) ? error.message : String(error),
-                stack: (error && error.stack) ? error.stack.split('\n').slice(0, 3).join(' | ') : ''
+                code: (error && error.code) ? error.code : ''
             };
             console.error('[SECURE_LOG]', entry);
             try {
@@ -742,7 +754,33 @@
                 localStorage.setItem(SECURE_LOG_KEY, JSON.stringify(log));
             } catch (_) {}
         }
-        function showGenericError() { return 'حدث خطأ غير متوقع. تواصل مع الدعم الفني.'; }
+
+        /* 🔑 ترجمة رسائل Firebase Auth للعربية */
+        function translateAuthError(err) {
+            const map = {
+                'auth/email-already-in-use': 'هذا البريد الإلكتروني مسجل بالفعل.',
+                'auth/invalid-email': 'البريد الإلكتروني غير صالح.',
+                'auth/weak-password': 'كلمة المرور ضعيفة.',
+                'auth/user-not-found': 'بيانات الدخول غير صحيحة.',
+                'auth/wrong-password': 'بيانات الدخول غير صحيحة.',
+                'auth/invalid-credential': 'بيانات الدخول غير صحيحة.',
+                'auth/too-many-requests': 'محاولات كثيرة. حاول لاحقاً.',
+                'auth/network-request-failed': 'مشكلة في الاتصال بالإنترنت.',
+                'auth/user-disabled': 'هذا الحساب معطل. تواصل مع الدعم.',
+                'auth/operation-not-allowed': 'التسجيل متوقف مؤقتاً. تواصل مع الدعم.'
+            };
+            return map[err.code] || 'حدث خطأ غير متوقع. حاول مرة أخرى.';
+        }
+        function showAlert(id, msg, type = 'error') {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = msg;
+            el.className = 'alert-inline ' + type;
+        }
+        function hideAlert(id) {
+            const el = document.getElementById(id);
+            if (el) el.className = 'alert-inline';
+        }
 
         /* ============================================================
            🌙 DARK MODE
@@ -762,7 +800,7 @@
         }
 
         /* ============================================================
-           🔥 FIREBASE
+           🔥 FIREBASE INIT
            ============================================================ */
         const firebaseConfig = {
             apiKey: "AIzaSyD-7DnDsopGu1ztOdnSm-lHYw-ECk-UpII",
@@ -774,40 +812,104 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
 
+        /* ✅ استمرارية الجلسة: Firebase بيفضل فاكر المستخدم تلقائياً */
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(err => logSecureError('authPersistence', err));
+
+        /* ============================================================
+           🔥 FIRESTORE HELPERS (Single-doc based)
+           ============================================================ */
+        async function getUserDoc(uid) {
+            const snap = await db.collection('users').doc(uid).get();
+            return snap.exists ? { id: snap.id, ...snap.data() } : null;
+        }
+        async function updateUserDoc(uid, data) {
+            await db.collection('users').doc(uid).update(data);
+        }
+        async function createUserDoc(uid, data) {
+            await db.collection('users').doc(uid).set(data);
+        }
+        async function getPhoneEmail(phone) {
+            const snap = await db.collection('phoneIndex').doc(phone).get();
+            return snap.exists ? snap.data().email : null;
+        }
+        async function createPhoneIndex(phone, email) {
+            await db.collection('phoneIndex').doc(phone).set({ email, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        }
         async function getCollection(name) {
             const snap = await db.collection(name).get();
             return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         }
-        async function setCollection(name, arr) {
-            const snap = await db.collection(name).get();
-            let batch = db.batch();
-            let ops = 0;
-            snap.forEach(doc => { batch.delete(doc.ref); ops++; });
-            if (ops > 0) await batch.commit();
-            batch = db.batch();
-            ops = 0;
-            for (const item of arr) {
-                const ref = db.collection(name).doc(item.id || undefined);
-                batch.set(ref, item);
-                ops++;
-                if (ops >= 450) { await batch.commit(); batch = db.batch(); ops = 0; }
-            }
-            if (ops > 0) await batch.commit();
-        }
-
-        async function getUsers() { return await getCollection('users'); }
-        async function setUsers(d) { await setCollection('users', d); }
         async function getCourses() { return await getCollection('courses'); }
-        async function setCourses(d) { await setCollection('courses', d); }
         async function getBooks() { return await getCollection('books'); }
-        async function setBooks(d) { return await setCollection('books', d); }
         async function getTeachers() { return await getCollection('teachers'); }
-        async function setTeachers(d) { await setCollection('teachers', d); }
         async function getExams() { return await getCollection('exams'); }
-        async function setExams(d) { await setCollection('exams', d); }
         async function getBundles() { return await getCollection('bundles'); }
-        async function setBundles(d) { await setCollection('bundles', d); }
+
+        /* ============================================================
+           🔐 AUTH STATE
+           ============================================================ */
+        let currentUser = null;
+        let currentExam = null;
+        let currentBundle = null;
+        let currentQIndex = 0;
+        let answers = [];
+
+        auth.onAuthStateChanged(async function(firebaseUser) {
+            const loading = document.getElementById('loadingOverlay');
+            try {
+                if (firebaseUser) {
+                    // ✅ مستخدم مسجل دخول — نجيب بياناته
+                    let user = await getUserDoc(firebaseUser.uid);
+                    if (!user) {
+                        // وثيقة المستخدم مش موجودة (مثلاً تم حذفها) — نخرج المستخدم
+                        await auth.signOut();
+                        loading.classList.add('hidden');
+                        return;
+                    }
+                    currentUser = user;
+
+                    // عرض شريط المستخدم
+                    document.getElementById('navButtons').style.display = 'none';
+                    document.getElementById('navUser').style.display = 'flex';
+                    document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
+                    hideNavLinks();
+
+                    if (user.role === 'admin') {
+                        document.getElementById('adminLinkBtn').style.display = 'inline-block';
+                        // نوديه للأدمن تلقائياً
+                        if (!window.location.pathname.includes('admin.html')) {
+                            window.location.href = 'admin.html';
+                            return;
+                        }
+                    } else {
+                        document.getElementById('adminLinkBtn').style.display = 'none';
+                        // لو الحساب معلق — نعرض رسالة
+                        if (!user.active) {
+                            document.getElementById('homeSection').style.display = 'none';
+                            document.getElementById('authSection').style.display = 'none';
+                            document.getElementById('studentDashboard').classList.remove('active');
+                            loading.classList.add('hidden');
+                            showAlert('loginAlert', '⏳ حسابك في انتظار التفعيل من الإدارة.', 'info');
+                            showAuthPage('login');
+                            return;
+                        }
+                        document.getElementById('homeSection').style.display = 'none';
+                        document.getElementById('authSection').style.display = 'none';
+                        document.getElementById('studentDashboard').classList.add('active');
+                        await loadStudentDashboard(user);
+                    }
+                } else {
+                    // مش مسجل دخول
+                    currentUser = null;
+                }
+                loading.classList.add('hidden');
+            } catch (err) {
+                logSecureError('onAuthStateChanged', err);
+                loading.classList.add('hidden');
+            }
+        });
 
         /* ============================================================
            🌟 NAV & NAVIGATION
@@ -901,6 +1003,8 @@
         function switchAuthView(mode) {
             document.getElementById('registerFormContainer').style.display = (mode === 'register') ? 'block' : 'none';
             document.getElementById('loginFormContainer').style.display = (mode === 'login') ? 'block' : 'none';
+            hideAlert('loginAlert');
+            hideAlert('regAlert');
         }
         function togglePassword(id) {
             const el = document.getElementById(id);
@@ -910,12 +1014,6 @@
         /* ============================================================
            🌟 STUDENT DASHBOARD
            ============================================================ */
-        let currentUser = null;
-        let currentExam = null;
-        let currentBundle = null;
-        let currentQIndex = 0;
-        let answers = [];
-
         function calculateBundleProgress(bundle, user) {
             if (!bundle.items || bundle.items.length === 0) return 0;
             let completedItems = 0;
@@ -937,11 +1035,11 @@
                 document.getElementById('studentNameDash').textContent = user.name;
                 document.getElementById('studentGradeDash').textContent = user.grade;
 
-                const a = user.attempts || { avg:0, solved:0, total:0, pending:0 };
+                const a = user.attempts || { avg:0, solved:0, total:0 };
                 document.getElementById('attemptsGrid').innerHTML = `
                     <div class="attempt-card"><div class="value">${Number(a.avg)||0}%</div><div class="label">متوسط الدرجات</div></div>
                     <div class="attempt-card"><div class="value">${Number(a.solved)||0}</div><div class="label">اختبارات محلولة</div></div>
-                    <div class="attempt-card"><div class="value">${Number(a.total)||0}</div><div class="label">إجمالي الاختبارات</div></div>
+                    <div class="attempt-card"><div class="value">${Number(a.total)||0}</div><div class="label">إجمالي الأسئلة</div></div>
                 `;
 
                 const exams = (await getExams()).filter(e => e.grade === user.grade);
@@ -1196,23 +1294,25 @@
                     `;
                 });
 
-                let users = await getUsers();
-                const userIdx = users.findIndex(u => u.id === currentUser.id);
-                if (userIdx > -1) {
-                    const user = users[userIdx];
-                    const oldAttempts = user.attempts || { avg: 0, solved: 0, total: 0, pending: 0 };
-                    const newTotal = (Number(oldAttempts.total) || 0) + currentExam.questions.length;
-                    const newSolved = (Number(oldAttempts.solved) || 0) + 1;
-                    const newAvg = Math.round(((Number(oldAttempts.avg) * Number(oldAttempts.solved)) + (correctCount / currentExam.questions.length * 100)) / newSolved);
-                    user.attempts = { avg: newAvg, solved: newSolved, total: newTotal, pending: Math.max(0, (Number(oldAttempts.pending) || 0) - currentExam.questions.length) };
-                    if (currentExam.oneTimeOnly) {
-                        if (!user.completedExams) user.completedExams = [];
-                        if (!user.completedExams.includes(currentExam.id)) user.completedExams.push(currentExam.id);
-                    }
-                    await setUsers(users);
-                    currentUser = user;
-                    sessionStorage.setItem('currentUser', JSON.stringify(user));
+                // ✅ تحديث وثيقة المستخدم الحالي فقط
+                const oldAttempts = currentUser.attempts || { avg: 0, solved: 0, total: 0 };
+                const newTotal = (Number(oldAttempts.total) || 0) + currentExam.questions.length;
+                const newSolved = (Number(oldAttempts.solved) || 0) + 1;
+                const newAvg = Math.round(((Number(oldAttempts.avg) * Number(oldAttempts.solved)) + (correctCount / currentExam.questions.length * 100)) / newSolved);
+                const newAttempts = { avg: newAvg, solved: newSolved, total: newTotal };
+
+                const newCompleted = [...(currentUser.completedExams || [])];
+                if (currentExam.oneTimeOnly && !newCompleted.includes(currentExam.id)) {
+                    newCompleted.push(currentExam.id);
                 }
+
+                await updateUserDoc(currentUser.id, {
+                    attempts: newAttempts,
+                    completedExams: newCompleted
+                });
+
+                currentUser.attempts = newAttempts;
+                currentUser.completedExams = newCompleted;
 
                 document.getElementById('questionNav').style.display = 'none';
                 document.getElementById('qTextDisplay').style.display = 'none';
@@ -1230,7 +1330,7 @@
                     <p>نسبة النجاح: <strong style="color:#d4af37;">${scorePct}%</strong></p>
                     ${currentExam.oneTimeOnly ? '<p style="margin-top:10px; color:#8b0000; font-weight:800;">🔒 هذا الاختبار لمرة واحدة ولن يمكنك إعادته.</p>' : ''}
                 `;
-            } catch (err) { logSecureError('finishExam', err); alert(showGenericError()); }
+            } catch (err) { logSecureError('finishExam', err); alert('حدث خطأ أثناء التسليم. حاول مرة أخرى.'); }
         }
 
         function exitExam() {
@@ -1246,18 +1346,15 @@
         }
 
         /* ============================================================
-           🚀 INIT & FORMS
+           🚀 INIT
            ============================================================ */
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             loadDarkModePreference();
             updatePwdStrength();
+            renderTeachers(); renderCourses(); renderBooks();
+            toggleCenterField();
 
-            try {
-                await renderTeachers();
-                await renderCourses();
-                await renderBooks();
-            } catch (err) { logSecureError('initial render', err); }
-
+            // ديناميكية الصفوف حسب المرحلة
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
             const gradesMap = {
@@ -1278,9 +1375,11 @@
                 }
             });
 
-            // ═══════════ تسجيل حساب ═══════════
+            /* ══════════════ تسجيل حساب جديد ══════════════ */
             document.getElementById('registerForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
+                const btn = document.getElementById('regSubmitBtn');
+                hideAlert('regAlert');
                 try {
                     const name = sanitizeInput(document.getElementById('regName').value);
                     const email = sanitizeInput(document.getElementById('regEmail').value).toLowerCase();
@@ -1294,144 +1393,124 @@
                     const password = document.getElementById('regPass').value;
                     const confirm = document.getElementById('regConfirmPass').value;
 
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('البريد الإلكتروني غير صالح.'); return; }
-                    if (!/^01[0-9]{9}$/.test(phone)) { alert('رقم الهاتف يجب أن يكون 11 رقم يبدأ بـ 01.'); return; }
-                    if (!name || !grade || !password) { alert('املأ جميع الحقول.'); return; }
-
+                    // تحقق
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert('regAlert', 'البريد الإلكتروني غير صالح.'); return; }
+                    if (!/^01[0-9]{9}$/.test(phone)) { showAlert('regAlert', 'رقم الهاتف يجب أن يكون 11 رقم يبدأ بـ 01.'); return; }
+                    if (!name || !grade || !password) { showAlert('regAlert', 'املأ جميع الحقول المطلوبة.'); return; }
                     const pwdCheck = validateStrongPassword(password);
-                    if (!pwdCheck.valid) {
-                        alert('🔒 كلمة المرور ضعيفة:\n- ' + pwdCheck.errors.join('\n- '));
+                    if (!pwdCheck.valid) { showAlert('regAlert', '🔒 كلمة المرور ضعيفة: ' + pwdCheck.errors.join(' / ')); return; }
+                    if (password !== confirm) { showAlert('regAlert', 'كلمتا المرور غير متطابقتين.'); return; }
+
+                    btn.disabled = true;
+                    btn.textContent = 'جارٍ إنشاء الحساب...';
+
+                    // تحقق إن الهاتف مستخدم من قبل
+                    const existingEmail = await getPhoneEmail(phone);
+                    if (existingEmail) {
+                        showAlert('regAlert', 'رقم الهاتف مسجل بالفعل بحساب آخر.');
+                        btn.disabled = false; btn.textContent = 'إنشاء الحساب ←';
                         return;
                     }
-                    if (password !== confirm) { alert('كلمتا المرور غير متطابقتين.'); return; }
 
-                    const users = await getUsers();
-                    if (users.find(u => u.email === email || u.phone === phone)) {
-                        alert('هذا البريد أو الهاتف مسجل بالفعل.');
-                        return;
-                    }
+                    // 🔥 إنشاء الحساب في Firebase Auth
+                    const cred = await auth.createUserWithEmailAndPassword(email, password);
+                    const uid = cred.user.uid;
 
-                    const { hash, salt } = await hashPassword(password);
+                    // إرسال إيميل التحقق (اختياري)
+                    try { await cred.user.sendEmailVerification(); } catch (_) {}
 
-                    const newUser = {
-                        id: 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+                    // ✅ إنشاء وثيقة المستخدم بـ UID
+                    await createUserDoc(uid, {
                         name, email, phone, parentPhone, governorate, center, isOutside, stage, grade,
-                        passwordHash: hash,
-                        passwordSalt: salt,
                         role: 'student',
                         active: false,
-                        attempts: { avg: 0, solved: 0, total: 0, pending: 0 },
-                        exams: [],
+                        attempts: { avg: 0, solved: 0, total: 0 },
                         completedExams: [],
-                        completedLessons: 0,
-                        totalLessons: 38
-                    };
-                    users.push(newUser);
-                    await setUsers(users);
-                    alert('✅ تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل من الإدارة.');
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // ✅ فهرس الهاتف
+                    await createPhoneIndex(phone, email);
+
+                    // تسجيل خروج بعد التسجيل (لينتظر التفعيل)
+                    await auth.signOut();
+
+                    showAlert('regAlert', '✅ تم إنشاء الحساب! تحقق من بريدك، وانتظر تفعيل الإدارة.', 'success');
                     document.getElementById('registerForm').reset();
                     updatePwdStrength();
-                    switchAuthView('login');
+                    setTimeout(() => { switchAuthView('login'); }, 2500);
                 } catch (err) {
                     logSecureError('register', err);
-                    alert(showGenericError());
+                    showAlert('regAlert', translateAuthError(err));
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'إنشاء الحساب ←';
                 }
             });
 
-            // ═══════════ تسجيل الدخول ═══════════
+            /* ══════════════ تسجيل دخول ══════════════ */
             document.getElementById('loginForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
+                const btn = document.getElementById('loginSubmitBtn');
+                hideAlert('loginAlert');
                 try {
                     const rl = checkRateLimit();
-                    if (!rl.allowed) { alert('🔒 ' + rl.message); return; }
+                    if (!rl.allowed) { showAlert('loginAlert', '🔒 ' + rl.message); return; }
 
-                    const loginId = sanitizeInput(document.getElementById('loginEmailOrPhone').value).toLowerCase();
+                    let identifier = sanitizeInput(document.getElementById('loginEmailOrPhone').value).toLowerCase();
                     const password = document.getElementById('loginPass').value;
+                    if (!identifier || !password) { showAlert('loginAlert', 'املأ جميع الحقول.'); return; }
 
-                    const users = await getUsers();
-                    const user = users.find(u => u.email === loginId || u.phone === loginId);
+                    btn.disabled = true;
+                    btn.textContent = 'جارٍ تسجيل الدخول...';
 
-                    if (!user) {
-                        recordFailedAttempt();
-                        alert('بيانات الدخول غير صحيحة.');
-                        return;
-                    }
-
-                    let ok = false;
-                    if (user.passwordHash && user.passwordSalt) {
-                        ok = await verifyPassword(password, user.passwordHash, user.passwordSalt);
-                    } else if (user.password) {
-                        // 🔄 ترقية تلقائية من النظام القديم
-                        ok = (user.password === password);
-                        if (ok) {
-                            const { hash, salt } = await hashPassword(password);
-                            user.passwordHash = hash;
-                            user.passwordSalt = salt;
-                            delete user.password;
-                            await setUsers(users);
+                    let email = identifier;
+                    // لو الإدخال رقم هاتف → نبحث عن الإيميل
+                    if (!identifier.includes('@')) {
+                        if (!/^01[0-9]{9}$/.test(identifier)) {
+                            showAlert('loginAlert', 'رقم الهاتف أو البريد غير صالح.');
+                            btn.disabled = false; btn.textContent = 'تسجيل الدخول ←';
+                            return;
                         }
+                        const foundEmail = await getPhoneEmail(identifier);
+                        if (!foundEmail) {
+                            recordFailedAttempt();
+                            showAlert('loginAlert', 'بيانات الدخول غير صحيحة.');
+                            btn.disabled = false; btn.textContent = 'تسجيل الدخول ←';
+                            return;
+                        }
+                        email = foundEmail;
                     }
 
-                    if (!ok) {
-                        recordFailedAttempt();
-                        alert('بيانات الدخول غير صحيحة.');
+                    // 🔥 تسجيل الدخول عبر Firebase Auth
+                    const cred = await auth.signInWithEmailAndPassword(email, password);
+                    const user = await getUserDoc(cred.user.uid);
+                    if (!user) {
+                        await auth.signOut();
+                        showAlert('loginAlert', 'الحساب غير موجود في قاعدة البيانات. تواصل مع الدعم.');
                         return;
                     }
-                    if (!user.active) { alert('الحساب غير مفعّل. يرجى التواصل مع الأدمن.'); return; }
 
                     clearAttempts();
-                    currentUser = user;
-                    sessionStorage.setItem('currentUser', JSON.stringify(user));
-                    document.getElementById('authSection').style.display = 'none';
-                    document.getElementById('homeSection').style.display = 'none';
-                    document.getElementById('navButtons').style.display = 'none';
-                    document.getElementById('navUser').style.display = 'flex';
-                    document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
-                    hideNavLinks();
-
-                    if (user.role === 'admin') {
-                        document.getElementById('adminLinkBtn').style.display = 'inline-block';
-                        window.location.href = 'admin.html';
-                    } else {
-                        document.getElementById('adminLinkBtn').style.display = 'none';
-                        document.getElementById('studentDashboard').classList.add('active');
-                        loadStudentDashboard(user);
-                    }
-                    window.scrollTo(0,0);
+                    // الـ onAuthStateChanged هو اللي هيتولى العرض
                 } catch (err) {
                     logSecureError('login', err);
-                    alert(showGenericError());
+                    recordFailedAttempt();
+                    showAlert('loginAlert', translateAuthError(err));
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'تسجيل الدخول ←';
                 }
             });
-
-            // 🔄 استعادة الجلسة
-            const userJson = sessionStorage.getItem('currentUser');
-            if (userJson) {
-                try {
-                    const user = JSON.parse(userJson);
-                    currentUser = user;
-                    document.getElementById('navButtons').style.display = 'none';
-                    document.getElementById('navUser').style.display = 'flex';
-                    document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
-                    hideNavLinks();
-                    if (user.role === 'admin') {
-                        document.getElementById('adminLinkBtn').style.display = 'inline-block';
-                        window.location.href = 'admin.html';
-                    } else {
-                        document.getElementById('adminLinkBtn').style.display = 'none';
-                        document.getElementById('homeSection').style.display = 'none';
-                        document.getElementById('authSection').style.display = 'none';
-                        document.getElementById('studentDashboard').classList.add('active');
-                        loadStudentDashboard(user);
-                    }
-                } catch (err) { logSecureError('sessionRestore', err); }
-            }
-
-            toggleCenterField();
         });
 
-        function logout() {
-            sessionStorage.removeItem('currentUser');
+        /* ============================================================
+           🔐 LOGOUT & FORGOT PASSWORD
+           ============================================================ */
+        async function logout() {
+            try {
+                await auth.signOut();
+            } catch (err) { logSecureError('logout', err); }
             currentUser = null;
             document.getElementById('navButtons').style.display = 'flex';
             document.getElementById('navUser').style.display = 'none';
@@ -1443,6 +1522,33 @@
             showNavLinks();
             window.scrollTo(0,0);
         }
+
+        async function forgotPassword() {
+            const input = document.getElementById('loginEmailOrPhone').value.trim();
+            hideAlert('loginAlert');
+            if (!input) {
+                showAlert('loginAlert', 'اكتب بريدك الإلكتروني الأول في خانة الدخول ثم اضغط "نسيت كلمة المرور".', 'info');
+                return;
+            }
+            let email = input.toLowerCase();
+            if (!email.includes('@')) {
+                if (!/^01[0-9]{9}$/.test(email)) {
+                    showAlert('loginAlert', 'اكتب بريدك الإلكتروني بدلاً من رقم الهاتف.', 'info');
+                    return;
+                }
+                const found = await getPhoneEmail(email);
+                if (!found) { showAlert('loginAlert', 'لا يوجد حساب بهذا الرقم.', 'error'); return; }
+                email = found;
+            }
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showAlert('loginAlert', '✅ تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني.', 'success');
+            } catch (err) {
+                logSecureError('forgotPassword', err);
+                showAlert('loginAlert', translateAuthError(err));
+            }
+        }
+
         function goToAdmin() { window.location.href = 'admin.html'; }
     </script>
 </body>
