@@ -127,6 +127,7 @@
         .add-form input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); accent-color: #d4af37; }
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 11px 32px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; font-size: 14px; box-shadow: 0 5px 15px rgba(59,10,10,0.2); }
         .btn-submit:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,10,10,0.3); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .bundle-container-box { border: 2px dashed #ddd; padding: 18px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; }
         .bundle-container-box:hover { border-color: #d4af37; }
@@ -162,7 +163,6 @@
 
         .detail-row { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px dashed #f0ede8; font-size: 13px; }
 
-        /* شاشة حظر الوصول */
         #accessDenied {
             display: none;
             position: fixed;
@@ -193,10 +193,10 @@
 </head>
 <body>
 
-    <!-- 🚫 شاشة حظر الوصول غير المصرح -->
+    <!-- 🚫 شاشة حظر الوصول -->
     <div id="accessDenied">
         <h2>🚫 غير مصرح بالوصول</h2>
-        <p>هذه الصفحة مخصصة للأدمن فقط. من فضلك سجّل الدخول بحساب أدمن معتمد.</p>
+        <p>هذه الصفحة مخصصة للأدمن فقط. من فضلك سجّل الدخول بحساب أدمن معتمد من الصفحة الرئيسية.</p>
         <a href="index.html">← العودة للرئيسية</a>
     </div>
 
@@ -478,6 +478,16 @@
 
     <script>
         // ============================================================
+        //  🛡️ التحقق من تحميل security.js
+        // ============================================================
+        if (typeof Security === 'undefined') {
+            console.error('[SEC] security.js لم يتم تحميله!');
+            alert('⚠️ خطأ في تحميل مكونات الأمان.\nالرجاء تحديث الصفحة.');
+            window.location.href = 'index.html';
+            throw new Error('security.js missing');
+        }
+
+        // ============================================================
         //  🚫 حماية الصفحة — منع الوصول لغير الأدمن
         // ============================================================
         (function guardAdmin() {
@@ -489,7 +499,6 @@
             if (!user || user.role !== 'admin') {
                 document.getElementById('accessDenied').style.display = 'flex';
                 document.body.style.overflow = 'hidden';
-                // نوقف التنفيذ باقي السكريبت
                 window.__ADMIN_BLOCKED__ = true;
             }
         })();
@@ -550,7 +559,7 @@
         async function getBundles() { return await getCollection('bundles'); }
         async function setBundles(d) { await setCollection('bundles', d); }
 
-        // ✅ helper: escape سريع
+        // ✅ helpers
         const esc = (s) => Security.escapeHTML(s);
         const sanitize = (s, n) => Security.sanitizeString(s, n || 200);
 
@@ -771,7 +780,7 @@
         }
 
         // ============================================================
-        //  📝 إعداد النماذج — كل البيانات بتتعقّم قبل الحفظ
+        //  📝 إعداد النماذج
         // ============================================================
         function setupForms() {
 
@@ -1160,7 +1169,6 @@
             const el = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
             if (el) el.classList.add('active');
 
-            // تعيين الزر النشط
             const btns = document.querySelectorAll('.admin-tabs button');
             btns.forEach(b => { if (b.getAttribute('onclick')?.includes("'" + tabId + "'")) b.classList.add('active'); });
 
@@ -1182,7 +1190,6 @@
             loadDarkModePreference();
             initGrades();
 
-            // تحميل آمن لكل الجداول
             Security.safeHandler('initial_load', async () => {
                 await loadStudentsTable();
                 await loadBundlesTable();
