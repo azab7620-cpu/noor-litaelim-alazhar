@@ -6,6 +6,7 @@
     <title>لوحة الأدمن - نُورُ تَعْلِيمِ الأَزْهَرِ</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
@@ -21,7 +22,6 @@
             --text-secondary: #b0b0b0;
             --border-color: #2a3a5a;
             --gold: #d4af37;
-            --gold-dark: #b8962e;
             --input-bg: #2a3a5a;
             --input-border: #3a4a6a;
         }
@@ -48,34 +48,13 @@
         body.dark-mode .modal-content { background: var(--bg-card); color: var(--text-primary); }
         body.dark-mode .modal-content h3 { color: var(--gold); }
         body.dark-mode .detail-row { border-bottom-color: var(--border-color); }
-        body.dark-mode .detail-label { color: var(--text-secondary); }
-        body.dark-mode .detail-value { color: var(--text-primary); }
-        body.dark-mode #studentSearchInput {
-            background: var(--input-bg) !important;
-            color: var(--text-primary) !important;
-            border-color: var(--gold) !important;
-        }
+        body.dark-mode #studentSearchInput { background: var(--input-bg) !important; color: var(--text-primary) !important; border-color: var(--gold) !important; }
         body.dark-mode #studentSearchInput::placeholder { color: var(--text-secondary); }
         body.dark-mode #searchResultsCount { color: var(--gold) !important; }
         body.dark-mode .modal-header { border-bottom-color: var(--border-color); }
         body.dark-mode .exam-one-time-box { background: rgba(212,175,55,0.1) !important; }
 
-        .btn-dark-mode {
-            background: transparent;
-            border: 2px solid #3b0a0a;
-            color: #3b0a0a;
-            padding: 6px 12px;
-            border-radius: 50%;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
+        .btn-dark-mode { background: transparent; border: 2px solid #3b0a0a; color: #3b0a0a; padding: 6px 12px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.3s; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         .btn-dark-mode:hover { transform: scale(1.1) rotate(10deg); background: #f4edd3; }
         body.dark-mode .btn-dark-mode { border-color: #d4af37; color: #d4af37; }
         body.dark-mode .btn-dark-mode:hover { background: rgba(212,175,55,0.1); }
@@ -124,6 +103,7 @@
         .add-form input[type="checkbox"] { width: auto; margin-left: 10px; transform: scale(1.2); accent-color: #d4af37; }
         .btn-submit { background: #3b0a0a; color: #d4af37; padding: 11px 32px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; font-size: 14px; box-shadow: 0 5px 15px rgba(59,10,10,0.2); }
         .btn-submit:hover { background: #520e0e; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,10,10,0.3); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .bundle-container-box { border: 2px dashed #ddd; padding: 18px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; }
         .bundle-container-box:hover { border-color: #d4af37; }
@@ -135,17 +115,7 @@
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
-        .exam-one-time-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #fff9e6;
-            padding: 14px 18px;
-            border-radius: 16px;
-            border: 2px dashed #d4af37;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        .exam-one-time-box { display: flex; align-items: center; gap: 12px; background: #fff9e6; padding: 14px 18px; border-radius: 16px; border: 2px dashed #d4af37; cursor: pointer; transition: 0.3s; }
         .exam-one-time-box:hover { background: #fff3cc; transform: scale(1.01); }
         .exam-one-time-box input { width: 22px !important; height: 22px !important; margin: 0 !important; cursor: pointer; accent-color: #d4af37; }
         .exam-one-time-box label { font-weight: 800 !important; color: #3b0a0a !important; margin: 0 !important; cursor: pointer; font-size: 14px !important; }
@@ -158,55 +128,19 @@
 
         .detail-row { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px dashed #f0ede8; font-size: 13px; }
 
-        /* 🔒 Access denied screen */
-        .access-denied-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, #3b0a0a, #0f0f23);
-            color: #fff;
-            z-index: 99999;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-        }
+        .access-denied-screen { display: none; position: fixed; inset: 0; background: linear-gradient(135deg, #3b0a0a, #0f0f23); color: #fff; z-index: 99999; align-items: center; justify-content: center; text-align: center; padding: 20px; }
         .access-denied-screen.active { display: flex; }
-        .access-denied-box {
-            background: rgba(255,255,255,0.05);
-            border: 2px solid #d4af37;
-            border-radius: 28px;
-            padding: 40px 30px;
-            max-width: 500px;
-            backdrop-filter: blur(10px);
-        }
+        .access-denied-box { background: rgba(255,255,255,0.05); border: 2px solid #d4af37; border-radius: 28px; padding: 40px 30px; max-width: 500px; backdrop-filter: blur(10px); }
         .access-denied-box h1 { color: #d4af37; font-size: 30px; margin-bottom: 15px; }
         .access-denied-box p { color: #e0e0e0; font-size: 15px; line-height: 1.8; margin-bottom: 25px; }
-        .access-denied-box button {
-            background: #d4af37; color: #3b0a0a;
-            border: none; padding: 12px 30px;
-            border-radius: 50px; font-weight: 800;
-            cursor: pointer; font-size: 14px;
-            transition: 0.3s;
-        }
+        .access-denied-box button { background: #d4af37; color: #3b0a0a; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 14px; transition: 0.3s; }
         .access-denied-box button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(212,175,55,0.4); }
 
-        /* 🔒 Loading overlay */
-        .loading-overlay {
-            position: fixed; inset: 0;
-            background: #f8f6f2;
-            z-index: 99998;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .loading-overlay { position: fixed; inset: 0; background: #f8f6f2; z-index: 99998; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 15px; }
         .loading-overlay.hidden { display: none; }
-        .loading-spinner {
-            width: 50px; height: 50px;
-            border: 5px solid #eadacc;
-            border-top-color: #d4af37;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        .loading-spinner { width: 50px; height: 50px; border: 5px solid #eadacc; border-top-color: #d4af37; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-overlay p { color: #3b0a0a; font-weight: 700; font-size: 14px; }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -219,7 +153,6 @@
 </head>
 <body>
 
-    <!-- 🔒 شاشة رفض الوصول -->
     <div id="accessDenied" class="access-denied-screen">
         <div class="access-denied-box">
             <div style="font-size: 60px; margin-bottom: 15px;">🔒</div>
@@ -229,9 +162,9 @@
         </div>
     </div>
 
-    <!-- 🔒 شاشة التحميل -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-spinner"></div>
+        <p>جارٍ التحقق من الصلاحيات...</p>
     </div>
 
     <header>
@@ -246,7 +179,7 @@
         </div>
     </header>
 
-    <div class="dashboard-container">
+    <div class="dashboard-container" id="dashboardContainer" style="display:none;">
         <h2 style="color:#3b0a0a; margin-bottom:18px;">⚙️ لوحة تحكم الأدمن</h2>
 
         <div class="admin-tabs">
@@ -341,7 +274,6 @@
             </div>
         </div>
 
-        <!-- إضافة محاضرة -->
         <div id="tabAddCourse" class="tab-content">
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📹 إضافة محاضرة جديدة</h4>
@@ -365,7 +297,6 @@
             </div>
         </div>
 
-        <!-- إضافة كتاب -->
         <div id="tabAddBook" class="tab-content">
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📚 إضافة كتاب أو ملزمة</h4>
@@ -386,7 +317,6 @@
             </div>
         </div>
 
-        <!-- إضافة مدرس -->
         <div id="tabAddTeacher" class="tab-content">
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">👨‍🏫 إضافة مدرس جديد</h4>
@@ -403,7 +333,6 @@
             </div>
         </div>
 
-        <!-- إنشاء وحدة -->
         <div id="tabAddBundle" class="tab-content">
             <div class="bundle-container-box">
                 <div class="add-form">
@@ -467,7 +396,6 @@
             </div>
         </div>
 
-        <!-- ✅ إضافة اختبار -->
         <div id="tabAddExam" class="tab-content">
             <div class="add-form">
                 <h4 style="color:#3b0a0a; margin-bottom:15px;">📝 إضافة اختبار جديد</h4>
@@ -510,7 +438,7 @@
 
     <script>
         /* ============================================================
-           🔒 SECURITY UTILITIES (نفس الموجود في index.html)
+           🔒 SECURITY UTILITIES
            ============================================================ */
         function sanitizeInput(str) {
             if (typeof str !== 'string') return '';
@@ -520,15 +448,15 @@
             if (str === null || str === undefined) return '';
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
-        const SECURE_LOG_KEY = 'app_error_log_v2';
+        const SECURE_LOG_KEY = 'admin_error_log_v1';
         function logSecureError(context, error) {
             const entry = {
                 time: new Date().toISOString(),
                 context,
                 message: (error && error.message) ? error.message : String(error),
-                stack: (error && error.stack) ? error.stack.split('\n').slice(0, 3).join(' | ') : ''
+                code: (error && error.code) ? error.code : ''
             };
-            console.error('[SECURE_LOG]', entry);
+            console.error('[ADMIN_LOG]', entry);
             try {
                 const log = JSON.parse(localStorage.getItem(SECURE_LOG_KEY) || '[]');
                 log.push(entry);
@@ -536,9 +464,8 @@
                 localStorage.setItem(SECURE_LOG_KEY, JSON.stringify(log));
             } catch (_) {}
         }
-        function showGenericError() { return 'حدث خطأ غير متوقع. تواصل مع الدعم الفني.'; }
+        function showGenericError() { return 'حدث خطأ غير متوقع. راجع الـ Console أو تواصل مع الدعم.'; }
 
-        // 🔒 التحقق من الملفات (نوع + حجم)
         function validateFile(file, allowedTypes, maxMB) {
             if (!file) return { valid: true };
             if (allowedTypes.length && !allowedTypes.includes(file.type))
@@ -548,7 +475,6 @@
             return { valid: true };
         }
 
-        // 🔒 Rate Limiting لأي عملية حساسة (حذف/تعديل جماعي)
         const ADMIN_RATE_KEY = 'admin_actions_v1';
         function adminRateCheck(actionName, maxPerMinute = 30) {
             const key = ADMIN_RATE_KEY + '_' + actionName;
@@ -582,7 +508,7 @@
         }
 
         /* ============================================================
-           🔥 FIREBASE
+           🔥 FIREBASE INIT
            ============================================================ */
         const firebaseConfig = {
             apiKey: "AIzaSyD-7DnDsopGu1ztOdnSm-lHYw-ECk-UpII",
@@ -594,88 +520,94 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
 
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(err => logSecureError('authPersistence', err));
+
+        /* ============================================================
+           🔧 FIRESTORE HELPERS
+           ============================================================ */
         async function getCollection(name) {
             const snap = await db.collection(name).get();
             return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         }
-        // ✅ Batch مرقّم (Parameterized) — يتعامل مع أي عدد عناصر
-        async function setCollection(name, arr) {
-            const snap = await db.collection(name).get();
-            let batch = db.batch();
-            let ops = 0;
-            snap.forEach(doc => {
-                batch.delete(doc.ref);
-                ops++;
-                if (ops >= 450) {
-                    batch.commit();
-                    batch = db.batch();
-                    ops = 0;
-                }
-            });
-            if (ops > 0) await batch.commit();
-
-            batch = db.batch();
-            ops = 0;
-            for (const item of arr) {
-                const ref = db.collection(name).doc(item.id || undefined);
-                batch.set(ref, item);
-                ops++;
-                if (ops >= 450) {
-                    await batch.commit();
-                    batch = db.batch();
-                    ops = 0;
-                }
-            }
-            if (ops > 0) await batch.commit();
+        async function getDocument(name, id) {
+            const snap = await db.collection(name).doc(id).get();
+            return snap.exists ? { id: snap.id, ...snap.data() } : null;
         }
-
-        async function getUsers() { return await getCollection('users'); }
-        async function setUsers(d) { await setCollection('users', d); }
+        async function addDocument(name, data, customId = null) {
+            const id = customId || (name + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
+            await db.collection(name).doc(id).set(data);
+            return id;
+        }
+        async function updateDocument(name, id, data) {
+            await db.collection(name).doc(id).update(data);
+        }
+        async function deleteDocument(name, id) {
+            await db.collection(name).doc(id).delete();
+        }
+        async function getUserDoc(uid) {
+            return await getDocument('users', uid);
+        }
+        async function getUsersCollection() { return await getCollection('users'); }
         async function getCourses() { return await getCollection('courses'); }
-        async function setCourses(d) { await setCollection('courses', d); }
         async function getBooks() { return await getCollection('books'); }
-        async function setBooks(d) { await setCollection('books', d); }
         async function getTeachers() { return await getCollection('teachers'); }
-        async function setTeachers(d) { await setCollection('teachers', d); }
         async function getExams() { return await getCollection('exams'); }
-        async function setExams(d) { await setCollection('exams', d); }
         async function getBundles() { return await getCollection('bundles'); }
-        async function setBundles(d) { await setCollection('bundles', d); }
 
         /* ============================================================
-           🔒 ADMIN AUTH GUARD — الأهم!
+           🔐 ADMIN GUARD via Firebase Auth
            ============================================================ */
         let currentAdmin = null;
-
-        async function verifyAdminAccess() {
-            try {
-                const userJson = sessionStorage.getItem('currentUser');
-                if (!userJson) return false;
-                const user = JSON.parse(userJson);
-                if (!user || user.role !== 'admin' || !user.active) return false;
-
-                // ✅ التحقق من قاعدة البيانات (تأكيد إن الحساب لسه أدمن ومفعل)
-                const users = await getUsers();
-                const dbUser = users.find(u => u.id === user.id);
-                if (!dbUser || dbUser.role !== 'admin' || !dbUser.active) return false;
-
-                currentAdmin = dbUser;
-                return true;
-            } catch (err) {
-                logSecureError('verifyAdminAccess', err);
-                return false;
-            }
-        }
 
         function showAccessDenied() {
             document.getElementById('loadingOverlay').classList.add('hidden');
             document.getElementById('accessDenied').classList.add('active');
+            document.getElementById('dashboardContainer').style.display = 'none';
         }
 
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-        }
+        auth.onAuthStateChanged(async function(firebaseUser) {
+            const loading = document.getElementById('loadingOverlay');
+            try {
+                if (!firebaseUser) {
+                    showAccessDenied();
+                    return;
+                }
+
+                // ✅ المستخدم مسجل دخول — نتحقق من الـ role
+                const userDoc = await getUserDoc(firebaseUser.uid);
+                if (!userDoc || userDoc.role !== 'admin' || !userDoc.active) {
+                    showAccessDenied();
+                    return;
+                }
+
+                // ✅ أدمن حقيقي
+                currentAdmin = userDoc;
+                document.getElementById('adminNameDisplay').textContent = '👤 ' + userDoc.name;
+                document.getElementById('dashboardContainer').style.display = 'block';
+
+                try {
+                    initGrades();
+                    await loadStudentsTable();
+                    await loadBundlesTable();
+                    await loadCoursesTable();
+                    await loadBooksTable();
+                    await loadTeachersTable();
+                    await loadExamsTable();
+                    await populateBundleSelects();
+                    setupForms();
+                    toggleItemFields();
+                } catch (err) {
+                    logSecureError('adminInit', err);
+                }
+
+                loading.classList.add('hidden');
+            } catch (err) {
+                logSecureError('onAuthStateChanged', err);
+                showAccessDenied();
+            }
+        });
 
         /* ============================================================
            🌟 INIT GRADES
@@ -703,11 +635,11 @@
         }
 
         /* ============================================================
-           👥 STUDENTS TABLE
+           👥 STUDENTS
            ============================================================ */
         async function loadStudentsTable() {
             try {
-                const allUsers = await getUsers();
+                const allUsers = await getUsersCollection();
                 const students = allUsers.filter(u => u.role === 'student');
                 const tbody = document.getElementById('studentsTableBody');
 
@@ -756,8 +688,7 @@
 
         async function showStudentDetails(id) {
             try {
-                const users = await getUsers();
-                const u = users.find(x => x.id === id);
+                const u = await getUserDoc(id);
                 if (!u) { alert('الطالب غير موجود.'); return; }
 
                 const initial = (u.name || '؟').charAt(0);
@@ -793,12 +724,11 @@
         async function toggleStudent(id) {
             try {
                 if (!adminRateCheck('toggleStudent')) { alert('⚠️ محاولات كثيرة. انتظر قليلاً.'); return; }
-                let users = await getUsers();
-                let u = users.find(x => x.id === id);
+                const u = await getUserDoc(id);
                 if (!u) return;
-                u.active = !u.active;
-                await setUsers(users);
-                alert(u.active ? '✅ تم تفعيل الطالب' : '❌ تم إلغاء التفعيل');
+                const newActive = !u.active;
+                await updateDocument('users', id, { active: newActive });
+                alert(newActive ? '✅ تم تفعيل الطالب' : '❌ تم إلغاء التفعيل');
                 loadStudentsTable();
             } catch (err) { logSecureError('toggleStudent', err); alert(showGenericError()); }
         }
@@ -806,10 +736,14 @@
         async function deleteStudent(id) {
             try {
                 if (!adminRateCheck('deleteStudent')) { alert('⚠️ محاولات كثيرة. انتظر قليلاً.'); return; }
-                if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً؟')) return;
-                let users = await getUsers();
-                await setUsers(users.filter(u => u.id !== id));
-                alert('✅ تم حذف الطالب.');
+                if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطالب نهائياً من قاعدة البيانات؟\n\n(ملاحظة: حساب Firebase Auth بتاعه لسه موجود — لحذفه نهائياً استخدم Firebase Console)')) return;
+                const u = await getUserDoc(id);
+                // نحذف الفهرس بتاع الهاتف لو موجود
+                if (u && u.phone) {
+                    try { await deleteDocument('phoneIndex', u.phone); } catch (_) {}
+                }
+                await deleteDocument('users', id);
+                alert('✅ تم حذف بيانات الطالب.');
                 loadStudentsTable();
             } catch (err) { logSecureError('deleteStudent', err); alert(showGenericError()); }
         }
@@ -837,8 +771,7 @@
             try {
                 if (!adminRateCheck('deleteBundle')) { alert('⚠️ محاولات كثيرة. انتظر قليلاً.'); return; }
                 if (!confirm('⚠️ حذف الوحدة نهائياً؟')) return;
-                let bundles = await getBundles();
-                await setBundles(bundles.filter(b => b.id !== id));
+                await deleteDocument('bundles', id);
                 loadBundlesTable();
                 populateBundleSelects();
             } catch (err) { logSecureError('deleteBundle', err); alert(showGenericError()); }
@@ -898,7 +831,7 @@
         }
 
         /* ============================================================
-           🚀 SETUP FORMS
+           🚀 FORMS
            ============================================================ */
         function setupForms() {
 
@@ -909,9 +842,7 @@
                     const title = sanitizeInput(document.getElementById('bundleTitle').value);
                     const grade = sanitizeInput(document.getElementById('bundleGrade').value);
                     if (!title || !grade) { alert('املأ الحقول'); return; }
-                    let bundles = await getBundles();
-                    bundles.push({ id: 'bundle_' + Date.now() + '_' + Math.random().toString(36).slice(2,6), title, grade, items: [] });
-                    await setBundles(bundles);
+                    await addDocument('bundles', { title, grade, items: [] });
                     document.getElementById('bundleAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الوحدة!</div>';
                     this.reset();
                     loadBundlesTable();
@@ -926,17 +857,16 @@
                     const bundleId = document.getElementById('itemBundleSelect').value;
                     const type = document.getElementById('itemType').value;
                     if (!bundleId) { alert('اختر وحدة أولاً'); return; }
-                    let bundles = await getBundles();
-                    let bundle = bundles.find(b => b.id === bundleId);
+                    const bundle = await getDocument('bundles', bundleId);
                     if (!bundle) { alert('الوحدة غير موجودة'); return; }
-                    if (!Array.isArray(bundle.items)) bundle.items = [];
+                    let items = Array.isArray(bundle.items) ? bundle.items : [];
 
                     if (type === 'exam') {
                         const examId = document.getElementById('itemExamSelect').value;
                         const title = sanitizeInput(document.getElementById('examItemTitle').value);
                         if (!examId || !title) { alert('املأ بيانات الاختبار'); return; }
-                        bundle.items.push({ type: 'exam', title, examId });
-                        await setBundles(bundles);
+                        items.push({ type: 'exam', title, examId });
+                        await updateDocument('bundles', bundleId, { items });
                         document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة!</div>';
                         document.getElementById('examItemTitle').value = '';
                         loadBundlesTable();
@@ -951,11 +881,11 @@
                         if (!pv) { alert('اختر عنصراً'); return; }
                         const po = JSON.parse(pv);
                         if (po.source === 'course') {
-                            let s = (await getCourses()).find(c => c.id === po.id);
+                            const s = (await getCourses()).find(c => c.id === po.id);
                             if (!s) { alert('العنصر غير موجود'); return; }
                             title = s.title; link = s.link; itemType = 'video';
                         } else {
-                            let s = (await getBooks()).find(b => b.id === po.id);
+                            const s = (await getBooks()).find(b => b.id === po.id);
                             if (!s) { alert('العنصر غير موجود'); return; }
                             title = s.title; link = s.link; itemType = 'pdf';
                         }
@@ -976,8 +906,8 @@
                                 try {
                                     link = ev.target.result;
                                     if (!title || !link) { alert('املأ البيانات'); return; }
-                                    bundle.items.push({ type: itemType, title, link });
-                                    await setBundles(bundles);
+                                    items.push({ type: itemType, title, link });
+                                    await updateDocument('bundles', bundleId, { items });
                                     document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة!</div>';
                                     document.getElementById('itemTitle').value = '';
                                     document.getElementById('itemLink').value = '';
@@ -992,8 +922,8 @@
                             if (!title || !link) { alert('املأ البيانات'); return; }
                         }
                     }
-                    bundle.items.push({ type: itemType, title, link });
-                    await setBundles(bundles);
+                    items.push({ type: itemType, title, link });
+                    await updateDocument('bundles', bundleId, { items });
                     document.getElementById('itemAddMsg').innerHTML = '<div class="alert alert-success">✅ تمت الإضافة!</div>';
                     document.getElementById('itemTitle').value = '';
                     document.getElementById('itemLink').value = '';
@@ -1030,9 +960,7 @@
 
                     async function saveCourse(t, g, l, sh) {
                         if (!t || !g || !l) { alert('املأ الحقول'); return; }
-                        let courses = await getCourses();
-                        courses.push({ id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2,6), title: t, grade: g, link: l, showInHome: sh });
-                        await setCourses(courses);
+                        await addDocument('courses', { title: t, grade: g, link: l, showInHome: sh });
                         alert('✅ تمت الإضافة!');
                         document.getElementById('addCourseForm').reset();
                         document.getElementById('courseShowInHome').checked = false;
@@ -1070,9 +998,7 @@
 
                     async function saveBook(t, g, l, sh) {
                         if (!t || !g || !l) { alert('املأ الحقول'); return; }
-                        let books = await getBooks();
-                        books.push({ id: 'b_' + Date.now() + '_' + Math.random().toString(36).slice(2,6), title: t, grade: g, link: l, showInHome: sh });
-                        await setBooks(books);
+                        await addDocument('books', { title: t, grade: g, link: l, showInHome: sh });
                         alert('✅ تمت الإضافة!');
                         document.getElementById('addBookForm').reset();
                         document.getElementById('bookShowInHome').checked = false;
@@ -1094,9 +1020,7 @@
 
                     async function saveTeacher(n, s, i) {
                         if (!n) { alert('ادخل الاسم'); return; }
-                        let teachers = await getTeachers();
-                        teachers.push({ id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2,6), name: n, specialty: s, image: i });
-                        await setTeachers(teachers);
+                        await addDocument('teachers', { name: n, specialty: s, image: i });
                         alert('✅ تمت الإضافة!');
                         document.getElementById('addTeacherForm').reset();
                         loadTeachersTable();
@@ -1178,16 +1102,24 @@
                     if (!q || opts.includes('')) { alert('يرجى ملء جميع بيانات السؤال رقم ' + (i + 1)); return; }
                     questions.push({ q, options: opts, correct });
                 }
-                let exams = await getExams();
-                let exam = exams.find(e => e.title === title && e.grade === grade);
-                if (!exam) {
-                    exam = { id: 'exam_' + Date.now() + '_' + Math.random().toString(36).slice(2,6), title, grade, oneTimeOnly, questions: [] };
-                    exams.push(exam);
+
+                // نبحث عن اختبار بنفس العنوان والصف
+                const exams = await getExams();
+                let existing = exams.find(e => e.title === title && e.grade === grade);
+
+                if (existing) {
+                    const mergedQuestions = (existing.questions || []).concat(questions);
+                    await updateDocument('exams', existing.id, {
+                        oneTimeOnly,
+                        questions: mergedQuestions
+                    });
                 } else {
-                    exam.oneTimeOnly = oneTimeOnly;
+                    await addDocument('exams', {
+                        title, grade, oneTimeOnly, questions,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                 }
-                exam.questions = (exam.questions || []).concat(questions);
-                await setExams(exams);
+
                 document.getElementById('questionsContainer').innerHTML = '';
                 document.getElementById('saveExamBtn').style.display = 'none';
                 document.getElementById('examAddMsg').innerHTML = '<div class="alert alert-success">✅ تم إنشاء الاختبار بنجاح!' + (oneTimeOnly ? ' (لمرة واحدة 🔒)' : '') + '</div>';
@@ -1200,7 +1132,7 @@
         }
 
         /* ============================================================
-           📋 TABLES (Courses / Books / Teachers / Exams)
+           📋 TABLES
            ============================================================ */
         async function loadCoursesTable() {
             try {
@@ -1220,8 +1152,7 @@
             try {
                 if (!adminRateCheck('deleteCourse')) { alert('⚠️ محاولات كثيرة.'); return; }
                 if (!confirm('حذف المحاضرة؟')) return;
-                let c = await getCourses();
-                await setCourses(c.filter(x => x.id !== id));
+                await deleteDocument('courses', id);
                 loadCoursesTable();
                 populateBundleSelects();
             } catch (err) { logSecureError('deleteCourse', err); alert(showGenericError()); }
@@ -1245,8 +1176,7 @@
             try {
                 if (!adminRateCheck('deleteBook')) { alert('⚠️ محاولات كثيرة.'); return; }
                 if (!confirm('حذف الكتاب؟')) return;
-                let b = await getBooks();
-                await setBooks(b.filter(x => x.id !== id));
+                await deleteDocument('books', id);
                 loadBooksTable();
                 populateBundleSelects();
             } catch (err) { logSecureError('deleteBook', err); alert(showGenericError()); }
@@ -1269,8 +1199,7 @@
             try {
                 if (!adminRateCheck('deleteTeacher')) { alert('⚠️ محاولات كثيرة.'); return; }
                 if (!confirm('حذف المدرس؟')) return;
-                let t = await getTeachers();
-                await setTeachers(t.filter(x => x.id !== id));
+                await deleteDocument('teachers', id);
                 loadTeachersTable();
             } catch (err) { logSecureError('deleteTeacher', err); alert(showGenericError()); }
         }
@@ -1299,8 +1228,7 @@
             try {
                 if (!adminRateCheck('deleteExam')) { alert('⚠️ محاولات كثيرة.'); return; }
                 if (!confirm('⚠️ هل أنت متأكد من حذف هذا الاختبار نهائياً؟')) return;
-                let exams = await getExams();
-                await setExams(exams.filter(e => e.id !== id));
+                await deleteDocument('exams', id);
                 alert('✅ تم الحذف.');
                 loadExamsTable();
                 populateBundleSelects();
@@ -1327,39 +1255,15 @@
         /* ============================================================
            🚀 INIT
            ============================================================ */
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             loadDarkModePreference();
-
-            // 🔒 الحماية: لا نبدأ أي شي قبل التحقق من الأدمن
-            const isAdmin = await verifyAdminAccess();
-            if (!isAdmin) {
-                showAccessDenied();
-                return;
-            }
-
-            // عرض اسم الأدمن
-            document.getElementById('adminNameDisplay').textContent = '👤 ' + currentAdmin.name;
-
-            try {
-                initGrades();
-                await loadStudentsTable();
-                await loadBundlesTable();
-                await loadCoursesTable();
-                await loadBooksTable();
-                await loadTeachersTable();
-                await loadExamsTable();
-                await populateBundleSelects();
-                setupForms();
-                toggleItemFields();
-            } catch (err) {
-                logSecureError('adminInit', err);
-            }
-
-            hideLoading();
+            // onAuthStateChanged بيتولى الباقي
         });
 
-        function logout() {
-            sessionStorage.removeItem('currentUser');
+        async function logout() {
+            try {
+                await auth.signOut();
+            } catch (err) { logSecureError('logout', err); }
             window.location.href = 'index.html';
         }
     </script>
