@@ -192,6 +192,19 @@
         /* 🌟 تفاصيل الطالب */
         .detail-row { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px dashed #f0ede8; font-size: 13px; }
 
+        /* 🌟 ملاحظة الروابط المدعومة */
+        .link-hint {
+            background: #fff9e6;
+            border: 1px dashed #d4af37;
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #856404;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
             .add-form .form-grid { grid-template-columns: 1fr; }
@@ -318,8 +331,9 @@
                         <div><label>عنوان المحاضرة</label><input type="text" id="courseTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="courseGrade" required><option value="">اختر الصف</option></select></div>
                         <div class="full-width">
-                            <label>رابط المحاضرة (يفضل Google Drive أو YouTube)</label>
-                            <input type="url" id="courseLink" placeholder="https://drive.google.com/file/d/xxxx/view?usp=sharing">
+                            <label>رابط المحاضرة (Google Drive / YouTube / Terabox)</label>
+                            <input type="url" id="courseLink" placeholder="مثال: https://www.terabox.com/s/xxxxx">
+                            <div class="link-hint">💡 الروابط المدعومة: Google Drive (تشغيل مباشر)، YouTube (تشغيل مباشر)، Terabox (يفتح في نافذة جديدة)</div>
                         </div>
                         <div class="full-width"><label>أو ارفع ملف</label><input type="file" id="courseFile" accept="video/*,audio/*"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
@@ -341,7 +355,11 @@
                     <div class="form-grid">
                         <div><label>عنوان الكتاب</label><input type="text" id="bookTitle" required></div>
                         <div><label>الصف الدراسي</label><select id="bookGrade" required><option value="">اختر الصف</option></select></div>
-                        <div class="full-width"><label>رابط التحميل</label><input type="url" id="bookLink"></div>
+                        <div class="full-width">
+                            <label>رابط التحميل (Google Drive / Terabox / أي رابط مباشر)</label>
+                            <input type="url" id="bookLink" placeholder="مثال: https://drive.google.com/file/d/xxxxx/view">
+                            <div class="link-hint">💡 الروابط المدعومة: Google Drive، Terabox، أو أي رابط مباشر لملف PDF</div>
+                        </div>
                         <div class="full-width"><label>أو ارفع ملف PDF</label><input type="file" id="bookFile" accept=".pdf"></div>
                         <div class="full-width" style="display:flex; align-items:center; gap:10px;">
                             <input type="checkbox" id="bookShowInHome" style="width:20px; height:20px; margin:0;">
@@ -411,10 +429,13 @@
                                 <div class="form-grid">
                                     <div><label>عنوان العنصر</label><input type="text" id="itemTitle"></div>
                                     <div>
-                                        <label>الرابط (يفضل Google Drive أو YouTube للفيديوهات)</label>
-                                        <input type="url" id="itemLink" placeholder="https://drive.google.com/file/d/xxxx/view?usp=sharing">
+                                        <label>الرابط (Google Drive / YouTube / Terabox)</label>
+                                        <input type="url" id="itemLink" placeholder="مثال: https://www.terabox.com/s/xxxxx">
                                     </div>
                                     <div class="full-width"><label>أو ارفع ملف من جهازك</label><input type="file" id="itemFile"></div>
+                                    <div class="full-width">
+                                        <div class="link-hint">💡 الروابط المدعومة: Google Drive (تشغيل مباشر)، YouTube (تشغيل مباشر)، Terabox (يفتح في نافذة جديدة)</div>
+                                    </div>
                                 </div>
                             </div>
                             <div id="platformFields" class="full-width" style="display:none;">
