@@ -9,8 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <!-- ✅ reCAPTCHA v2 (مفاتيح Google التجريبية - استبدلها بمفاتيحك) -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; font-size: 14px; }
@@ -329,9 +327,8 @@
         .btn-outline-toggle { background: transparent; border: 2px solid #3b0a0a; color: #3b0a0a; padding: 10px 28px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 14px; }
         .btn-outline-toggle:hover { background: #3b0a0a; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-        /* ✅ تنسيق صندوق reCAPTCHA */
-        .captcha-box { display: flex; justify-content: center; margin: 12px 0 8px; }
-        .captcha-hint { font-size: 11px; color: #888; text-align: center; margin-bottom: 8px; }
+        /* ✅ تلميح أمني */
+        .security-hint { font-size: 11px; color: #888; text-align: center; margin-bottom: 8px; }
 
         footer { background: #2f0808; color: #fff; padding: 45px 20px 30px; margin-top: 80px; border-top: 4px solid #d4af37; transition: background 0.3s, border-color 0.3s; border-radius: 40px 40px 0 0; box-shadow: 0 -8px 25px rgba(0,0,0,0.1); }
         .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 40px; }
@@ -604,11 +601,7 @@
                                 <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="regPass" placeholder="كلمة مرور قوية" minlength="8" maxlength="128" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regPass')">👁️</span></div></div>
                                 <div class="form-group-modern"><label>تأكيد كلمة المرور</label><div class="input-wrapper"><input type="password" id="regConfirmPass" placeholder="أعد إدخال كلمة المرور" minlength="8" maxlength="128" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('regConfirmPass')">👁️</span></div></div>
                             </div>
-                            <div class="captcha-hint">🔐 التحقق الأمني مطلوب قبل إنشاء الحساب</div>
-                            <div class="captcha-box">
-                                <!-- ✅ استبدل data-sitekey بمفتاحك من google.com/recaptcha -->
-                                <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onCaptchaRegister" id="captchaRegister"></div>
-                            </div>
+                            <div class="security-hint">🔐 سيتم تشفير كلمة المرور عند الإنشاء</div>
                             <button type="submit" class="btn-submit-modern" id="registerSubmitBtn">إنشاء الحساب ←</button>
                         </form>
                         <div class="auth-toggle-footer"><p>لديك حساب بالفعل؟</p><button class="btn-outline-toggle" onclick="switchAuthView('login')">تسجيل الدخول</button></div>
@@ -620,11 +613,7 @@
                         <form id="loginForm" autocomplete="off">
                             <div class="form-group-modern"><label>رقم الهاتف أو البريد</label><div class="input-wrapper"><input type="text" id="loginEmailOrPhone" placeholder="أدخل البريد أو رقم الهاتف" maxlength="120" required><span class="input-icon-right">👤</span></div></div>
                             <div class="form-group-modern"><label>كلمة المرور</label><div class="input-wrapper"><input type="password" id="loginPass" placeholder="كلمة المرور" maxlength="128" required><span class="input-icon-right">🔒</span><span class="input-icon-left" onclick="togglePassword('loginPass')">👁️</span></div></div>
-                            <div class="captcha-hint">🔐 التحقق الأمني مطلوب لمنع المحاولات الآلية</div>
-                            <div class="captcha-box">
-                                <!-- ✅ استبدل data-sitekey بمفتاحك -->
-                                <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" data-callback="onCaptchaLogin" id="captchaLogin"></div>
-                            </div>
+                            <div class="security-hint">🔐 محمي ضد المحاولات المتكررة</div>
                             <button type="submit" class="btn-submit-modern" id="loginSubmitBtn">تسجيل الدخول ←</button>
                         </form>
                         <div class="auth-toggle-footer"><p>ليس لديك حساب؟</p><button class="btn-outline-toggle" onclick="switchAuthView('register')">إنشاء حساب جديد</button></div>
@@ -721,7 +710,6 @@
 
         window.verifyPassword = async function (password, storedHash, storedSalt) {
             const { hash } = await hashPassword(password, storedSalt);
-            // مقارنة ثابتة الزمن (timing-safe)
             if (hash.length !== storedHash.length) return false;
             let diff = 0;
             for (let i = 0; i < hash.length; i++) diff |= hash.charCodeAt(i) ^ storedHash.charCodeAt(i);
@@ -763,16 +751,14 @@
 
         window.loginLimiter = new RateLimiter(5, 15 * 60 * 1000, 'rl_login_v2');
 
-        // ---- 6) Logger (لا يكشف أخطاء للمستخدم) ----
+        // ---- 6) Logger ----
         window.logger = {
             _send: function (level, msg, ctx) {
                 const entry = { level, msg, ctx: ctx || {}, ts: new Date().toISOString(), ua: navigator.userAgent };
-                // في الـ Console للتطوير فقط
                 if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
                     const fn = level === 'error' ? 'error' : (level === 'warn' ? 'warn' : 'log');
                     console[fn]('[SEC]', entry);
                 }
-                // في الإنتاج: أرسل لخدمة تسجيل خارجية (Sentry / Cloud Function)
             },
             info: function (m, c) { this._send('info', m, c); },
             warn: function (m, c) { this._send('warn', m, c); },
@@ -785,7 +771,6 @@
             network: 'حدث خطأ في الاتصال، تحقق من الإنترنت.',
             generic: 'حدث خطأ غير متوقع، حاول لاحقاً.',
             rate: 'محاولات كثيرة خاطئة، حاول بعد {min} دقيقة.',
-            captcha: '⚠️ من فضلك أكمل التحقق الأمني (reCAPTCHA).',
             weakPassword: '🔒 كلمة المرور ضعيفة.'
         };
     })();
@@ -830,7 +815,6 @@
         const batch = db.batch();
         snap.forEach(doc => batch.delete(doc.ref));
         await batch.commit();
-        // كتابة على دفعات صغيرة لتجنب مشاكل الـ batching
         for (const item of arr) { await db.collection(name).add(item); }
     }
 
@@ -847,7 +831,7 @@
     async function getBundles() { return await getCollection('bundles'); }
     async function setBundles(d) { await setCollection('bundles', d); }
 
-    // ✅ كلمات مرور الأدمن تُخزَّن مشفرة (Hash + Salt)
+    // ✅ كلمات مرور الأدمن تُخزَّن مشفرة
     const ADMINS = [
         { id: 'admin1', name: 'أدمن 1 - أحمد', email: 'azab7620@gmail.com', phone: '01110000001', password: 'r11a6r10' },
         { id: 'admin2', name: 'أدمن 2 - محمد', email: 'anwer2345n@gmail.com', phone: '01110000002', password: '666711' },
@@ -864,7 +848,6 @@
             const existing = users.find(u => u.id === a.id && u.role === 'admin');
 
             if (!existing) {
-                // إنشاء أدمن جديد مع كلمة مرور مشفرة
                 const { hash, salt } = await hashPassword(a.password);
                 users.push({
                     id: a.id, name: a.name, email: a.email, phone: a.phone,
@@ -876,7 +859,6 @@
                 });
                 needUpdate = true;
             } else if (!existing.passwordHash && existing.password) {
-                // 🔁 ترحيل كلمة المرور القديمة (plaintext) إلى Hash
                 const { hash, salt } = await hashPassword(existing.password);
                 existing.passwordHash = hash;
                 existing.passwordSalt = salt;
@@ -908,7 +890,7 @@
     }
 
     /* ============================================================
-       🎨 العرض العام (مع escapeHTML)
+       🎨 العرض العام
        ============================================================ */
     async function renderTeachers() {
         const grid = document.getElementById('teachersGrid');
@@ -1005,12 +987,6 @@
     function switchAuthView(mode) {
         document.getElementById('registerFormContainer').style.display = (mode === 'register') ? 'block' : 'none';
         document.getElementById('loginFormContainer').style.display = (mode === 'login') ? 'block' : 'none';
-        // إعادة تعيين reCAPTCHA عند التبديل
-        if (window.grecaptcha && window.grecaptcha.reset) {
-            try { grecaptcha.reset(); } catch (e) {}
-        }
-        captchaRegisterToken = null;
-        captchaLoginToken = null;
     }
 
     function togglePassword(id) {
@@ -1026,13 +1002,6 @@
     let currentBundle = null;
     let currentQIndex = 0;
     let answers = [];
-
-    // Captcha tokens
-    let captchaRegisterToken = null;
-    let captchaLoginToken = null;
-
-    window.onCaptchaRegister = function (token) { captchaRegisterToken = token; };
-    window.onCaptchaLogin = function (token) { captchaLoginToken = token; };
 
     function calculateBundleProgress(bundle, user) {
         if (!bundle.items || bundle.items.length === 0) return 0;
@@ -1375,7 +1344,6 @@
                 }
                 await setUsers(users);
 
-                // تحديث الجلسة بدون كشف كلمة المرور
                 const safeUser = { ...user };
                 delete safeUser.passwordHash;
                 delete safeUser.passwordSalt;
@@ -1430,7 +1398,6 @@
         await renderCourses();
         await renderBooks();
 
-        // ربط المرحلة بالصف
         const stageSelect = document.getElementById('regStage');
         const gradeSelect = document.getElementById('regGrade');
         const gradesMap = {
@@ -1452,19 +1419,13 @@
         });
 
         /* ============================================================
-           📝 التسجيل — مع Captcha + Sanitization + Strong Password + Hashing
+           📝 التسجيل — Sanitization + Strong Password + Hashing
            ============================================================ */
         document.getElementById('registerForm').addEventListener('submit', async function (e) {
             e.preventDefault();
             const submitBtn = document.getElementById('registerSubmitBtn');
 
-            // 1) Captcha
-            if (!captchaRegisterToken) {
-                alert(friendlyErrors.captcha);
-                return;
-            }
-
-            // 2) Sanitization
+            // 1) Sanitization
             const name = sanitizeInput(document.getElementById('regName').value, 80);
             const email = sanitizeInput(document.getElementById('regEmail').value, 120).toLowerCase();
             const phone = sanitizeInput(document.getElementById('regPhone').value, 20);
@@ -1477,7 +1438,7 @@
             const password = document.getElementById('regPass').value;
             const confirmPwd = document.getElementById('regConfirmPass').value;
 
-            // 3) التحقق من الصحة
+            // 2) التحقق
             if (!name || !email || !phone || !grade || !password) {
                 alert('املأ جميع الحقول.');
                 return;
@@ -1495,7 +1456,7 @@
                 return;
             }
 
-            // 4) قوة كلمة المرور
+            // 3) قوة كلمة المرور
             const pwdCheck = validatePassword(password);
             if (!pwdCheck.valid) {
                 alert(friendlyErrors.weakPassword + '\nيجب أن تحتوي على:\n- ' + pwdCheck.errors.join('\n- '));
@@ -1512,18 +1473,14 @@
             try {
                 const users = await getUsers();
 
-                // 5) منع التكرار
                 if (users.find(u =>
                     (u.email && u.email.toLowerCase() === email) ||
                     (u.phone && u.phone === phone)
                 )) {
                     alert('هذا البريد الإلكتروني أو الرقم مسجل بالفعل.');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'إنشاء الحساب ←';
                     return;
                 }
 
-                // 6) Hashing
                 const { hash, salt } = await hashPassword(password);
 
                 const newUser = {
@@ -1548,12 +1505,7 @@
                 logger.info('New user registered', { email });
                 alert('✅ تم إنشاء الحساب بنجاح! يرجى انتظار التفعيل من الإدارة.');
 
-                // إعادة ضبط النموذج والـ Captcha
                 this.reset();
-                if (window.grecaptcha && window.grecaptcha.reset) {
-                    try { grecaptcha.reset(); } catch (err) {}
-                }
-                captchaRegisterToken = null;
                 switchAuthView('login');
             } catch (err) {
                 logger.error('Registration failed', { err: err.message });
@@ -1565,7 +1517,7 @@
         });
 
         /* ============================================================
-           🔐 تسجيل الدخول — Captcha + Rate Limit + Timing-safe + Migration
+           🔐 تسجيل الدخول — Rate Limit + Timing-safe + Migration
            ============================================================ */
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -1574,13 +1526,7 @@
             const loginId = sanitizeInput(document.getElementById('loginEmailOrPhone').value, 120);
             const password = document.getElementById('loginPass').value;
 
-            // 1) Captcha
-            if (!captchaLoginToken) {
-                alert(friendlyErrors.captcha);
-                return;
-            }
-
-            // 2) Rate Limiting
+            // Rate Limiting
             const rl = loginLimiter.canAttempt(loginId.toLowerCase());
             if (!rl.allowed) {
                 alert(friendlyErrors.rate.replace('{min}', rl.waitMin));
@@ -1598,7 +1544,7 @@
                     (u.phone && u.phone === loginId)
                 );
 
-                // 3) تحقق (hash أو plaintext قديم للترحيل)
+                // تحقق (hash أو plaintext قديم للترحيل)
                 let passwordOk = false;
                 let needsMigration = false;
 
@@ -1612,12 +1558,7 @@
                 if (!user || !passwordOk) {
                     loginLimiter.record(loginId.toLowerCase());
                     logger.warn('Failed login attempt', { loginId });
-                    // رسالة عامة لا تكشف إن كان الحساب موجوداً
                     alert(friendlyErrors.login);
-                    if (window.grecaptcha && window.grecaptcha.reset) {
-                        try { grecaptcha.reset(); } catch (err) {}
-                    }
-                    captchaLoginToken = null;
                     return;
                 }
 
@@ -1626,7 +1567,7 @@
                     return;
                 }
 
-                // ✅ ترحيل كلمة المرور القديمة (plaintext) إلى Hash
+                // ✅ ترحيل كلمة المرور القديمة
                 if (needsMigration) {
                     const { hash, salt } = await hashPassword(password);
                     user.passwordHash = hash;
@@ -1638,10 +1579,8 @@
                     logger.info('Password migrated to hash on login', { id: user.id });
                 }
 
-                // ✅ نجاح
                 loginLimiter.reset(loginId.toLowerCase());
 
-                // تنظيف الجلسة قبل التخزين
                 const safeUser = { ...user };
                 delete safeUser.passwordHash;
                 delete safeUser.passwordSalt;
@@ -1649,10 +1588,6 @@
 
                 currentUser = user;
                 sessionStorage.setItem('currentUser', JSON.stringify(safeUser));
-
-                if (window.grecaptcha && window.grecaptcha.reset) {
-                    try { grecaptcha.reset(); } catch (err) {}
-                }
 
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('homeSection').style.display = 'none';
