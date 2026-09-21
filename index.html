@@ -170,7 +170,7 @@
         .btn-item-action.disabled { background: #ccc; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
 
         /* ═══════════════════════════════════════════════════════════
-           🎬 Video Modal — تصميم جديد يخفي علامات المصدر
+           🎬 Video Modal — تصميم بهوية المنصة + إخفاء علامات يوتيوب
            ═══════════════════════════════════════════════════════════ */
         .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .video-modal-content { 
@@ -234,9 +234,13 @@
             border-bottom: 1px solid rgba(212,175,55,0.3);
         }
 
+        /* 🎬 منطقة الفيديو مع طبقات الإخفاء */
         .video-modal-iframe-wrapper {
+            position: relative;
             padding: 15px;
             background: #000;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         #videoIframe { 
@@ -248,12 +252,62 @@
             display: block;
         }
 
+        /* 🔒 غطاء علوي شمال — يخفي العنوان وزر "مشاهدة على يوتيوب" */
+        .video-modal-iframe-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 55%;
+            height: 220px;
+            background: linear-gradient(to left, #000 0%, #000 60%, transparent 100%);
+            z-index: 5;
+            pointer-events: none;
+            border-radius: 0 12px 0 0;
+        }
+
+        /* 🔒 غطاء سفلي شمال — يخفي شعار يوتيوب */
+        .video-modal-iframe-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            width: 160px;
+            height: 80px;
+            background: #000;
+            z-index: 5;
+            pointer-events: none;
+            border-radius: 0 0 0 12px;
+        }
+
+        /* 🎯 شعار المنصة (Watermark) على الفيديو */
+        .video-brand-watermark {
+            position: absolute;
+            bottom: 28px;
+            right: 28px;
+            z-index: 6;
+            background: linear-gradient(90deg, #3b0a0a 0%, #2d4a3d 100%);
+            color: #d4af37;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 800;
+            border: 2px solid #d4af37;
+            pointer-events: none;
+            font-family: 'Aref Ruqaa', serif;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
         /* زر الإغلاق */
         .close-video-modal { 
             position: absolute; 
             top: 18px; 
             left: 22px; 
-            background: rgba(170,0,0,0.9); 
+            background: rgba(170,0,0,0.95); 
             color: #fff; 
             border: 2px solid #fff; 
             width: 36px; 
@@ -283,6 +337,15 @@
             .video-modal-header .platform-logo { width: 32px; height: 32px; font-size: 18px; }
             .video-modal-video-title { padding: 8px 15px; font-size: 12px; }
             .close-video-modal { top: 10px; left: 12px; width: 30px; height: 30px; font-size: 14px; }
+            .video-modal-iframe-wrapper::before { width: 60%; height: 120px; }
+            .video-modal-iframe-wrapper::after { width: 100px; height: 55px; }
+            .video-brand-watermark { 
+                font-size: 10px; 
+                padding: 5px 12px; 
+                bottom: 18px; 
+                right: 18px; 
+                gap: 4px;
+            }
         }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -735,7 +798,7 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
-         🎬 Video Modal — بهوية المنصة
+         🎬 Video Modal — بهوية المنصة + إخفاء علامات المصدر
          ═══════════════════════════════════════════════════════════ -->
     <div id="videoModal" class="video-modal">
         <div class="video-modal-content">
@@ -755,12 +818,18 @@
             <!-- عنوان الفيديو -->
             <div class="video-modal-video-title" id="videoModalTitle">عنوان الفيديو</div>
 
-            <!-- الفيديو -->
+            <!-- الفيديو + غطاء إخفاء العلامات -->
             <div class="video-modal-iframe-wrapper">
                 <iframe id="videoIframe"
                         src=""
                         allow="autoplay; encrypted-media; fullscreen"
                         allowfullscreen></iframe>
+
+                <!-- 🎯 شعار المنصة فوق الفيديو -->
+                <div class="video-brand-watermark">
+                    <span>🕌</span>
+                    <span>نُورُ تَعْلِيمِ الأَزْهَرِ</span>
+                </div>
             </div>
         </div>
     </div>
@@ -839,11 +908,10 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        // منع أي تغيير في حالة المصادقة أثناء التسجيل
         let ignoreAuthChange = false;
 
         // ============================================================
-        //  📚 Firestore Read Helpers (للقراءة فقط - لا يوجد write من هنا)
+        //  📚 Firestore Read Helpers
         // ============================================================
         async function getCollection(name) {
             const snap = await db.collection(name).get();
@@ -875,7 +943,7 @@
         }
 
         // ============================================================
-        //  🎨 Render (باستخدام esc() لكل بيانات من Firestore)
+        //  🎨 Render
         // ============================================================
         async function renderTeachers() {
             const grid = document.getElementById('teachersGrid');
@@ -1132,7 +1200,7 @@
         }
 
         // ============================================================
-        //  🎬 الفيديو — إخفاء علامات المصدر
+        //  🎬 الفيديو — دعم YouTube + Google Drive
         // ============================================================
         function getEmbedUrl(url) {
             if (!url) return '';
@@ -1147,7 +1215,7 @@
                 if (id && /^[A-Za-z0-9_-]+$/.test(id)) return `https://drive.google.com/file/d/${id}/preview`;
             }
 
-            // ═════ YouTube (إخفاء العلامات قدر الإمكان) ═════
+            // ═════ YouTube (مخفي العلامات قدر الإمكان) ═════
             let ytId = '';
             if (u.includes('youtube.com/watch'))       ytId = u.split('v=')[1]?.split('&')[0];
             else if (u.includes('youtu.be/'))          ytId = u.split('youtu.be/')[1]?.split('?')[0];
@@ -1155,15 +1223,14 @@
             else if (u.includes('youtube.com/shorts/')) ytId = u.split('youtube.com/shorts/')[1]?.split('?')[0];
 
             if (ytId && /^[A-Za-z0-9_-]+$/.test(ytId)) {
-                // 🔒 نستخدم youtube-nocookie + معاملات إخفاء العلامات
                 const params = new URLSearchParams({
-                    modestbranding: '1',   // إخفاء شعار يوتيوب
-                    rel: '0',              // مفيش فيديوهات من قنوات تانية
-                    iv_load_policy: '3',   // إخفاء التعليقات
-                    fs: '1',               // السماح بالملء
-                    playsinline: '1',      // يشتغل على iOS بدون ملء إجباري
-                    controls: '1',         // أزرار التشغيل
-                    color: 'white'         // لون شريط التقدم أبيض
+                    modestbranding: '1',
+                    rel: '0',
+                    iv_load_policy: '3',
+                    fs: '1',
+                    playsinline: '1',
+                    controls: '1',
+                    color: 'white'
                 });
                 return `https://www.youtube-nocookie.com/embed/${ytId}?${params.toString()}`;
             }
@@ -1301,7 +1368,6 @@
                 `;
             });
 
-            // ✅ التحديث الآمن: يستخدم userRef.update مباشرة (لا يحتاج قراءة كل المستخدمين)
             try {
                 const userRef = db.collection('users').doc(currentUser.id);
                 const userSnap = await userRef.get();
@@ -1330,7 +1396,6 @@
 
                     await userRef.update(updateData);
 
-                    // تحديث النسخة المحلية
                     currentUser = {
                         ...userData,
                         ...updateData,
@@ -1382,7 +1447,6 @@
             loadDarkModePreference();
             renderTeachers(); renderCourses(); renderBooks();
 
-            // قوائم المرحلة → الصف
             const stageSelect = document.getElementById('regStage');
             const gradeSelect = document.getElementById('regGrade');
             const gradesMap = {
@@ -1403,9 +1467,7 @@
                 }
             });
 
-            // ============================================================
-            //  📝 التسجيل عبر Firebase Auth
-            // ============================================================
+            // التسجيل
             document.getElementById('registerForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const btn = document.getElementById('regSubmitBtn');
@@ -1431,7 +1493,6 @@
 
                 try {
                     ignoreAuthChange = true;
-
                     const cred = await auth.createUserWithEmailAndPassword(email, password);
 
                     await db.collection('users').doc(cred.user.uid).set({
@@ -1466,9 +1527,7 @@
                 }
             });
 
-            // ============================================================
-            //  🔑 تسجيل الدخول عبر Firebase Auth
-            // ============================================================
+            // تسجيل الدخول
             document.getElementById('loginForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const btn = document.getElementById('loginSubmitBtn');
@@ -1480,7 +1539,6 @@
 
                 try {
                     await auth.signInWithEmailAndPassword(email, password);
-                    // onAuthStateChanged سيتولى الباقي
                 } catch (err) {
                     console.error(err);
                     if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
@@ -1500,14 +1558,11 @@
                 }
             });
 
-            // ============================================================
-            //  🔄 مراقبة حالة الدخول
-            // ============================================================
+            // مراقبة الدخول
             auth.onAuthStateChanged(async (fbUser) => {
                 if (ignoreAuthChange) return;
 
                 if (!fbUser) {
-                    // المستخدم غير مسجّل — الصفحة الرئيسية هي الافتراضية
                     return;
                 }
 
@@ -1553,9 +1608,7 @@
             toggleCenterField();
         });
 
-        // ============================================================
-        //  🚪 تسجيل الخروج
-        // ============================================================
+        // تسجيل الخروج
         async function logout() {
             try { await auth.signOut(); } catch(e) { console.error(e); }
             currentUser = null;
