@@ -12,7 +12,7 @@
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data: https:;
-      frame-src https://www.youtube.com https://drive.google.com https://*.google.com;
+      frame-src https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com https://*.google.com;
       connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com;
       object-src 'none';
       base-uri 'self';
@@ -169,12 +169,121 @@
         .btn-item-action.exam:hover { background: #c99e00; }
         .btn-item-action.disabled { background: #ccc; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
-        .video-modal-content { background: #fff; padding: 20px; border-radius: 24px; width: 100%; max-width: 800px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
-        .close-video-modal { position: absolute; top: -12px; right: -12px; background: #a00; color: #fff; border: 3px solid #fff; width: 34px; height: 34px; border-radius: 50%; font-weight: 900; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .close-video-modal:hover { transform: scale(1.1) rotate(90deg); background: #d4af37; color: #3b0a0a; }
-        #videoIframe { width: 100%; height: 55vh; border: none; border-radius: 16px; background: #000; }
-        body.dark-mode .video-modal-content { background: var(--bg-card); }
+        /* ═══════════════════════════════════════════════════════════
+           🎬 Video Modal — تصميم جديد يخفي علامات المصدر
+           ═══════════════════════════════════════════════════════════ */
+        .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .video-modal-content { 
+            background: linear-gradient(135deg, #2d4a3d 0%, #1a2b1f 100%);
+            padding: 0; 
+            border-radius: 24px; 
+            width: 100%; 
+            max-width: 900px; 
+            position: relative; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            overflow: hidden;
+            border: 3px solid #d4af37;
+        }
+
+        /* 🎯 رأس المودال بهوية المنصة */
+        .video-modal-header {
+            background: linear-gradient(90deg, #3b0a0a 0%, #2d4a3d 100%);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #d4af37;
+        }
+        .video-modal-header .platform-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .video-modal-header .platform-logo {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #d4af37 0%, #8a6f1d 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: 2px solid #fff;
+            box-shadow: 0 3px 10px rgba(212,175,55,0.5);
+        }
+        .video-modal-header .platform-info h4 {
+            color: #d4af37;
+            font-size: 15px;
+            font-weight: 800;
+            margin: 0 0 2px 0;
+            font-family: 'Aref Ruqaa', serif;
+        }
+        .video-modal-header .platform-info p {
+            color: #ccc;
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .video-modal-video-title {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 12px 25px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            border-bottom: 1px solid rgba(212,175,55,0.3);
+        }
+
+        .video-modal-iframe-wrapper {
+            padding: 15px;
+            background: #000;
+        }
+
+        #videoIframe { 
+            width: 100%; 
+            height: 55vh; 
+            border: none; 
+            border-radius: 12px; 
+            background: #000;
+            display: block;
+        }
+
+        /* زر الإغلاق */
+        .close-video-modal { 
+            position: absolute; 
+            top: 18px; 
+            left: 22px; 
+            background: rgba(170,0,0,0.9); 
+            color: #fff; 
+            border: 2px solid #fff; 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            font-weight: 900; 
+            font-size: 16px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            z-index: 10;
+        }
+        .close-video-modal:hover { 
+            transform: scale(1.1) rotate(90deg); 
+            background: #d4af37; 
+            color: #3b0a0a; 
+        }
+
+        @media (max-width: 600px) {
+            #videoIframe { height: 30vh; }
+            .video-modal-header { padding: 10px 15px; }
+            .video-modal-header .platform-info h4 { font-size: 13px; }
+            .video-modal-header .platform-info p { font-size: 10px; }
+            .video-modal-header .platform-logo { width: 32px; height: 32px; font-size: 18px; }
+            .video-modal-video-title { padding: 8px 15px; font-size: 12px; }
+            .close-video-modal { top: 10px; left: 12px; width: 30px; height: 30px; font-size: 14px; }
+        }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeInUp 0.7s ease forwards; }
@@ -625,11 +734,34 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         🎬 Video Modal — بهوية المنصة
+         ═══════════════════════════════════════════════════════════ -->
     <div id="videoModal" class="video-modal">
         <div class="video-modal-content">
             <button class="close-video-modal" onclick="closeVideoModal()">✕</button>
-            <h3 id="videoModalTitle" style="color: #d4af37; margin-bottom: 12px; text-align: center; font-weight: 800; font-size: 16px;">عنوان الفيديو</h3>
-            <iframe id="videoIframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+            <!-- 🎯 رأس المودال بهوية المنصة -->
+            <div class="video-modal-header">
+                <div class="platform-brand">
+                    <div class="platform-logo">🕌</div>
+                    <div class="platform-info">
+                        <h4>نُورُ تَعْلِيمِ الأَزْهَرِ</h4>
+                        <p>منصة تعليمية معتمدة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- عنوان الفيديو -->
+            <div class="video-modal-video-title" id="videoModalTitle">عنوان الفيديو</div>
+
+            <!-- الفيديو -->
+            <div class="video-modal-iframe-wrapper">
+                <iframe id="videoIframe"
+                        src=""
+                        allow="autoplay; encrypted-media; fullscreen"
+                        allowfullscreen></iframe>
+            </div>
         </div>
     </div>
 
@@ -1000,27 +1132,42 @@
         }
 
         // ============================================================
-        //  🎬 الفيديو (يتطلب HTTPS فقط)
+        //  🎬 الفيديو — إخفاء علامات المصدر
         // ============================================================
         function getEmbedUrl(url) {
             if (!url) return '';
             const u = String(url).trim();
             if (!/^https:\/\//i.test(u)) return '';
 
+            // ═════ Google Drive ═════
             if (u.includes('drive.google.com')) {
                 let id = '';
                 if (u.includes('/file/d/')) id = u.split('/file/d/')[1].split('/')[0];
                 else if (u.includes('id=')) id = u.split('id=')[1].split('&')[0];
                 if (id && /^[A-Za-z0-9_-]+$/.test(id)) return `https://drive.google.com/file/d/${id}/preview`;
             }
-            if (u.includes('youtube.com/watch')) {
-                const id = u.split('v=')[1]?.split('&')[0];
-                if (id && /^[A-Za-z0-9_-]+$/.test(id)) return `https://www.youtube.com/embed/${id}`;
+
+            // ═════ YouTube (إخفاء العلامات قدر الإمكان) ═════
+            let ytId = '';
+            if (u.includes('youtube.com/watch'))       ytId = u.split('v=')[1]?.split('&')[0];
+            else if (u.includes('youtu.be/'))          ytId = u.split('youtu.be/')[1]?.split('?')[0];
+            else if (u.includes('youtube.com/embed/')) ytId = u.split('youtube.com/embed/')[1]?.split('?')[0];
+            else if (u.includes('youtube.com/shorts/')) ytId = u.split('youtube.com/shorts/')[1]?.split('?')[0];
+
+            if (ytId && /^[A-Za-z0-9_-]+$/.test(ytId)) {
+                // 🔒 نستخدم youtube-nocookie + معاملات إخفاء العلامات
+                const params = new URLSearchParams({
+                    modestbranding: '1',   // إخفاء شعار يوتيوب
+                    rel: '0',              // مفيش فيديوهات من قنوات تانية
+                    iv_load_policy: '3',   // إخفاء التعليقات
+                    fs: '1',               // السماح بالملء
+                    playsinline: '1',      // يشتغل على iOS بدون ملء إجباري
+                    controls: '1',         // أزرار التشغيل
+                    color: 'white'         // لون شريط التقدم أبيض
+                });
+                return `https://www.youtube-nocookie.com/embed/${ytId}?${params.toString()}`;
             }
-            if (u.includes('youtu.be/')) {
-                const id = u.split('youtu.be/')[1]?.split('?')[0];
-                if (id && /^[A-Za-z0-9_-]+$/.test(id)) return `https://www.youtube.com/embed/${id}`;
-            }
+
             return '';
         }
 
@@ -1029,7 +1176,7 @@
             const title = decodeURIComponent(encodedTitle);
             const embedUrl = getEmbedUrl(link);
             if (!embedUrl) { alert('رابط الفيديو غير صالح.'); return; }
-            document.getElementById('videoModalTitle').textContent = title;
+            document.getElementById('videoModalTitle').textContent = '📺 ' + title;
             document.getElementById('videoIframe').src = embedUrl;
             document.getElementById('videoModal').style.display = 'flex';
         }
@@ -1354,7 +1501,7 @@
             });
 
             // ============================================================
-            //  🔄 مراقبة حالة الدخول (يشتغل عند كل تحميل صفحة وعند الدخول/الخروج)
+            //  🔄 مراقبة حالة الدخول
             // ============================================================
             auth.onAuthStateChanged(async (fbUser) => {
                 if (ignoreAuthChange) return;
