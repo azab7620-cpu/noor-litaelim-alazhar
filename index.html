@@ -170,7 +170,7 @@
         .btn-item-action.disabled { background: #ccc; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
 
         /* ═══════════════════════════════════════════════════════════
-           🎬 Video Modal — تصميم بهوية المنصة + إخفاء علامات يوتيوب
+           🎬 Video Modal
            ═══════════════════════════════════════════════════════════ */
         .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .video-modal-content { 
@@ -185,7 +185,6 @@
             border: 3px solid #d4af37;
         }
 
-        /* 🎯 رأس المودال بهوية المنصة */
         .video-modal-header {
             background: linear-gradient(90deg, #3b0a0a 0%, #2d4a3d 100%);
             padding: 15px 25px;
@@ -234,7 +233,7 @@
             border-bottom: 1px solid rgba(212,175,55,0.3);
         }
 
-        /* 🎬 منطقة الفيديو مع طبقات الإخفاء */
+        /* 🎬 منطقة الفيديو */
         .video-modal-iframe-wrapper {
             position: relative;
             padding: 15px;
@@ -252,54 +251,59 @@
             display: block;
         }
 
-        /* 🔒 غطاء علوي شمال — يخفي العنوان وزر "مشاهدة على يوتيوب" */
-        .video-modal-iframe-wrapper::before {
+        /* 🔒 الأغطية — تُطبّق فقط على يوتيوب (كلاس .is-youtube) */
+        .video-modal-iframe-wrapper.is-youtube::before {
             content: '';
             position: absolute;
             top: 15px;
             right: 15px;
-            width: 55%;
-            height: 220px;
-            background: linear-gradient(to left, #000 0%, #000 60%, transparent 100%);
+            width: 42%;
+            height: 75px;
+            background: linear-gradient(to left, #000 0%, #000 50%, transparent 100%);
             z-index: 5;
             pointer-events: none;
             border-radius: 0 12px 0 0;
         }
 
-        /* 🔒 غطاء سفلي شمال — يخفي شعار يوتيوب */
-        .video-modal-iframe-wrapper::after {
+        .video-modal-iframe-wrapper.is-youtube::after {
             content: '';
             position: absolute;
             bottom: 15px;
             left: 15px;
-            width: 160px;
-            height: 80px;
+            width: 130px;
+            height: 55px;
             background: #000;
             z-index: 5;
             pointer-events: none;
             border-radius: 0 0 0 12px;
         }
 
-        /* 🎯 شعار المنصة (Watermark) على الفيديو */
+        /* 🎯 شعار المنصة (Watermark) — صغير وشفاف ويختفي بعد 3 ثواني */
         .video-brand-watermark {
             position: absolute;
-            bottom: 28px;
-            right: 28px;
+            bottom: 22px;
+            right: 22px;
             z-index: 6;
-            background: linear-gradient(90deg, #3b0a0a 0%, #2d4a3d 100%);
+            background: rgba(59, 10, 10, 0.8);
             color: #d4af37;
-            padding: 8px 18px;
+            padding: 5px 14px;
             border-radius: 50px;
-            font-size: 13px;
-            font-weight: 800;
-            border: 2px solid #d4af37;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid rgba(212,175,55,0.6);
             pointer-events: none;
             font-family: 'Aref Ruqaa', serif;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
-            gap: 8px;
-            letter-spacing: 0.5px;
+            gap: 6px;
+            letter-spacing: 0.3px;
+            animation: fadeOutWatermark 1.5s ease 3s forwards;
+        }
+        .video-brand-watermark .wm-icon { font-size: 13px; }
+
+        @keyframes fadeOutWatermark {
+            to { opacity: 0; visibility: hidden; }
         }
 
         /* زر الإغلاق */
@@ -330,20 +334,20 @@
         }
 
         @media (max-width: 600px) {
-            #videoIframe { height: 30vh; }
+            #videoIframe { height: 32vh; }
             .video-modal-header { padding: 10px 15px; }
             .video-modal-header .platform-info h4 { font-size: 13px; }
             .video-modal-header .platform-info p { font-size: 10px; }
             .video-modal-header .platform-logo { width: 32px; height: 32px; font-size: 18px; }
             .video-modal-video-title { padding: 8px 15px; font-size: 12px; }
             .close-video-modal { top: 10px; left: 12px; width: 30px; height: 30px; font-size: 14px; }
-            .video-modal-iframe-wrapper::before { width: 60%; height: 120px; }
-            .video-modal-iframe-wrapper::after { width: 100px; height: 55px; }
+            .video-modal-iframe-wrapper.is-youtube::before { width: 50%; height: 55px; }
+            .video-modal-iframe-wrapper.is-youtube::after { width: 95px; height: 45px; }
             .video-brand-watermark { 
-                font-size: 10px; 
-                padding: 5px 12px; 
-                bottom: 18px; 
-                right: 18px; 
+                font-size: 9px; 
+                padding: 4px 10px; 
+                bottom: 15px; 
+                right: 15px; 
                 gap: 4px;
             }
         }
@@ -798,13 +802,12 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
-         🎬 Video Modal — بهوية المنصة + إخفاء علامات المصدر
+         🎬 Video Modal
          ═══════════════════════════════════════════════════════════ -->
     <div id="videoModal" class="video-modal">
         <div class="video-modal-content">
             <button class="close-video-modal" onclick="closeVideoModal()">✕</button>
 
-            <!-- 🎯 رأس المودال بهوية المنصة -->
             <div class="video-modal-header">
                 <div class="platform-brand">
                     <div class="platform-logo">🕌</div>
@@ -815,20 +818,17 @@
                 </div>
             </div>
 
-            <!-- عنوان الفيديو -->
             <div class="video-modal-video-title" id="videoModalTitle">عنوان الفيديو</div>
 
-            <!-- الفيديو + غطاء إخفاء العلامات -->
-            <div class="video-modal-iframe-wrapper">
+            <div class="video-modal-iframe-wrapper" id="videoIframeWrapper">
                 <iframe id="videoIframe"
                         src=""
                         allow="autoplay; encrypted-media; fullscreen"
                         allowfullscreen></iframe>
 
-                <!-- 🎯 شعار المنصة فوق الفيديو -->
-                <div class="video-brand-watermark">
-                    <span>🕌</span>
-                    <span>نُورُ تَعْلِيمِ الأَزْهَرِ</span>
+                <div class="video-brand-watermark" id="videoWatermark">
+                    <span class="wm-icon">🕌</span>
+                    <span>نُورُ الأَزْهَرِ</span>
                 </div>
             </div>
         </div>
@@ -1203,19 +1203,21 @@
         //  🎬 الفيديو — دعم YouTube + Google Drive
         // ============================================================
         function getEmbedUrl(url) {
-            if (!url) return '';
+            if (!url) return { embed: '', type: '' };
             const u = String(url).trim();
-            if (!/^https:\/\//i.test(u)) return '';
+            if (!/^https:\/\//i.test(u)) return { embed: '', type: '' };
 
             // ═════ Google Drive ═════
             if (u.includes('drive.google.com')) {
                 let id = '';
                 if (u.includes('/file/d/')) id = u.split('/file/d/')[1].split('/')[0];
                 else if (u.includes('id=')) id = u.split('id=')[1].split('&')[0];
-                if (id && /^[A-Za-z0-9_-]+$/.test(id)) return `https://drive.google.com/file/d/${id}/preview`;
+                if (id && /^[A-Za-z0-9_-]+$/.test(id)) {
+                    return { embed: `https://drive.google.com/file/d/${id}/preview`, type: 'drive' };
+                }
             }
 
-            // ═════ YouTube (مخفي العلامات قدر الإمكان) ═════
+            // ═════ YouTube ═════
             let ytId = '';
             if (u.includes('youtube.com/watch'))       ytId = u.split('v=')[1]?.split('&')[0];
             else if (u.includes('youtu.be/'))          ytId = u.split('youtu.be/')[1]?.split('?')[0];
@@ -1232,19 +1234,38 @@
                     controls: '1',
                     color: 'white'
                 });
-                return `https://www.youtube-nocookie.com/embed/${ytId}?${params.toString()}`;
+                return { embed: `https://www.youtube-nocookie.com/embed/${ytId}?${params.toString()}`, type: 'youtube' };
             }
 
-            return '';
+            return { embed: '', type: '' };
         }
 
         function openVideoModal(encodedLink, encodedTitle) {
             const link = decodeURIComponent(encodedLink);
             const title = decodeURIComponent(encodedTitle);
-            const embedUrl = getEmbedUrl(link);
-            if (!embedUrl) { alert('رابط الفيديو غير صالح.'); return; }
+            const result = getEmbedUrl(link);
+            if (!result.embed) { alert('رابط الفيديو غير صالح.'); return; }
+
             document.getElementById('videoModalTitle').textContent = '📺 ' + title;
-            document.getElementById('videoIframe').src = embedUrl;
+            document.getElementById('videoIframe').src = result.embed;
+
+            // 🎯 نضيف كلاس is-youtube على الـ wrapper عشان الأغطية تطبّق بس على يوتيوب
+            const wrapper = document.getElementById('videoIframeWrapper');
+            wrapper.classList.remove('is-youtube');
+            if (result.type === 'youtube') {
+                wrapper.classList.add('is-youtube');
+            }
+
+            // ✨ إعادة تشغيل أنيميشن الشعار كل مرة
+            const wm = document.getElementById('videoWatermark');
+            if (wm) {
+                wm.style.animation = 'none';
+                wm.style.opacity = '1';
+                wm.style.visibility = 'visible';
+                void wm.offsetWidth;
+                wm.style.animation = 'fadeOutWatermark 1.5s ease 3s forwards';
+            }
+
             document.getElementById('videoModal').style.display = 'flex';
         }
 
@@ -1441,7 +1462,7 @@
         }
 
         // ============================================================
-        //  🚀 التهيئة عند تحميل الصفحة
+        //  🚀 التهيئة
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             loadDarkModePreference();
@@ -1467,7 +1488,6 @@
                 }
             });
 
-            // التسجيل
             document.getElementById('registerForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const btn = document.getElementById('regSubmitBtn');
@@ -1527,7 +1547,6 @@
                 }
             });
 
-            // تسجيل الدخول
             document.getElementById('loginForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const btn = document.getElementById('loginSubmitBtn');
@@ -1558,13 +1577,10 @@
                 }
             });
 
-            // مراقبة الدخول
             auth.onAuthStateChanged(async (fbUser) => {
                 if (ignoreAuthChange) return;
 
-                if (!fbUser) {
-                    return;
-                }
+                if (!fbUser) return;
 
                 try {
                     const doc = await db.collection('users').doc(fbUser.uid).get();
@@ -1608,7 +1624,6 @@
             toggleCenterField();
         });
 
-        // تسجيل الخروج
         async function logout() {
             try { await auth.signOut(); } catch(e) { console.error(e); }
             currentUser = null;
