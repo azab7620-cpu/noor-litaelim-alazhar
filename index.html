@@ -252,19 +252,21 @@
         }
 
         /* 🔒 الأغطية — تُطبّق فقط على يوتيوب (كلاس .is-youtube) */
+        /* غطاء علوي كبير يخفي العنوان + زر "مشاهدة على يوتيوب" */
         .video-modal-iframe-wrapper.is-youtube::before {
             content: '';
             position: absolute;
             top: 15px;
             right: 15px;
-            width: 42%;
-            height: 75px;
-            background: linear-gradient(to left, #000 0%, #000 50%, transparent 100%);
+            width: 60%;
+            height: 130px;
+            background: linear-gradient(to left, #000 0%, #000 55%, transparent 100%);
             z-index: 5;
             pointer-events: none;
             border-radius: 0 12px 0 0;
         }
 
+        /* غطاء سفلي شمال — يخفي شعار يوتيوب */
         .video-modal-iframe-wrapper.is-youtube::after {
             content: '';
             position: absolute;
@@ -341,7 +343,7 @@
             .video-modal-header .platform-logo { width: 32px; height: 32px; font-size: 18px; }
             .video-modal-video-title { padding: 8px 15px; font-size: 12px; }
             .close-video-modal { top: 10px; left: 12px; width: 30px; height: 30px; font-size: 14px; }
-            .video-modal-iframe-wrapper.is-youtube::before { width: 50%; height: 55px; }
+            .video-modal-iframe-wrapper.is-youtube::before { width: 65%; height: 85px; }
             .video-modal-iframe-wrapper.is-youtube::after { width: 95px; height: 45px; }
             .video-brand-watermark { 
                 font-size: 9px; 
