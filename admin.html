@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة الأدمن - نُورُ تَعْلِيمِ الأَزْهَرِ</title>
 
-    <!-- 🔒 Content Security Policy — معدّل لدعم PeerJS -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
       script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://unpkg.com;
@@ -71,10 +70,20 @@
 
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
         .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 9px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px; box-shadow: 0 3px 8px rgba(0,0,0,0.03); }
+        .admin-tabs button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
         .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
 
+        /* ═══════════════════════════════════════════════════════════
+           ✨ أنيميشن الـ tabs
+           ═══════════════════════════════════════════════════════════ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeInUp 0.5s ease forwards; }
+
         .tab-content { display: none; background: #fff; padding: 22px; border-radius: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeInUp 0.5s ease; }
 
         .admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
         .admin-table th { background: #3b0a0a; color: #d4af37; padding: 12px; text-align: center; font-size: 13px; }
@@ -146,47 +155,65 @@
             display: inline-block;
         }
 
+        /* 🎛️ لوحة التحكم - تصميم محسّن */
         .live-control-panel {
-            background: #f8f6f2; border: 2px solid #d4af37;
-            border-radius: 20px; padding: 20px; margin-bottom: 20px;
+            background: linear-gradient(135deg, #fcfaf8 0%, #f4edd3 100%);
+            border: 2px solid #d4af37;
+            border-radius: 24px; padding: 24px; margin-bottom: 24px;
+            box-shadow: 0 8px 25px rgba(212,175,55,0.15);
+            transition: 0.3s;
         }
-        body.dark-mode .live-control-panel { background: var(--bg-header); }
+        body.dark-mode .live-control-panel {
+            background: linear-gradient(135deg, #0f0f23 0%, #1e2a4a 100%);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .live-control-panel h5 {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 16px; font-weight: 800;
+            color: #3b0a0a; margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px dashed #d4af37;
+        }
+        body.dark-mode .live-control-panel h5 { color: var(--gold); }
 
         .live-toolbar {
-            display: flex; gap: 10px; flex-wrap: wrap;
+            display: flex; gap: 12px; flex-wrap: wrap;
             align-items: center; margin: 15px 0;
         }
         .live-toolbar button {
-            padding: 10px 18px; border-radius: 50px;
-            font-weight: 700; cursor: pointer;
+            padding: 12px 22px; border-radius: 50px;
+            font-weight: 800; cursor: pointer;
             border: 2px solid transparent;
             transition: 0.3s; font-size: 13px;
-            display: inline-flex; align-items: center; gap: 6px;
+            display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .live-toolbar button:hover { transform: translateY(-2px); }
+        .live-toolbar button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         .live-toolbar button.active { background: #2a7a2a; color: #fff; }
         .live-toolbar button.inactive { background: #a00; color: #fff; }
-        .live-toolbar button.neutral { background: #555; color: #fff; }
+        .live-toolbar button.neutral { background: #3b0a0a; color: #d4af37; }
 
         .live-permission-box {
-            background: #fff; border: 2px solid #d4af37;
-            border-radius: 16px; padding: 15px;
+            background: #fff; border: 2px dashed #d4af37;
+            border-radius: 20px; padding: 18px;
             display: flex; flex-direction: column; gap: 12px;
         }
-        body.dark-mode .live-permission-box { background: var(--bg-card); }
+        body.dark-mode .live-permission-box { background: var(--bg-header); }
 
         .perm-toggle {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 14px; background: #fcfaf8;
-            border-radius: 12px; cursor: pointer;
+            padding: 14px 18px;
+            background: linear-gradient(90deg, #fffdf5 0%, #fcfaf8 100%);
+            border-radius: 14px; cursor: pointer;
             border: 2px solid transparent;
             transition: 0.3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
-        body.dark-mode .perm-toggle { background: var(--bg-header); }
-        .perm-toggle:hover { border-color: #d4af37; }
+        body.dark-mode .perm-toggle { background: var(--bg-card); }
+        .perm-toggle:hover { border-color: #d4af37; transform: translateX(-4px); }
         .perm-toggle span { font-weight: 700; font-size: 13px; }
         .perm-toggle input[type="checkbox"] {
-            width: 50px; height: 26px;
+            width: 52px; height: 28px;
             appearance: none; background: #ccc;
             border-radius: 50px; position: relative;
             cursor: pointer; transition: 0.3s;
@@ -194,18 +221,20 @@
         }
         .perm-toggle input[type="checkbox"]::before {
             content: ''; position: absolute;
-            width: 20px; height: 20px;
+            width: 22px; height: 22px;
             background: #fff; border-radius: 50%;
             top: 3px; right: 3px;
             transition: 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .perm-toggle input[type="checkbox"]:checked { background: #2a7a2a; }
-        .perm-toggle input[type="checkbox"]:checked::before { right: calc(100% - 23px); }
+        .perm-toggle input[type="checkbox"]:checked::before { right: calc(100% - 25px); }
 
         #localPreview {
             width: 100%; max-width: 500px;
-            border-radius: 16px; border: 3px solid #d4af37;
+            border-radius: 20px; border: 3px solid #d4af37;
             background: #000; display: block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .student-streams-grid {
@@ -214,29 +243,39 @@
             gap: 12px; margin-top: 15px;
         }
         .student-stream-card {
-            background: #000; border-radius: 12px;
+            background: #000; border-radius: 16px;
             overflow: hidden; border: 2px solid #d4af37;
             position: relative;
             aspect-ratio: 16/9;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            transition: 0.3s;
         }
+        .student-stream-card:hover { transform: translateY(-4px); border-color: #ffd966; }
         .student-stream-card video {
             width: 100%; height: 100%;
             object-fit: cover; background: #000;
         }
         .student-stream-card .student-name {
             position: absolute; bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,0.75); color: #fff;
-            padding: 6px 10px; font-size: 11px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent);
+            color: #fff;
+            padding: 18px 10px 6px; font-size: 11px;
             font-weight: 700; text-align: center;
         }
 
         .stream-status {
             display: inline-flex; align-items: center; gap: 6px;
-            padding: 4px 10px; border-radius: 50px;
+            padding: 8px 14px; border-radius: 50px;
             font-size: 12px; font-weight: 700;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
-        .stream-status.on { background: #d4edda; color: #155724; }
+        .stream-status.on { background: linear-gradient(135deg, #2a7a2a, #4caf50); color: #fff; }
         .stream-status.off { background: #f8d7da; color: #721c24; }
+
+        /* 🎨 تحسين صندوق حالة البث */
+        #liveStreamStatusBox > div {
+            transition: 0.3s;
+        }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -356,11 +395,6 @@
         <div id="tabLiveStream" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">🔴 البث المباشر الداخلي</h4>
 
-            <div class="alert alert-info">
-                📹 البث يخرج <strong>مباشرة من جهازك</strong> للطلاب بدون YouTube أو تطبيقات خارجية.
-                <br>⚠️ <strong>تنبيه:</strong> سيب التاب مفتوح طول البث. الحد الأقصى ~15 طالب للبث المستقر.
-            </div>
-
             <!-- حالة البث -->
             <div id="liveStreamStatusBox" style="margin-bottom:20px;">
                 <div style="text-align:center; padding:15px; color:#888;">⏸️ لا يوجد بث نشط</div>
@@ -368,7 +402,7 @@
 
             <!-- لوحة التحكم -->
             <div class="live-control-panel">
-                <h5 style="color:#3b0a0a; margin-bottom:12px;">🎛️ لوحة التحكم بالبث</h5>
+                <h5>🎛️ لوحة التحكم بالبث</h5>
 
                 <div class="live-toolbar" id="liveToolbar" style="display:none;">
                     <button id="btnAdminCam" onclick="toggleAdminCamera()" class="neutral">
@@ -384,7 +418,7 @@
 
                 <!-- إعدادات الصلاحيات -->
                 <div id="permissionPanel" style="display:none; margin-top:15px;">
-                    <h6 style="color:#3b0a0a; margin-bottom:10px; font-size:14px;">🔐 صلاحيات الطلاب أثناء البث</h6>
+                    <h6 style="color:#3b0a0a; margin-bottom:12px; font-size:14px;">🔐 صلاحيات الطلاب أثناء البث</h6>
                     <div class="live-permission-box">
                         <label class="perm-toggle">
                             <span>📷 السماح لكل الطلاب بفتح الكاميرا</span>
@@ -427,18 +461,17 @@
                     <div>
                         <label>📷 مصدر الفيديو الأساسي</label>
                         <select id="liveSource">
-                            <option value="camera">كاميرا + مايك</option>
-                            <option value="screen">مشاركة الشاشة</option>
-                            <option value="camera_only">كاميرا فقط (بدون صوت)</option>
+                            <option value="camera">📷 كاميرا + مايك</option>
+                            <option value="screen">🖥️ مشاركة الشاشة + صوت</option>
                         </select>
                     </div>
                 </div>
 
                 <div style="display:flex; gap:12px; margin-top:15px; flex-wrap:wrap;">
-                    <button type="submit" id="startLiveBtn" class="btn-submit" style="background:#d4af37; color:#3b0a0a; margin-top:0; font-size:15px;">
+                    <button type="submit" id="startLiveBtn" class="btn-submit" style="background:linear-gradient(135deg, #d4af37, #b8962e); color:#3b0a0a; margin-top:0; font-size:15px; box-shadow: 0 6px 18px rgba(212,175,55,0.4);">
                         🔴 بدء البث
                     </button>
-                    <button type="button" onclick="stopLiveStream()" id="stopLiveBtn" class="btn-submit" style="background:#a00; color:#fff; margin-top:0; font-size:15px; display:none;">
+                    <button type="button" onclick="stopLiveStream()" id="stopLiveBtn" class="btn-submit" style="background:linear-gradient(135deg, #a00, #700); color:#fff; margin-top:0; font-size:15px; display:none; box-shadow: 0 6px 18px rgba(170,0,0,0.4);">
                         ⏹️ إيقاف البث
                     </button>
                 </div>
@@ -719,7 +752,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  👥 الطلاب (مع أزرار الكاميرا/المايك أثناء البث)
+        //  👥 الطلاب
         // ═══════════════════════════════════════════════════════════
         async function loadStudentsTable() {
             const allUsers = await getUsers();
@@ -752,7 +785,6 @@
                 return;
             }
 
-            // جلب صلاحيات الطلاب إذا كان البث نشط
             let perms = {};
             if (isLiveActive) {
                 try {
@@ -1084,7 +1116,6 @@
                 } catch (err) { console.error(err); }
             });
 
-            // 🔴 فورم البث المباشر
             document.getElementById('liveStreamForm').addEventListener('submit', startLiveStream);
         }
 
@@ -1267,26 +1298,22 @@
         let isLiveActive = false;
         let adminCamEnabled = true;
         let adminMicEnabled = true;
-        let studentStreams = {}; // studentId → {videoEl, call}
+        let studentStreams = {};
 
         async function getLiveStream() {
             const source = document.getElementById('liveSource').value;
             if (source === 'screen') {
+                // 🖥️ مشاركة الشاشة مع الصوت دائماً
                 return await navigator.mediaDevices.getDisplayMedia({
                     video: { frameRate: 15 },
                     audio: true
                 });
-            } else if (source === 'camera_only') {
-                return await navigator.mediaDevices.getUserMedia({
-                    video: { width: 1280, height: 720 },
-                    audio: false
-                });
-            } else {
-                return await navigator.mediaDevices.getUserMedia({
-                    video: { width: 1280, height: 720 },
-                    audio: true
-                });
             }
+            // 📷 كاميرا + مايك دائماً
+            return await navigator.mediaDevices.getUserMedia({
+                video: { width: 1280, height: 720 },
+                audio: true
+            });
         }
 
         async function startLiveStream(e) {
@@ -1338,7 +1365,6 @@
                     document.getElementById('permissionPanel').style.display = 'block';
                     document.getElementById('studentStreamsContainer').style.display = 'block';
 
-                    // زر إيقاف الكاميرا/المايك
                     updateAdminCamBtn();
                     updateAdminMicBtn();
 
@@ -1351,12 +1377,10 @@
                 });
 
                 livePeer.on('call', (call) => {
-                    console.log('📞 طالب جديد:', call.peer);
                     call.answer(liveLocalStream);
                     liveActiveCalls.push(call);
                     updateViewerCount();
 
-                    // استقبال فيديو الطالب (لو فاتح كاميرا)
                     call.on('stream', (remoteStream) => {
                         if (remoteStream.getVideoTracks().length > 0) {
                             addStudentStream(call.peer, remoteStream);
@@ -1471,7 +1495,6 @@
             loadStudentsTable();
         }
 
-        // ─── فيديوهات الطلاب ───
         function addStudentStream(peerId, stream) {
             const grid = document.getElementById('studentStreamsGrid');
             let card = document.getElementById('student-stream-' + peerId);
@@ -1493,7 +1516,6 @@
 
             studentStreams[peerId] = { call: null, videoEl: video };
 
-            // حاول نعرف اسم الطالب
             findStudentNameByPeerId(peerId).then(name => {
                 if (name) {
                     card.querySelector('.student-name').textContent = '👤 ' + name;
@@ -1502,8 +1524,6 @@
         }
 
         async function findStudentNameByPeerId(peerId) {
-            // الـ peerId هو نفسه الـ roomId بتاع الطالب اللي فيه uid
-            // نحاول نجيب بيانات الطالب
             try {
                 if (peerId.includes('student-')) {
                     const uid = peerId.split('student-')[1];
@@ -1520,7 +1540,6 @@
             delete studentStreams[peerId];
         }
 
-        // ─── الصلاحيات ───
         async function saveGlobalPermissions() {
             if (!isLiveActive) return;
             const allowAllCameras = document.getElementById('permAllCameras').checked;
