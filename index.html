@@ -1354,6 +1354,10 @@
         let studentMicEnabled = false;
         let remoteVideoMuted = true; // يبدأ مكتوم عشان autoplay يشتغل
 
+        // 🎥 إدارة تبديل الكاميرا للطالب
+        let studentFacingMode = 'user';        // 'user' = أمامية، 'environment' = خلفية
+        let studentAvailableCameras = [];
+
         const ICE_SERVERS = {
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
@@ -1448,6 +1452,9 @@
                                 </button>
                                 <button id="btnStudentMic" onclick="toggleStudentMic_Client()" class="on">
                                     <span>🎤</span> <span id="studentMicText">تشغيل المايك</span>
+                                </button>
+                                <button id="btnSwitchStudentCam" onclick="switchStudentCamera()" class="on" style="display:none;">
+                                    <span>🔄</span> <span>تبديل الكاميرا</span>
                                 </button>
                             </div>
                         `;
@@ -1618,18 +1625,40 @@
             }
         }
 
+        async function shouldShowStudentSwitchBtn() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const cams = devices.filter(d => d.kind === 'videoinput');
+                if (cams.length >= 2) return true;
+            } catch(e) {}
+            if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return true;
+            return false;
+        }
+
         async function toggleStudentCamera_Client() {
             if (!viewerPc) return;
 
             try {
                 if (!studentLocalStream) studentLocalStream = new MediaStream();
 
+                const switchBtn = document.getElementById('btnSwitchStudentCam');
+                const btn = document.getElementById('btnStudentCam');
+                const t = document.getElementById('studentCamText');
+
                 if (!studentCamEnabled) {
-                    const camStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                    // ✅ شغّل الكاميرا مع facingMode
+                    const camStream = await navigator.mediaDevices.getUserMedia({
+                        video: {
+                            facingMode: { ideal: studentFacingMode },
+                            width: { ideal: 640 },
+                            height: { ideal: 480 }
+                        }
+                    });
                     const videoTrack = camStream.getVideoTracks()[0];
                     studentLocalStream.addTrack(videoTrack);
 
-                    const sender = viewerPc.addTrack(videoTrack, studentLocalStream);
+                    // أضف للاتصال
+                    viewerPc.addTrack(videoTrack, studentLocalStream);
 
                     // أعد إنشاء offer
                     const offer = await viewerPc.createOffer();
@@ -1639,27 +1668,104 @@
                     }, { merge: true });
 
                     studentCamEnabled = true;
-                    const btn = document.getElementById('btnStudentCam');
                     if (btn) btn.className = 'off';
-                    const t = document.getElementById('studentCamText');
                     if (t) t.textContent = 'إيقاف الكاميرا';
+
+                    // 🔄 اعرض زر التبديل لو فيه موبايل أو أكثر من كاميرا
+                    if (switchBtn) {
+                        const show = await shouldShowStudentSwitchBtn();
+                        switchBtn.style.display = show ? 'inline-flex' : 'none';
+                    }
 
                     videoTrack.addEventListener('ended', () => {
                         studentCamEnabled = false;
                         if (btn) btn.className = 'on';
                         if (t) t.textContent = 'تشغيل الكاميرا';
+                        if (switchBtn) switchBtn.style.display = 'none';
                     });
                 } else {
-                    studentLocalStream.getVideoTracks().forEach(t => { t.stop(); studentLocalStream.removeTrack(t); });
+                    // ⏹️ أوقف الكاميرا
+                    studentLocalStream.getVideoTracks().forEach(t => {
+                        t.stop();
+                        studentLocalStream.removeTrack(t);
+                    });
                     studentCamEnabled = false;
-                    const btn = document.getElementById('btnStudentCam');
                     if (btn) btn.className = 'on';
-                    const t = document.getElementById('studentCamText');
                     if (t) t.textContent = 'تشغيل الكاميرا';
+                    if (switchBtn) switchBtn.style.display = 'none';
                 }
             } catch(e) {
                 console.error('خطأ في الكاميرا:', e);
                 alert('تعذّر فتح الكاميرا. تأكد من السماح للمتصفح.');
+            }
+        }
+
+        async function switchStudentCamera() {
+            if (!viewerPc || !studentLocalStream || !studentCamEnabled) return;
+
+            const oldVideoTrack = studentLocalStream.getVideoTracks()[0];
+            if (!oldVideoTrack) return;
+
+            const newFacing = studentFacingMode === 'user' ? 'environment' : 'user';
+            let newVideoTrack = null;
+
+            // المحاولة الأولى: facingMode (موبايل)
+            try {
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: newFacing },
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    },
+                    audio: false
+                });
+                newVideoTrack = newStream.getVideoTracks()[0];
+                studentFacingMode = newFacing;
+            } catch(e) {
+                console.warn('facingMode failed, trying deviceId');
+                // المحاولة الثانية: deviceId (ديسكتوب)
+                try {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    const cams = devices.filter(d => d.kind === 'videoinput');
+                    if (cams.length < 2) {
+                        alert('⚠️ لا توجد كاميرا أخرى.');
+                        return;
+                    }
+                    const currentId = oldVideoTrack.getSettings().deviceId;
+                    let idx = cams.findIndex(c => c.deviceId === currentId);
+                    idx = (idx + 1) % cams.length;
+                    const newStream = await navigator.mediaDevices.getUserMedia({
+                        video: { deviceId: { exact: cams[idx].deviceId } },
+                        audio: false
+                    });
+                    newVideoTrack = newStream.getVideoTracks()[0];
+                } catch(e2) {
+                    console.error(e2);
+                    alert('⚠️ تعذّر تبديل الكاميرا.');
+                    return;
+                }
+            }
+
+            if (!newVideoTrack) return;
+
+            // 🔄 استبدل التراك في الاتصال (بدون إعادة تفاوض)
+            const sender = viewerPc.getSenders().find(s => s.track && s.track.kind === 'video');
+            if (sender) {
+                try { await sender.replaceTrack(newVideoTrack); } catch(e) { console.warn(e); }
+            }
+
+            // 🔄 استبدل في الـ local stream
+            studentLocalStream.removeTrack(oldVideoTrack);
+            oldVideoTrack.stop();
+            studentLocalStream.addTrack(newVideoTrack);
+
+            // ✅ تأكيد
+            const switchBtn = document.getElementById('btnSwitchStudentCam');
+            if (switchBtn) {
+                switchBtn.innerHTML = '<span>🔄</span> <span>✅ تم التبديل</span>';
+                setTimeout(() => {
+                    switchBtn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+                }, 1200);
             }
         }
 
@@ -1718,6 +1824,14 @@
             studentCamEnabled = false;
             studentMicEnabled = false;
             remoteVideoMuted = true;
+
+            // 🔄 صفّر حالة تبديل الكاميرا
+            studentFacingMode = 'user';
+            const switchBtn = document.getElementById('btnSwitchStudentCam');
+            if (switchBtn) {
+                switchBtn.style.display = 'none';
+                switchBtn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+            }
 
             if (currentUser) {
                 try {
