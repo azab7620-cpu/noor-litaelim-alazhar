@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نُورُ تَعْلِيمِ الأَزْهَرِ</title>
 
-    <!-- 🔒 Content Security Policy -->
+    <!-- 🔒 Content Security Policy — معدّل لدعم PeerJS للبث المباشر -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com;
+      script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://unpkg.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data: https:;
       frame-src https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com https://*.google.com;
-      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com;
+      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://0.peerjs.com wss://0.peerjs.com https://unpkg.com;
+      media-src 'self' blob: mediastream:;
       object-src 'none';
       base-uri 'self';
       form-action 'self';
@@ -23,6 +24,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <!-- 📡 PeerJS للبث المباشر الداخلي -->
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; font-size: 14px; }
@@ -233,7 +236,6 @@
             border-bottom: 1px solid rgba(212,175,55,0.3);
         }
 
-        /* 🎬 منطقة الفيديو */
         .video-modal-iframe-wrapper {
             position: relative;
             padding: 15px;
@@ -251,8 +253,6 @@
             display: block;
         }
 
-        /* 🔒 الأغطية — تُطبّق فقط على يوتيوب (كلاس .is-youtube) */
-        /* غطاء علوي كبير يخفي العنوان + زر "مشاهدة على يوتيوب" */
         .video-modal-iframe-wrapper.is-youtube::before {
             content: '';
             position: absolute;
@@ -266,7 +266,6 @@
             border-radius: 0 12px 0 0;
         }
 
-        /* غطاء سفلي شمال — يخفي شعار يوتيوب */
         .video-modal-iframe-wrapper.is-youtube::after {
             content: '';
             position: absolute;
@@ -280,7 +279,6 @@
             border-radius: 0 0 0 12px;
         }
 
-        /* 🎯 شعار المنصة (Watermark) — صغير وشفاف ويختفي بعد 3 ثواني */
         .video-brand-watermark {
             position: absolute;
             bottom: 22px;
@@ -308,7 +306,6 @@
             to { opacity: 0; visibility: hidden; }
         }
 
-        /* زر الإغلاق */
         .close-video-modal { 
             position: absolute; 
             top: 18px; 
@@ -352,6 +349,31 @@
                 right: 15px; 
                 gap: 4px;
             }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           🔴 البث المباشر
+           ═══════════════════════════════════════════════════════════ */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .live-badge-pulse {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        #liveRemoteVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
         }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -627,6 +649,10 @@
                 <button class="active" onclick="switchStudentTab('courses', this)">📚 كورساتي</button>
                 <button onclick="switchStudentTab('exams', this)">📝 الاختبارات</button>
                 <button onclick="switchStudentTab('grades', this)">📊 درجاتي</button>
+                <button onclick="switchStudentTab('live', this)">
+                    🔴 البث المباشر
+                    <span id="liveDotBadge" style="display:none; background:#a00; color:#fff; padding:2px 8px; border-radius:50px; font-size:10px; margin-right:6px;">●</span>
+                </button>
                 <button onclick="switchStudentTab('platform', this)">💻 المنصة</button>
             </div>
 
@@ -643,6 +669,19 @@
 
             <div id="tab-grades" class="student-tab-content animate-fade delay-2" style="display:none;">
                 <div class="attempts-grid" id="attemptsGrid"></div>
+            </div>
+
+            <!-- 🔴 البث المباشر -->
+            <div id="tab-live" class="student-tab-content animate-fade delay-2" style="display:none;">
+                <div class="dash-block">
+                    <h4>🔴 البث المباشر</h4>
+                    <div id="liveStreamViewer">
+                        <div style="text-align:center; padding:40px 20px; color:#888;">
+                            <div style="font-size:60px; margin-bottom:15px; opacity:0.5;">📺</div>
+                            <h3 style="color:#666; margin-bottom:10px;">جاري التحقق من حالة البث...</h3>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="tab-platform" class="student-tab-content animate-fade delay-2" style="display:none;">
@@ -803,9 +842,6 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         🎬 Video Modal
-         ═══════════════════════════════════════════════════════════ -->
     <div id="videoModal" class="video-modal">
         <div class="video-modal-content">
             <button class="close-video-modal" onclick="closeVideoModal()">✕</button>
@@ -1251,14 +1287,12 @@
             document.getElementById('videoModalTitle').textContent = '📺 ' + title;
             document.getElementById('videoIframe').src = result.embed;
 
-            // 🎯 نضيف كلاس is-youtube على الـ wrapper عشان الأغطية تطبّق بس على يوتيوب
             const wrapper = document.getElementById('videoIframeWrapper');
             wrapper.classList.remove('is-youtube');
             if (result.type === 'youtube') {
                 wrapper.classList.add('is-youtube');
             }
 
-            // ✨ إعادة تشغيل أنيميشن الشعار كل مرة
             const wm = document.getElementById('videoWatermark');
             if (wm) {
                 wm.style.animation = 'none';
@@ -1274,6 +1308,148 @@
         function closeVideoModal() {
             document.getElementById('videoIframe').src = '';
             document.getElementById('videoModal').style.display = 'none';
+        }
+
+        // ============================================================
+        //  🔴 البث المباشر (المستقبِل — WebRTC عبر PeerJS)
+        // ============================================================
+        let viewerUnsubscribe = null;
+        let viewerPeer = null;
+        let viewerCurrentRoom = null;
+        let viewerCall = null;
+
+        function startLiveStreamListener() {
+            if (viewerUnsubscribe) return;
+
+            viewerUnsubscribe = db.collection('liveStreams').doc('current').onSnapshot(
+                doc => {
+                    const viewer = document.getElementById('liveStreamViewer');
+                    const dotBadge = document.getElementById('liveDotBadge');
+                    if (!viewer) return;
+
+                    // مفيش بث
+                    if (!doc.exists || !doc.data().isLive) {
+                        disconnectViewer();
+                        viewer.innerHTML = `
+                            <div style="text-align:center; padding:40px 20px; color:#888;">
+                                <div style="font-size:60px; margin-bottom:15px; opacity:0.5;">📺</div>
+                                <h3 style="color:#666; margin-bottom:10px;">لا يوجد بث مباشر حالياً</h3>
+                                <p style="font-size:13px;">سيظهر البث هنا تلقائياً عند بدء المدرس.</p>
+                            </div>
+                        `;
+                        if (dotBadge) dotBadge.style.display = 'none';
+                        return;
+                    }
+
+                    const data = doc.data();
+
+                    // البث لصف تاني
+                    if (data.grade && currentUser && currentUser.grade && data.grade !== currentUser.grade) {
+                        disconnectViewer();
+                        viewer.innerHTML = `
+                            <div style="text-align:center; padding:40px 20px; color:#888;">
+                                <div style="font-size:60px; margin-bottom:15px; opacity:0.5;">📺</div>
+                                <h3 style="color:#666; margin-bottom:10px;">البث مخصص لصف آخر</h3>
+                                <p style="font-size:13px;">البث الحالي لـ <strong>${esc(data.grade)}</strong></p>
+                            </div>
+                        `;
+                        if (dotBadge) dotBadge.style.display = 'none';
+                        return;
+                    }
+
+                    // فيه بث للطالب
+                    if (dotBadge) dotBadge.style.display = 'inline-block';
+
+                    // لو مفيش اتصال أو الغرفة تغيرت — نوصل
+                    if (!viewerPeer || viewerCurrentRoom !== data.roomId) {
+                        disconnectViewer();
+                        viewerCurrentRoom = data.roomId;
+
+                        viewer.innerHTML = `
+                            <div style="text-align:center; margin-bottom:15px;">
+                                <div style="background:#a00; color:#fff; padding:8px 20px; border-radius:50px; display:inline-flex; align-items:center; gap:10px; font-weight:900; font-size:14px; box-shadow: 0 4px 15px rgba(170,0,0,0.4);">
+                                    <span class="live-badge-pulse"></span>
+                                    LIVE الآن
+                                </div>
+                            </div>
+                            <h3 style="color:#3b0a0a; margin-bottom:8px; font-size:18px; text-align:center;">${esc(data.title)}</h3>
+                            <p style="color:#888; font-size:12px; margin-bottom:18px; text-align:center;">📚 ${esc(data.grade)}</p>
+                            <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:16px; background:#000; border:3px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                                <video id="liveRemoteVideo" autoplay playsinline></video>
+                            </div>
+                            <p id="liveViewerStatus" style="text-align:center; margin-top:12px; color:#d4af37; font-weight:700;">⏳ جاري الاتصال بالبث...</p>
+                        `;
+
+                        connectToBroadcast(data.roomId);
+                    }
+                },
+                err => console.error('خطأ في مراقبة البث:', err)
+            );
+        }
+
+        function connectToBroadcast(roomId) {
+            try {
+                viewerPeer = new Peer(null, { debug: 1 });
+
+                viewerPeer.on('open', (myId) => {
+                    console.log('✅ الطالب جاهز:', myId);
+
+                    // بنبعت MediaStream فاضي — إحنا بس بنستقبل
+                    const emptyStream = new MediaStream();
+                    viewerCall = viewerPeer.call(roomId, emptyStream);
+
+                    viewerCall.on('stream', (remoteStream) => {
+                        console.log('📺 وصل الفيديو من الأدمن');
+                        const video = document.getElementById('liveRemoteVideo');
+                        if (video) {
+                            video.srcObject = remoteStream;
+                            video.play().catch(e => console.warn('autoplay blocked:', e));
+                            const status = document.getElementById('liveViewerStatus');
+                            if (status) status.textContent = '✅ متصل بالبث';
+                        }
+                    });
+
+                    viewerCall.on('close', () => {
+                        const status = document.getElementById('liveViewerStatus');
+                        if (status) status.textContent = '⏹️ انتهى البث';
+                    });
+
+                    viewerCall.on('error', (err) => {
+                        console.error('خطأ في المكالمة:', err);
+                        const status = document.getElementById('liveViewerStatus');
+                        if (status) status.textContent = '❌ تعذّر الاتصال بالبث. جرب تحديث الصفحة.';
+                    });
+                });
+
+                viewerPeer.on('error', (err) => {
+                    console.error('PeerJS error:', err);
+                    const status = document.getElementById('liveViewerStatus');
+                    if (status) status.textContent = '❌ خطأ في الاتصال. جرب تحديث الصفحة.';
+                });
+
+            } catch (err) {
+                console.error('خطأ في الاتصال بالبث:', err);
+            }
+        }
+
+        function disconnectViewer() {
+            if (viewerCall) {
+                try { viewerCall.close(); } catch(e) {}
+                viewerCall = null;
+            }
+            if (viewerPeer) {
+                try { viewerPeer.destroy(); } catch(e) {}
+                viewerPeer = null;
+            }
+            viewerCurrentRoom = null;
+        }
+
+        function stopLiveStreamListener() {
+            if (viewerUnsubscribe) {
+                viewerUnsubscribe();
+                viewerUnsubscribe = null;
+            }
+            disconnectViewer();
         }
 
         // ============================================================
@@ -1616,6 +1792,8 @@
                         document.getElementById('adminLinkBtn').style.display = 'none';
                         document.getElementById('studentDashboard').classList.add('active');
                         loadStudentDashboard(user);
+                        // 🔴 ابدأ مراقبة البث المباشر
+                        startLiveStreamListener();
                     }
                     window.scrollTo(0, 0);
                 } catch (err) {
@@ -1627,6 +1805,8 @@
         });
 
         async function logout() {
+            // 🔴 أوقف مراقبة البث
+            stopLiveStreamListener();
             try { await auth.signOut(); } catch(e) { console.error(e); }
             currentUser = null;
             document.getElementById('navButtons').style.display = 'flex';
