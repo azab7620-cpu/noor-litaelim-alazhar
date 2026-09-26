@@ -12,7 +12,7 @@
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data: https:;
       frame-src https://www.youtube.com https://drive.google.com https://*.google.com;
-      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://0.peerjs.com wss://0.peerjs.com https://unpkg.com;
+      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://*.peerjs.com wss://*.peerjs.com https://unpkg.com;
       media-src 'self' blob: mediastream:;
       object-src 'none';
       base-uri 'self';
@@ -28,6 +28,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; font-size: 14px; }
         .thuluth-text { font-family: 'Aref Ruqaa', serif; font-weight: 700; letter-spacing: 0.5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.15); }
+
         body.dark-mode {
             --bg-primary: #1a1a2e; --bg-card: #1e2a4a; --bg-header: #0f0f23;
             --text-primary: #e0e0e0; --text-secondary: #b0b0b0; --border-color: #2a3a5a;
@@ -68,22 +69,62 @@
         .dashboard-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
         .dashboard-container h2 { font-size: 20px; }
 
-        .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
-        .admin-tabs button { background: #fff; border: 1px solid #ddd; padding: 9px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 13px; box-shadow: 0 3px 8px rgba(0,0,0,0.03); }
-        .admin-tabs button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-        .admin-tabs button.active { background: #3b0a0a; color: #d4af37; border-color: #3b0a0a; }
-
         /* ═══════════════════════════════════════════════════════════
-           ✨ أنيميشن الـ tabs
+           🎨 التابات (تحسين جديد)
            ═══════════════════════════════════════════════════════════ */
+        .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+        .admin-tabs button {
+            background: linear-gradient(135deg, #fff 0%, #fcfaf8 100%);
+            border: 2px solid #eadacc;
+            color: #3b0a0a;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 13px;
+            box-shadow: 0 3px 10px rgba(59,10,10,0.06);
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-tabs button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.15), transparent);
+            transition: 0.5s;
+        }
+        .admin-tabs button:hover::before { left: 100%; }
+        .admin-tabs button:hover {
+            transform: translateY(-3px) scale(1.02);
+            border-color: #d4af37;
+            box-shadow: 0 8px 20px rgba(212,175,55,0.25);
+        }
+        .admin-tabs button.active {
+            background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%);
+            color: #d4af37;
+            border-color: #d4af37;
+            box-shadow: 0 8px 22px rgba(59,10,10,0.35);
+            transform: translateY(-2px);
+        }
+        body.dark-mode .admin-tabs button {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+        body.dark-mode .admin-tabs button.active {
+            background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
+            color: #1a1a2e;
+            border-color: #d4af37;
+        }
+
+        .tab-content { display: none; background: #fff; padding: 24px; border-radius: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
+        .tab-content.active { display: block; animation: fadeInUp 0.5s ease; }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
-            to   { opacity: 1; transform: translateY(0); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade { animation: fadeInUp 0.5s ease forwards; }
-
-        .tab-content { display: none; background: #fff; padding: 22px; border-radius: 24px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); }
-        .tab-content.active { display: block; animation: fadeInUp 0.5s ease; }
 
         .admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
         .admin-table th { background: #3b0a0a; color: #d4af37; padding: 12px; text-align: center; font-size: 13px; }
@@ -92,28 +133,114 @@
         .admin-table td { padding: 12px; text-align: center; border-bottom: 1px solid #f0ede8; font-size: 13px; }
         .admin-table tr:hover td { background: #f9f6f0; }
 
-        .btn-card { background: #3b0a0a; color: #d4af37; padding: 6px 16px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; font-size: 12px; transition: 0.3s; }
-        .btn-card:hover { transform: scale(1.05); }
-        .btn-danger { background: #a00; color: #fff; }
-        .btn-success { background: #2a7a2a; color: #fff; }
-        .btn-delete { background: #8b0000; color: #fff; }
-        .btn-details { background: #1e5a8a; color: #fff; }
-        .btn-cam { background: #0d6efd; color: #fff; }
-        .btn-mic { background: #6f42c1; color: #fff; }
-        .btn-cam-off { background: #ccc; color: #666; }
-        .btn-mic-off { background: #ccc; color: #666; }
+        /* ═══════════════════════════════════════════════════════════
+           🎨 الأزرار (تحسين جديد)
+           ═══════════════════════════════════════════════════════════ */
+        .btn-card {
+            background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%);
+            color: #d4af37;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 3px 10px rgba(59,10,10,0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+        }
+        .btn-card:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(59,10,10,0.3);
+        }
+        .btn-card:active { transform: translateY(0) scale(0.98); }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c00 0%, #a00 100%);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(170,0,0,0.25);
+        }
+        .btn-danger:hover { box-shadow: 0 6px 15px rgba(170,0,0,0.4); }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2a7a2a 0%, #1f5c1f 100%);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(42,122,42,0.25);
+        }
+        .btn-success:hover { box-shadow: 0 6px 15px rgba(42,122,42,0.4); }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #8b0000 0%, #6b0000 100%);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(139,0,0,0.25);
+        }
+        .btn-delete:hover { box-shadow: 0 6px 15px rgba(139,0,0,0.4); }
+
+        .btn-details {
+            background: linear-gradient(135deg, #1e5a8a 0%, #144266 100%);
+            color: #fff;
+            box-shadow: 0 3px 10px rgba(30,90,138,0.25);
+        }
+        .btn-details:hover { box-shadow: 0 6px 15px rgba(30,90,138,0.4); }
+
+        .btn-cam-off {
+            background: linear-gradient(135deg, #ccc 0%, #aaa 100%);
+            color: #555;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-mic-off {
+            background: linear-gradient(135deg, #ccc 0%, #aaa 100%);
+            color: #555;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
 
         .add-form { margin-top: 15px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .full-width { grid-column: 1 / -1; }
         .add-form label { display: block; font-weight: 700; font-size: 13px; color: #3b0a0a; margin-bottom: 5px; }
-        .add-form input, .add-form select { width: 100%; padding: 11px 14px; border: 2px solid #eadacc; border-radius: 14px; font-size: 13px; font-family: 'Cairo', sans-serif; outline: none; transition: 0.3s; }
-        .add-form input:focus, .add-form select:focus { border-color: #d4af37; box-shadow: 0 0 0 4px rgba(212,175,55,0.1); }
-        .btn-submit { background: #3b0a0a; color: #d4af37; padding: 11px 32px; border: none; border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 15px; transition: 0.3s; font-size: 14px; }
-        .btn-submit:hover { transform: translateY(-2px); }
-        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .add-form input, .add-form select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #eadacc;
+            border-radius: 14px;
+            font-size: 13px;
+            font-family: 'Cairo', sans-serif;
+            outline: none;
+            transition: 0.3s;
+            background: #fff;
+        }
+        .add-form input:focus, .add-form select:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+        }
 
-        .bundle-container-box { border: 2px dashed #ddd; padding: 18px; border-radius: 20px; margin-bottom: 15px; }
+        .btn-submit {
+            background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%);
+            color: #d4af37;
+            padding: 12px 32px;
+            border: 2px solid transparent;
+            border-radius: 50px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+            font-size: 14px;
+            box-shadow: 0 5px 15px rgba(59,10,10,0.2);
+            letter-spacing: 0.3px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(59,10,10,0.35);
+        }
+        .btn-submit:active { transform: translateY(-1px); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .bundle-container-box { border: 2px dashed #ddd; padding: 18px; border-radius: 20px; margin-bottom: 15px; transition: 0.3s; }
+        .bundle-container-box:hover { border-color: #d4af37; }
         .question-box-generator { background: #fcfaf8; border: 1px solid #ddd; border-radius: 16px; padding: 15px; margin-bottom: 15px; }
 
         .alert { padding: 12px 18px; border-radius: 16px; margin-bottom: 15px; font-weight: 600; font-size: 13px; }
@@ -121,13 +248,15 @@
         .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
         .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
-        .exam-one-time-box { display: flex; align-items: center; gap: 12px; background: #fff9e6; padding: 14px 18px; border-radius: 16px; border: 2px dashed #d4af37; cursor: pointer; }
+        .exam-one-time-box { display: flex; align-items: center; gap: 12px; background: #fff9e6; padding: 14px 18px; border-radius: 16px; border: 2px dashed #d4af37; cursor: pointer; transition: 0.3s; }
+        .exam-one-time-box:hover { background: #fff3cc; }
         .exam-one-time-box input { width: 22px !important; height: 22px !important; margin: 0 !important; accent-color: #d4af37; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: #fff; border-radius: 28px; padding: 28px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid #d4af37; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #f4edd3; padding-bottom: 15px; }
-        .modal-close { background: #a00; color: #fff; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; font-weight: 900; }
+        .modal-close { background: linear-gradient(135deg, #c00 0%, #a00 100%); color: #fff; border: none; width: 34px; height: 34px; border-radius: 50%; font-size: 16px; cursor: pointer; font-weight: 900; transition: 0.3s; }
+        .modal-close:hover { transform: rotate(90deg) scale(1.1); }
 
         .detail-row { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px dashed #f0ede8; font-size: 13px; }
 
@@ -136,7 +265,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ═══════════════════════════════════════════════════════════
-           🔴 أنماط البث المباشر
+           🔴 أنماط البث المباشر (تحسين جديد)
            ═══════════════════════════════════════════════════════════ */
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; }
@@ -145,66 +274,102 @@
         }
 
         .live-badge {
-            background: #a00; color: #fff; padding: 6px 14px;
-            border-radius: 50px; font-weight: 900;
-            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #c00 0%, #800 100%);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             animation: pulse 2s infinite;
+            box-shadow: 0 4px 12px rgba(170,0,0,0.4);
         }
         .live-dot {
             width: 10px; height: 10px; background: #fff; border-radius: 50%;
             display: inline-block;
         }
 
-        /* 🎛️ لوحة التحكم - تصميم محسّن */
         .live-control-panel {
             background: linear-gradient(135deg, #fcfaf8 0%, #f4edd3 100%);
             border: 2px solid #d4af37;
-            border-radius: 24px; padding: 24px; margin-bottom: 24px;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
             box-shadow: 0 8px 25px rgba(212,175,55,0.15);
-            transition: 0.3s;
         }
         body.dark-mode .live-control-panel {
             background: linear-gradient(135deg, #0f0f23 0%, #1e2a4a 100%);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
         .live-control-panel h5 {
-            display: flex; align-items: center; gap: 10px;
-            font-size: 16px; font-weight: 800;
-            color: #3b0a0a; margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 800;
+            color: #3b0a0a;
+            margin-bottom: 16px;
             padding-bottom: 12px;
             border-bottom: 2px dashed #d4af37;
         }
         body.dark-mode .live-control-panel h5 { color: var(--gold); }
 
         .live-toolbar {
-            display: flex; gap: 12px; flex-wrap: wrap;
-            align-items: center; margin: 15px 0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: 15px 0;
         }
         .live-toolbar button {
-            padding: 12px 22px; border-radius: 50px;
-            font-weight: 800; cursor: pointer;
+            padding: 12px 22px;
+            border-radius: 50px;
+            font-weight: 800;
+            cursor: pointer;
             border: 2px solid transparent;
-            transition: 0.3s; font-size: 13px;
-            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .live-toolbar button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .live-toolbar button.active { background: #2a7a2a; color: #fff; }
-        .live-toolbar button.inactive { background: #a00; color: #fff; }
-        .live-toolbar button.neutral { background: #3b0a0a; color: #d4af37; }
+        .live-toolbar button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .live-toolbar button.neutral {
+            background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%);
+            color: #d4af37;
+        }
+        .live-toolbar button.active {
+            background: linear-gradient(135deg, #2a7a2a 0%, #1f5c1f 100%);
+            color: #fff;
+        }
+        .live-toolbar button.inactive {
+            background: linear-gradient(135deg, #c00 0%, #800 100%);
+            color: #fff;
+        }
 
         .live-permission-box {
-            background: #fff; border: 2px dashed #d4af37;
-            border-radius: 20px; padding: 18px;
-            display: flex; flex-direction: column; gap: 12px;
+            background: #fff;
+            border: 2px dashed #d4af37;
+            border-radius: 20px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         body.dark-mode .live-permission-box { background: var(--bg-header); }
 
         .perm-toggle {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 14px 18px;
             background: linear-gradient(90deg, #fffdf5 0%, #fcfaf8 100%);
-            border-radius: 14px; cursor: pointer;
+            border-radius: 14px;
+            cursor: pointer;
             border: 2px solid transparent;
             transition: 0.3s;
             box-shadow: 0 2px 6px rgba(0,0,0,0.03);
@@ -269,12 +434,63 @@
             font-size: 12px; font-weight: 700;
             box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
-        .stream-status.on { background: linear-gradient(135deg, #2a7a2a, #4caf50); color: #fff; }
+        .stream-status.on {
+            background: linear-gradient(135deg, #2a7a2a, #4caf50);
+            color: #fff;
+        }
         .stream-status.off { background: #f8d7da; color: #721c24; }
 
-        /* 🎨 تحسين صندوق حالة البث */
-        #liveStreamStatusBox > div {
+        /* ═══════════════════════════════════════════════════════════
+           🎯 زر بدء/إيقاف البث (تحسين جديد)
+           ═══════════════════════════════════════════════════════════ */
+        #startLiveBtn {
+            background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%) !important;
+            color: #3b0a0a !important;
+            font-size: 15px !important;
+            font-weight: 900 !important;
+            padding: 14px 40px !important;
+            box-shadow: 0 8px 22px rgba(212,175,55,0.4) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        #startLiveBtn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        #startLiveBtn:hover::after { width: 300px; height: 300px; }
+        #startLiveBtn:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 14px 30px rgba(212,175,55,0.6) !important;
+        }
+
+        #stopLiveBtn {
+            background: linear-gradient(135deg, #c00 0%, #800 100%) !important;
+            color: #fff !important;
+            font-size: 15px !important;
+            font-weight: 900 !important;
+            padding: 14px 40px !important;
+            box-shadow: 0 8px 22px rgba(170,0,0,0.4) !important;
+        }
+        #stopLiveBtn:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 14px 30px rgba(170,0,0,0.6) !important;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           🔍 شريط البحث (تحسين جديد)
+           ═══════════════════════════════════════════════════════════ */
+        #studentSearchInput {
+            background: linear-gradient(135deg, #fff 0%, #fcfaf8 100%);
             transition: 0.3s;
+        }
+        #studentSearchInput:focus {
+            box-shadow: 0 0 0 5px rgba(212,175,55,0.2);
         }
 
         @media (max-width: 600px) {
@@ -395,28 +611,25 @@
         <div id="tabLiveStream" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">🔴 البث المباشر الداخلي</h4>
 
-            <!-- حالة البث -->
             <div id="liveStreamStatusBox" style="margin-bottom:20px;">
                 <div style="text-align:center; padding:15px; color:#888;">⏸️ لا يوجد بث نشط</div>
             </div>
 
-            <!-- لوحة التحكم -->
             <div class="live-control-panel">
                 <h5>🎛️ لوحة التحكم بالبث</h5>
 
                 <div class="live-toolbar" id="liveToolbar" style="display:none;">
                     <button id="btnAdminCam" onclick="toggleAdminCamera()" class="neutral">
-                        <span id="camIcon">📷</span> <span id="camText">إيقاف الكاميرا</span>
+                        <span>📷</span> <span>إيقاف الكاميرا</span>
                     </button>
                     <button id="btnAdminMic" onclick="toggleAdminMic()" class="neutral">
-                        <span id="micIcon">🎤</span> <span id="micText">إيقاف المايك</span>
+                        <span>🎤</span> <span>إيقاف المايك</span>
                     </button>
                     <span class="stream-status on" id="viewerCountBadge">
                         👥 <strong id="viewerCount">0</strong> مشاهد
                     </span>
                 </div>
 
-                <!-- إعدادات الصلاحيات -->
                 <div id="permissionPanel" style="display:none; margin-top:15px;">
                     <h6 style="color:#3b0a0a; margin-bottom:12px; font-size:14px;">🔐 صلاحيات الطلاب أثناء البث</h6>
                     <div class="live-permission-box">
@@ -432,20 +645,17 @@
                 </div>
             </div>
 
-            <!-- معاينة الكاميرا المحلية -->
             <div id="localPreviewContainer" style="display:none; margin-bottom:20px;">
                 <label style="font-weight:800; color:#3b0a0a; display:block; margin-bottom:8px;">📹 معاينة كاميرتك:</label>
                 <video id="localPreview" autoplay muted playsinline></video>
                 <p style="margin-top:8px; font-size:12px; color:#666;">👁️ المربع الأسود الصغير = عرض تقريبي لما يراه الطلاب</p>
             </div>
 
-            <!-- فيديوهات الطلاب -->
             <div id="studentStreamsContainer" style="display:none; margin-bottom:20px;">
                 <h5 style="color:#3b0a0a; margin-bottom:10px;">👥 فيديوهات الطلاب المتصلين:</h5>
                 <div id="studentStreamsGrid" class="student-streams-grid"></div>
             </div>
 
-            <!-- نموذج البدء -->
             <form id="liveStreamForm">
                 <div class="form-grid">
                     <div class="full-width">
@@ -467,13 +677,9 @@
                     </div>
                 </div>
 
-                <div style="display:flex; gap:12px; margin-top:15px; flex-wrap:wrap;">
-                    <button type="submit" id="startLiveBtn" class="btn-submit" style="background:linear-gradient(135deg, #d4af37, #b8962e); color:#3b0a0a; margin-top:0; font-size:15px; box-shadow: 0 6px 18px rgba(212,175,55,0.4);">
-                        🔴 بدء البث
-                    </button>
-                    <button type="button" onclick="stopLiveStream()" id="stopLiveBtn" class="btn-submit" style="background:linear-gradient(135deg, #a00, #700); color:#fff; margin-top:0; font-size:15px; display:none; box-shadow: 0 6px 18px rgba(170,0,0,0.4);">
-                        ⏹️ إيقاف البث
-                    </button>
+                <div style="display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;">
+                    <button type="submit" id="startLiveBtn" class="btn-submit">🔴 بدء البث</button>
+                    <button type="button" onclick="stopLiveStream()" id="stopLiveBtn" class="btn-submit" style="display:none;">⏹️ إيقاف البث</button>
                 </div>
             </form>
 
@@ -621,7 +827,7 @@
                 </form>
                 <div id="questionsContainer"></div>
                 <div id="examAddMsg" style="margin-top:15px;"></div>
-                <button type="button" onclick="saveFullExam()" id="saveExamBtn" style="display:none; width:100%; background:#2a7a2a; color:#fff; padding:15px; border:none; border-radius:50px; font-weight:900; font-size:16px; margin-top:20px; cursor:pointer;">💾 حفظ الاختبار بالكامل</button>
+                <button type="button" onclick="saveFullExam()" id="saveExamBtn" style="display:none; width:100%; background:linear-gradient(135deg, #2a7a2a, #1f5c1f); color:#fff; padding:15px; border:none; border-radius:50px; font-weight:900; font-size:16px; margin-top:20px; cursor:pointer; box-shadow:0 8px 22px rgba(42,122,42,0.4);">💾 حفظ الاختبار بالكامل</button>
             </div>
         </div>
     </div>
@@ -742,9 +948,6 @@
             });
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  🔍 البحث
-        // ═══════════════════════════════════════════════════════════
         function searchStudents() { loadStudentsTable(); }
         function clearSearch() {
             const input = document.getElementById('studentSearchInput');
@@ -801,10 +1004,10 @@
                 let liveBtns = '';
                 if (isLiveActive) {
                     liveBtns = `
-                        <button onclick="toggleStudentCamera('${esc(u.id)}', ${!camAllowed})" class="btn-card ${camAllowed ? 'btn-success' : 'btn-cam-off'}" style="margin-right:5px; font-size:11px;" title="صلاحية الكاميرا">
+                        <button onclick="toggleStudentCamera('${esc(u.id)}', ${!camAllowed})" class="btn-card ${camAllowed ? 'btn-success' : 'btn-cam-off'}" style="margin-right:5px; font-size:11px; padding:6px 12px;" title="صلاحية الكاميرا">
                             ${camAllowed ? '📷 ✓' : '📷 ✗'}
                         </button>
-                        <button onclick="toggleStudentMic('${esc(u.id)}', ${!micAllowed})" class="btn-card ${micAllowed ? 'btn-success' : 'btn-mic-off'}" style="margin-right:5px; font-size:11px;" title="صلاحية المايك">
+                        <button onclick="toggleStudentMic('${esc(u.id)}', ${!micAllowed})" class="btn-card ${micAllowed ? 'btn-success' : 'btn-mic-off'}" style="margin-right:5px; font-size:11px; padding:6px 12px;" title="صلاحية المايك">
                             ${micAllowed ? '🎤 ✓' : '🎤 ✗'}
                         </button>
                     `;
@@ -818,9 +1021,9 @@
                     <td style="color:${u.active ? 'green' : 'red'}">${u.active ? '✅ مفعل' : '⏳ معلق'}</td>
                     <td style="white-space: nowrap;">
                         ${liveBtns}
-                        <button onclick="showStudentDetails('${esc(u.id)}')" class="btn-card btn-details" style="font-size:11px;">📋</button>
-                        <button onclick="toggleStudent('${esc(u.id)}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}" style="margin-right:5px; font-size:11px;">${u.active ? 'إلغاء' : 'تفعيل'}</button>
-                        <button onclick="deleteStudent('${esc(u.id)}')" class="btn-card btn-delete" style="margin-right:5px; font-size:11px;">🗑️</button>
+                        <button onclick="showStudentDetails('${esc(u.id)}')" class="btn-card btn-details" style="font-size:11px; padding:6px 12px;">📋</button>
+                        <button onclick="toggleStudent('${esc(u.id)}')" class="btn-card ${u.active ? 'btn-danger' : 'btn-success'}" style="margin-right:5px; font-size:11px; padding:6px 12px;">${u.active ? 'إلغاء' : 'تفعيل'}</button>
+                        <button onclick="deleteStudent('${esc(u.id)}')" class="btn-card btn-delete" style="margin-right:5px; font-size:11px; padding:6px 12px;">🗑️</button>
                     </td>
                 </tr>
             `}).join('');
@@ -1289,7 +1492,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  🔴 البث المباشر (WebRTC + PeerJS)
+        //  🔴 البث المباشر
         // ═══════════════════════════════════════════════════════════
         let livePeer = null;
         let liveLocalStream = null;
@@ -1303,13 +1506,11 @@
         async function getLiveStream() {
             const source = document.getElementById('liveSource').value;
             if (source === 'screen') {
-                // 🖥️ مشاركة الشاشة مع الصوت دائماً
                 return await navigator.mediaDevices.getDisplayMedia({
                     video: { frameRate: 15 },
                     audio: true
                 });
             }
-            // 📷 كاميرا + مايك دائماً
             return await navigator.mediaDevices.getUserMedia({
                 video: { width: 1280, height: 720 },
                 audio: true
@@ -1341,9 +1542,35 @@
                 document.getElementById('localPreviewContainer').style.display = 'block';
 
                 liveRoomId = 'noor-azhar-' + Math.random().toString(36).substring(2, 10);
-                livePeer = new Peer(liveRoomId, { debug: 1 });
+                console.log('🔌 محاولة الاتصال بـ PeerJS...');
+
+                livePeer = new Peer(liveRoomId, {
+                    debug: 2,
+                    config: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            { urls: 'stun:stun1.l.google.com:19302' }
+                        ]
+                    }
+                });
+
+                const peerTimeout = setTimeout(() => {
+                    if (livePeer && !livePeer.open) {
+                        msg.innerHTML = '<div class="alert alert-warning">⏱️ تعذّر الاتصال بسيرفر البث (PeerJS). جرّب تحديث الصفحة أو استخدم شبكة أخرى.</div>';
+                        console.error('❌ PeerJS timeout');
+                        try { livePeer.destroy(); } catch(e) {}
+                        if (liveLocalStream) {
+                            liveLocalStream.getTracks().forEach(t => t.stop());
+                            liveLocalStream = null;
+                        }
+                        startBtn.disabled = false;
+                        startBtn.textContent = '🔴 بدء البث';
+                    }
+                }, 10000);
 
                 livePeer.on('open', async (id) => {
+                    clearTimeout(peerTimeout);
+                    console.log('✅ PeerJS opened:', id);
                     await db.collection('liveStreams').doc('current').set({
                         isLive: true,
                         title, grade,
@@ -1351,10 +1578,7 @@
                         startedAt: firebase.firestore.FieldValue.serverTimestamp(),
                         adminId: currentAdmin.id,
                         adminName: currentAdmin.name,
-                        settings: {
-                            allowAllCameras: false,
-                            allowAllMics: false
-                        }
+                        settings: { allowAllCameras: false, allowAllMics: false }
                     });
 
                     isLiveActive = true;
@@ -1377,6 +1601,7 @@
                 });
 
                 livePeer.on('call', (call) => {
+                    console.log('📞 طالب جديد:', call.peer);
                     call.answer(liveLocalStream);
                     liveActiveCalls.push(call);
                     updateViewerCount();
@@ -1395,7 +1620,12 @@
                 });
 
                 livePeer.on('error', (err) => {
-                    console.error('PeerJS error:', err);
+                    clearTimeout(peerTimeout);
+                    console.error('❌ PeerJS error:', err);
+                    let errorMsg = '❌ خطأ في الاتصال بسيرفر البث.';
+                    if (err.type === 'network') errorMsg = '❌ تعذّر الاتصال بالإنترنت أو الشبكة بتحجب السيرفر.';
+                    if (err.type === 'server-error') errorMsg = '❌ سيرفر البث لا يستجيب حالياً. حاول لاحقاً.';
+                    msg.innerHTML = `<div class="alert alert-warning">${errorMsg}</div>`;
                 });
 
                 liveLocalStream.getVideoTracks()[0]?.addEventListener('ended', () => stopLiveStream());
@@ -1436,10 +1666,10 @@
             if (!btn) return;
             if (adminCamEnabled) {
                 btn.className = 'neutral';
-                btn.innerHTML = '📷 <span>إيقاف الكاميرا</span>';
+                btn.innerHTML = '<span>📷</span> <span>إيقاف الكاميرا</span>';
             } else {
                 btn.className = 'inactive';
-                btn.innerHTML = '📷 <span>تشغيل الكاميرا</span>';
+                btn.innerHTML = '<span>📷</span> <span>تشغيل الكاميرا</span>';
             }
         }
 
@@ -1448,10 +1678,10 @@
             if (!btn) return;
             if (adminMicEnabled) {
                 btn.className = 'neutral';
-                btn.innerHTML = '🎤 <span>إيقاف المايك</span>';
+                btn.innerHTML = '<span>🎤</span> <span>إيقاف المايك</span>';
             } else {
                 btn.className = 'inactive';
-                btn.innerHTML = '🎤 <span>تشغيل المايك</span>';
+                btn.innerHTML = '<span>🎤</span> <span>تشغيل المايك</span>';
             }
         }
 
@@ -1592,9 +1822,6 @@
             } catch(e) { console.error(e); }
         }
 
-        // ═══════════════════════════════════════════════════════════
-        //  🚀 التهيئة
-        // ═══════════════════════════════════════════════════════════
         function initAdminPanel() {
             loadDarkModePreference();
             initGrades();
