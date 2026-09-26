@@ -7,12 +7,12 @@
 
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://unpkg.com;
+      script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data: https:;
       frame-src https://www.youtube.com https://drive.google.com https://*.google.com;
-      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://*.peerjs.com wss://*.peerjs.com https://unpkg.com;
+      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com;
       media-src 'self' blob: mediastream:;
       object-src 'none';
       base-uri 'self';
@@ -23,7 +23,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; font-size: 14px; }
@@ -69,9 +68,6 @@
         .dashboard-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
         .dashboard-container h2 { font-size: 20px; }
 
-        /* ═══════════════════════════════════════════════════════════
-           🎨 التابات (تحسين جديد)
-           ═══════════════════════════════════════════════════════════ */
         .admin-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
         .admin-tabs button {
             background: linear-gradient(135deg, #fff 0%, #fcfaf8 100%);
@@ -133,9 +129,6 @@
         .admin-table td { padding: 12px; text-align: center; border-bottom: 1px solid #f0ede8; font-size: 13px; }
         .admin-table tr:hover td { background: #f9f6f0; }
 
-        /* ═══════════════════════════════════════════════════════════
-           🎨 الأزرار (تحسين جديد)
-           ═══════════════════════════════════════════════════════════ */
         .btn-card {
             background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%);
             color: #d4af37;
@@ -158,45 +151,16 @@
         }
         .btn-card:active { transform: translateY(0) scale(0.98); }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #c00 0%, #a00 100%);
-            color: #fff;
-            box-shadow: 0 3px 10px rgba(170,0,0,0.25);
-        }
+        .btn-danger { background: linear-gradient(135deg, #c00 0%, #a00 100%); color: #fff; box-shadow: 0 3px 10px rgba(170,0,0,0.25); }
         .btn-danger:hover { box-shadow: 0 6px 15px rgba(170,0,0,0.4); }
-
-        .btn-success {
-            background: linear-gradient(135deg, #2a7a2a 0%, #1f5c1f 100%);
-            color: #fff;
-            box-shadow: 0 3px 10px rgba(42,122,42,0.25);
-        }
+        .btn-success { background: linear-gradient(135deg, #2a7a2a 0%, #1f5c1f 100%); color: #fff; box-shadow: 0 3px 10px rgba(42,122,42,0.25); }
         .btn-success:hover { box-shadow: 0 6px 15px rgba(42,122,42,0.4); }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #8b0000 0%, #6b0000 100%);
-            color: #fff;
-            box-shadow: 0 3px 10px rgba(139,0,0,0.25);
-        }
+        .btn-delete { background: linear-gradient(135deg, #8b0000 0%, #6b0000 100%); color: #fff; box-shadow: 0 3px 10px rgba(139,0,0,0.25); }
         .btn-delete:hover { box-shadow: 0 6px 15px rgba(139,0,0,0.4); }
-
-        .btn-details {
-            background: linear-gradient(135deg, #1e5a8a 0%, #144266 100%);
-            color: #fff;
-            box-shadow: 0 3px 10px rgba(30,90,138,0.25);
-        }
+        .btn-details { background: linear-gradient(135deg, #1e5a8a 0%, #144266 100%); color: #fff; box-shadow: 0 3px 10px rgba(30,90,138,0.25); }
         .btn-details:hover { box-shadow: 0 6px 15px rgba(30,90,138,0.4); }
-
-        .btn-cam-off {
-            background: linear-gradient(135deg, #ccc 0%, #aaa 100%);
-            color: #555;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .btn-mic-off {
-            background: linear-gradient(135deg, #ccc 0%, #aaa 100%);
-            color: #555;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
+        .btn-cam-off { background: linear-gradient(135deg, #ccc 0%, #aaa 100%); color: #555; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+        .btn-mic-off { background: linear-gradient(135deg, #ccc 0%, #aaa 100%); color: #555; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
 
         .add-form { margin-top: 15px; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -264,9 +228,6 @@
         #loadingOverlay .spinner { width: 60px; height: 60px; border: 5px solid #f4edd3; border-top-color: #d4af37; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ═══════════════════════════════════════════════════════════
-           🔴 أنماط البث المباشر (تحسين جديد)
-           ═══════════════════════════════════════════════════════════ */
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.3); opacity: 0.6; }
@@ -285,10 +246,7 @@
             animation: pulse 2s infinite;
             box-shadow: 0 4px 12px rgba(170,0,0,0.4);
         }
-        .live-dot {
-            width: 10px; height: 10px; background: #fff; border-radius: 50%;
-            display: inline-block;
-        }
+        .live-dot { width: 10px; height: 10px; background: #fff; border-radius: 50%; display: inline-block; }
 
         .live-control-panel {
             background: linear-gradient(135deg, #fcfaf8 0%, #f4edd3 100%);
@@ -298,9 +256,7 @@
             margin-bottom: 24px;
             box-shadow: 0 8px 25px rgba(212,175,55,0.15);
         }
-        body.dark-mode .live-control-panel {
-            background: linear-gradient(135deg, #0f0f23 0%, #1e2a4a 100%);
-        }
+        body.dark-mode .live-control-panel { background: linear-gradient(135deg, #0f0f23 0%, #1e2a4a 100%); }
         .live-control-panel h5 {
             display: flex;
             align-items: center;
@@ -314,13 +270,7 @@
         }
         body.dark-mode .live-control-panel h5 { color: var(--gold); }
 
-        .live-toolbar {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            margin: 15px 0;
-        }
+        .live-toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 15px 0; }
         .live-toolbar button {
             padding: 12px 22px;
             border-radius: 50px;
@@ -334,22 +284,10 @@
             gap: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .live-toolbar button:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-        .live-toolbar button.neutral {
-            background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%);
-            color: #d4af37;
-        }
-        .live-toolbar button.active {
-            background: linear-gradient(135deg, #2a7a2a 0%, #1f5c1f 100%);
-            color: #fff;
-        }
-        .live-toolbar button.inactive {
-            background: linear-gradient(135deg, #c00 0%, #800 100%);
-            color: #fff;
-        }
+        .live-toolbar button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .live-toolbar button.neutral { background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%); color: #d4af37; }
+        .live-toolbar button.active { background: linear-gradient(135deg, #2a7a2a 0%, #1f5c1f 100%); color: #fff; }
+        .live-toolbar button.inactive { background: linear-gradient(135deg, #c00 0%, #800 100%); color: #fff; }
 
         .live-permission-box {
             background: #fff;
@@ -416,10 +354,7 @@
             transition: 0.3s;
         }
         .student-stream-card:hover { transform: translateY(-4px); border-color: #ffd966; }
-        .student-stream-card video {
-            width: 100%; height: 100%;
-            object-fit: cover; background: #000;
-        }
+        .student-stream-card video { width: 100%; height: 100%; object-fit: cover; background: #000; }
         .student-stream-card .student-name {
             position: absolute; bottom: 0; left: 0; right: 0;
             background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent);
@@ -434,15 +369,9 @@
             font-size: 12px; font-weight: 700;
             box-shadow: 0 3px 8px rgba(0,0,0,0.1);
         }
-        .stream-status.on {
-            background: linear-gradient(135deg, #2a7a2a, #4caf50);
-            color: #fff;
-        }
+        .stream-status.on { background: linear-gradient(135deg, #2a7a2a, #4caf50); color: #fff; }
         .stream-status.off { background: #f8d7da; color: #721c24; }
 
-        /* ═══════════════════════════════════════════════════════════
-           🎯 زر بدء/إيقاف البث (تحسين جديد)
-           ═══════════════════════════════════════════════════════════ */
         #startLiveBtn {
             background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%) !important;
             color: #3b0a0a !important;
@@ -464,10 +393,7 @@
             transition: width 0.6s, height 0.6s;
         }
         #startLiveBtn:hover::after { width: 300px; height: 300px; }
-        #startLiveBtn:hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 14px 30px rgba(212,175,55,0.6) !important;
-        }
+        #startLiveBtn:hover { transform: translateY(-4px) !important; box-shadow: 0 14px 30px rgba(212,175,55,0.6) !important; }
 
         #stopLiveBtn {
             background: linear-gradient(135deg, #c00 0%, #800 100%) !important;
@@ -477,21 +403,10 @@
             padding: 14px 40px !important;
             box-shadow: 0 8px 22px rgba(170,0,0,0.4) !important;
         }
-        #stopLiveBtn:hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 14px 30px rgba(170,0,0,0.6) !important;
-        }
+        #stopLiveBtn:hover { transform: translateY(-4px) !important; box-shadow: 0 14px 30px rgba(170,0,0,0.6) !important; }
 
-        /* ═══════════════════════════════════════════════════════════
-           🔍 شريط البحث (تحسين جديد)
-           ═══════════════════════════════════════════════════════════ */
-        #studentSearchInput {
-            background: linear-gradient(135deg, #fff 0%, #fcfaf8 100%);
-            transition: 0.3s;
-        }
-        #studentSearchInput:focus {
-            box-shadow: 0 0 0 5px rgba(212,175,55,0.2);
-        }
+        #studentSearchInput { background: linear-gradient(135deg, #fff 0%, #fcfaf8 100%); transition: 0.3s; }
+        #studentSearchInput:focus { box-shadow: 0 0 0 5px rgba(212,175,55,0.2); }
 
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
@@ -926,7 +841,7 @@
         });
 
         async function logout() {
-            if (livePeer) stopLiveStream();
+            if (isLiveActive) await stopLiveStream();
             try { await auth.signOut(); } catch(e) {}
             window.location.href = 'index.html';
         }
@@ -991,7 +906,7 @@
             let perms = {};
             if (isLiveActive) {
                 try {
-                    const permsSnap = await db.collection('liveStreams').doc('current').collection('studentPermissions').get();
+                    const permsSnap = await db.collection('liveStreams').doc('current').collection('students').get();
                     permsSnap.forEach(d => { perms[d.id] = d.data(); });
                 } catch(e) { console.warn(e); }
             }
@@ -1492,16 +1407,25 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  🔴 البث المباشر
+        //  🔴 البث المباشر (Firestore Signaling)
         // ═══════════════════════════════════════════════════════════
-        let livePeer = null;
         let liveLocalStream = null;
-        let liveActiveCalls = [];
-        let liveRoomId = null;
         let isLiveActive = false;
         let adminCamEnabled = true;
         let adminMicEnabled = true;
-        let studentStreams = {};
+        let peerConnections = {};     // studentId → RTCPeerConnection
+        let studentStreams = {};      // studentId → {videoEl}
+        let studentsUnsubscribe = null;
+        let studentDocUnsubscribes = {};
+
+        const ICE_SERVERS = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'stun:stun3.l.google.com:19302' }
+            ]
+        };
 
         async function getLiveStream() {
             const source = document.getElementById('liveSource').value;
@@ -1541,92 +1465,43 @@
                 document.getElementById('localPreview').srcObject = liveLocalStream;
                 document.getElementById('localPreviewContainer').style.display = 'block';
 
-                liveRoomId = 'noor-azhar-' + Math.random().toString(36).substring(2, 10);
-                console.log('🔌 محاولة الاتصال بـ PeerJS...');
-
-                livePeer = new Peer(liveRoomId, {
-                    debug: 2,
-                    config: {
-                        iceServers: [
-                            { urls: 'stun:stun.l.google.com:19302' },
-                            { urls: 'stun:stun1.l.google.com:19302' }
-                        ]
-                    }
+                // احفظ الحالة في Firestore
+                await db.collection('liveStreams').doc('current').set({
+                    isLive: true,
+                    title, grade,
+                    startedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    adminId: currentAdmin.id,
+                    adminName: currentAdmin.name,
+                    settings: { allowAllCameras: false, allowAllMics: false }
                 });
 
-                const peerTimeout = setTimeout(() => {
-                    if (livePeer && !livePeer.open) {
-                        msg.innerHTML = '<div class="alert alert-warning">⏱️ تعذّر الاتصال بسيرفر البث (PeerJS). جرّب تحديث الصفحة أو استخدم شبكة أخرى.</div>';
-                        console.error('❌ PeerJS timeout');
-                        try { livePeer.destroy(); } catch(e) {}
-                        if (liveLocalStream) {
-                            liveLocalStream.getTracks().forEach(t => t.stop());
-                            liveLocalStream = null;
-                        }
-                        startBtn.disabled = false;
-                        startBtn.textContent = '🔴 بدء البث';
-                    }
-                }, 10000);
+                isLiveActive = true;
+                msg.innerHTML = '<div class="alert alert-success">✅ البث بدأ! في انتظار الطلاب...</div>';
+                startBtn.style.display = 'none';
+                document.getElementById('stopLiveBtn').style.display = 'inline-block';
+                document.getElementById('liveToolbar').style.display = 'flex';
+                document.getElementById('permissionPanel').style.display = 'block';
+                document.getElementById('studentStreamsContainer').style.display = 'block';
 
-                livePeer.on('open', async (id) => {
-                    clearTimeout(peerTimeout);
-                    console.log('✅ PeerJS opened:', id);
-                    await db.collection('liveStreams').doc('current').set({
-                        isLive: true,
-                        title, grade,
-                        roomId: id,
-                        startedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        adminId: currentAdmin.id,
-                        adminName: currentAdmin.name,
-                        settings: { allowAllCameras: false, allowAllMics: false }
+                updateAdminCamBtn();
+                updateAdminMicBtn();
+
+                document.getElementById('liveStreamStatusBox').innerHTML = `
+                    <div style="background:#d4edda; color:#155724; border:2px solid #2a7a2a; padding:15px; border-radius:16px; display:flex; align-items:center; gap:10px;">
+                        <span class="live-badge"><span class="live-dot"></span> LIVE</span>
+                        <span><strong>${esc(title)}</strong> — ${esc(grade)}</span>
+                    </div>
+                `;
+
+                // استمع للطلاب الجدد
+                studentsUnsubscribe = db.collection('liveStreams').doc('current').collection('students')
+                    .onSnapshot(snap => {
+                        snap.docChanges().forEach(change => {
+                            if (change.type === 'added') {
+                                createPeerForStudent(change.doc.id, change.doc.data());
+                            }
+                        });
                     });
-
-                    isLiveActive = true;
-                    msg.innerHTML = '<div class="alert alert-success">✅ البث بدأ! الطلاب سيشاهدونه فوراً.</div>';
-                    startBtn.style.display = 'none';
-                    document.getElementById('stopLiveBtn').style.display = 'inline-block';
-                    document.getElementById('liveToolbar').style.display = 'flex';
-                    document.getElementById('permissionPanel').style.display = 'block';
-                    document.getElementById('studentStreamsContainer').style.display = 'block';
-
-                    updateAdminCamBtn();
-                    updateAdminMicBtn();
-
-                    document.getElementById('liveStreamStatusBox').innerHTML = `
-                        <div style="background:#d4edda; color:#155724; border:2px solid #2a7a2a; padding:15px; border-radius:16px; display:flex; align-items:center; gap:10px;">
-                            <span class="live-badge"><span class="live-dot"></span> LIVE</span>
-                            <span><strong>${esc(title)}</strong> — ${esc(grade)}</span>
-                        </div>
-                    `;
-                });
-
-                livePeer.on('call', (call) => {
-                    console.log('📞 طالب جديد:', call.peer);
-                    call.answer(liveLocalStream);
-                    liveActiveCalls.push(call);
-                    updateViewerCount();
-
-                    call.on('stream', (remoteStream) => {
-                        if (remoteStream.getVideoTracks().length > 0) {
-                            addStudentStream(call.peer, remoteStream);
-                        }
-                    });
-
-                    call.on('close', () => {
-                        liveActiveCalls = liveActiveCalls.filter(c => c !== call);
-                        updateViewerCount();
-                        removeStudentStream(call.peer);
-                    });
-                });
-
-                livePeer.on('error', (err) => {
-                    clearTimeout(peerTimeout);
-                    console.error('❌ PeerJS error:', err);
-                    let errorMsg = '❌ خطأ في الاتصال بسيرفر البث.';
-                    if (err.type === 'network') errorMsg = '❌ تعذّر الاتصال بالإنترنت أو الشبكة بتحجب السيرفر.';
-                    if (err.type === 'server-error') errorMsg = '❌ سيرفر البث لا يستجيب حالياً. حاول لاحقاً.';
-                    msg.innerHTML = `<div class="alert alert-warning">${errorMsg}</div>`;
-                });
 
                 liveLocalStream.getVideoTracks()[0]?.addEventListener('ended', () => stopLiveStream());
 
@@ -1638,9 +1513,96 @@
             }
         }
 
+        async function createPeerForStudent(studentId, studentData) {
+            if (peerConnections[studentId]) return;
+
+            console.log('📞 طالب جديد:', studentId);
+            const pc = new RTCPeerConnection(ICE_SERVERS);
+            peerConnections[studentId] = pc;
+
+            // أضف فيديو/صوت الأدمن
+            liveLocalStream.getTracks().forEach(track => {
+                pc.addTrack(track, liveLocalStream);
+            });
+
+            // استقبل فيديو/صوت الطالب
+            pc.ontrack = (event) => {
+                console.log('📺 وصل فيديو الطالب:', studentId);
+                addStudentStream(studentId, event.streams[0]);
+            };
+
+            // ICE candidates
+            pc.onicecandidate = async (event) => {
+                if (event.candidate) {
+                    try {
+                        await db.collection('liveStreams').doc('current')
+                            .collection('students').doc(studentId)
+                            .update({
+                                adminCandidates: firebase.firestore.FieldValue.arrayUnion(event.candidate.toJSON())
+                            });
+                    } catch(e) { console.warn('ICE send error:', e); }
+                }
+            };
+
+            pc.onconnectionstatechange = () => {
+                console.log(`🔗 ${studentId}: ${pc.connectionState}`);
+                if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
+                    cleanupPeer(studentId);
+                }
+            };
+
+            // أنشئ offer
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            // اكتب offer في وثيقة الطالب
+            await db.collection('liveStreams').doc('current')
+                .collection('students').doc(studentId)
+                .set({
+                    offer: { type: offer.type, sdp: offer.sdp },
+                    adminId: currentAdmin.id
+                }, { merge: true });
+
+            // استمع للـ answer والـ ICE من الطالب
+            const unsub = db.collection('liveStreams').doc('current')
+                .collection('students').doc(studentId)
+                .onSnapshot(async (snap) => {
+                    if (!snap.exists) return;
+                    const data = snap.data();
+
+                    if (data.answer && pc.signalingState === 'have-local-offer') {
+                        try {
+                            await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+                        } catch(e) { console.warn('setRemote error:', e); }
+                    }
+
+                    if (data.studentCandidates && pc.remoteDescription) {
+                        for (const c of data.studentCandidates) {
+                            try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch(e) {}
+                        }
+                    }
+                });
+
+            studentDocUnsubscribes[studentId] = unsub;
+            updateViewerCount();
+        }
+
+        function cleanupPeer(studentId) {
+            if (peerConnections[studentId]) {
+                try { peerConnections[studentId].close(); } catch(e) {}
+                delete peerConnections[studentId];
+            }
+            if (studentDocUnsubscribes[studentId]) {
+                studentDocUnsubscribes[studentId]();
+                delete studentDocUnsubscribes[studentId];
+            }
+            removeStudentStream(studentId);
+            updateViewerCount();
+        }
+
         function updateViewerCount() {
             const el = document.getElementById('viewerCount');
-            if (el) el.textContent = liveActiveCalls.length;
+            if (el) el.textContent = Object.keys(peerConnections).length;
         }
 
         function toggleAdminCamera() {
@@ -1688,20 +1650,28 @@
         async function stopLiveStream() {
             const msg = document.getElementById('liveStreamMsg');
 
-            liveActiveCalls.forEach(call => { try { call.close(); } catch(e) {} });
-            liveActiveCalls = [];
+            Object.keys(peerConnections).forEach(id => cleanupPeer(id));
+            Object.keys(studentDocUnsubscribes).forEach(id => {
+                try { studentDocUnsubscribes[id](); } catch(e) {}
+            });
+            studentDocUnsubscribes = {};
 
-            Object.keys(studentStreams).forEach(id => removeStudentStream(id));
+            if (studentsUnsubscribe) {
+                try { studentsUnsubscribe(); } catch(e) {}
+                studentsUnsubscribe = null;
+            }
 
             if (liveLocalStream) {
                 liveLocalStream.getTracks().forEach(t => t.stop());
                 liveLocalStream = null;
             }
 
-            if (livePeer) {
-                try { livePeer.destroy(); } catch(e) {}
-                livePeer = null;
-            }
+            try {
+                const studentsSnap = await db.collection('liveStreams').doc('current').collection('students').get();
+                const batch = db.batch();
+                studentsSnap.forEach(d => batch.delete(d.ref));
+                await batch.commit();
+            } catch(e) { console.warn(e); }
 
             try {
                 await db.collection('liveStreams').doc('current').update({
@@ -1725,13 +1695,13 @@
             loadStudentsTable();
         }
 
-        function addStudentStream(peerId, stream) {
+        function addStudentStream(studentId, stream) {
             const grid = document.getElementById('studentStreamsGrid');
-            let card = document.getElementById('student-stream-' + peerId);
+            let card = document.getElementById('student-stream-' + studentId);
 
             if (!card) {
                 card = document.createElement('div');
-                card.id = 'student-stream-' + peerId;
+                card.id = 'student-stream-' + studentId;
                 card.className = 'student-stream-card';
                 card.innerHTML = `
                     <video autoplay playsinline></video>
@@ -1744,30 +1714,25 @@
             video.srcObject = stream;
             video.play().catch(e => console.warn(e));
 
-            studentStreams[peerId] = { call: null, videoEl: video };
+            studentStreams[studentId] = { videoEl: video };
 
-            findStudentNameByPeerId(peerId).then(name => {
-                if (name) {
-                    card.querySelector('.student-name').textContent = '👤 ' + name;
-                }
+            findStudentNameById(studentId).then(name => {
+                if (name) card.querySelector('.student-name').textContent = '👤 ' + name;
             });
         }
 
-        async function findStudentNameByPeerId(peerId) {
+        async function findStudentNameById(uid) {
             try {
-                if (peerId.includes('student-')) {
-                    const uid = peerId.split('student-')[1];
-                    const snap = await db.collection('users').doc(uid).get();
-                    if (snap.exists) return snap.data().name;
-                }
+                const snap = await db.collection('users').doc(uid).get();
+                if (snap.exists) return snap.data().name;
             } catch(e) {}
             return null;
         }
 
-        function removeStudentStream(peerId) {
-            const card = document.getElementById('student-stream-' + peerId);
+        function removeStudentStream(studentId) {
+            const card = document.getElementById('student-stream-' + studentId);
             if (card) card.remove();
-            delete studentStreams[peerId];
+            delete studentStreams[studentId];
         }
 
         async function saveGlobalPermissions() {
@@ -1786,7 +1751,7 @@
             if (!isLiveActive) return;
             try {
                 await db.collection('liveStreams').doc('current')
-                    .collection('studentPermissions').doc(studentId)
+                    .collection('students').doc(studentId)
                     .set({ cameraAllowed: allowed }, { merge: true });
                 loadStudentsTable();
             } catch(err) { console.error(err); }
@@ -1796,7 +1761,7 @@
             if (!isLiveActive) return;
             try {
                 await db.collection('liveStreams').doc('current')
-                    .collection('studentPermissions').doc(studentId)
+                    .collection('students').doc(studentId)
                     .set({ micAllowed: allowed }, { merge: true });
                 loadStudentsTable();
             } catch(err) { console.error(err); }
@@ -1822,6 +1787,9 @@
             } catch(e) { console.error(e); }
         }
 
+        // ═══════════════════════════════════════════════════════════
+        //  🚀 التهيئة
+        // ═══════════════════════════════════════════════════════════
         function initAdminPanel() {
             loadDarkModePreference();
             initGrades();
@@ -1835,6 +1803,14 @@
             setupForms();
             toggleItemFields();
             loadLiveStreamStatus();
+
+            // 📱 اكتشف الموبايل — مشاركة الشاشة مش مدعومة على الموبايل
+            if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                const sourceSelect = document.getElementById('liveSource');
+                if (sourceSelect) {
+                    sourceSelect.innerHTML = '<option value="camera">📷 كاميرا + مايك</option>';
+                }
+            }
         }
     </script>
 </body>
