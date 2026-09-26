@@ -2046,3 +2046,62 @@
                     const doc = await db.collection('users').doc(fbUser.uid).get();
                     if (!doc.exists) {
                         alert('⚠️ لا يوجد ملف مستخدم مرتبط بهذا الحساب. تواصل مع الإدارة.');
+                        await auth.signOut();
+                        return;
+                    }
+
+                    const user = { id: doc.id, ...doc.data() };
+
+                    if (!user.active) {
+                        alert('⏳ حسابك غير مفعّل. تواصل مع الإدارة للتفعيل.');
+                        await auth.signOut();
+                        return;
+                    }
+
+                    currentUser = user;
+
+                    document.getElementById('authSection').style.display = 'none';
+                    document.getElementById('homeSection').style.display = 'none';
+                    document.getElementById('navButtons').style.display = 'none';
+                    document.getElementById('navUser').style.display = 'flex';
+                    document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
+                    hideNavLinks();
+
+                    if (user.role === 'admin') {
+                        document.getElementById('adminLinkBtn').style.display = 'inline-block';
+                        window.location.href = 'admin.html';
+                    } else {
+                        document.getElementById('adminLinkBtn').style.display = 'none';
+                        document.getElementById('studentDashboard').classList.add('active');
+                        loadStudentDashboard(user);
+                        // 🔴 ابدأ مراقبة البث المباشر
+                        startLiveStreamListener();
+                    }
+                    window.scrollTo(0, 0);
+                } catch (err) {
+                    console.error('خطأ في تحميل بيانات المستخدم:', err);
+                }
+            });
+
+            toggleCenterField();
+        });
+
+        async function logout() {
+            stopLiveStreamListener();
+            try { await auth.signOut(); } catch(e) { console.error(e); }
+            currentUser = null;
+            document.getElementById('navButtons').style.display = 'flex';
+            document.getElementById('navUser').style.display = 'none';
+            document.getElementById('studentDashboard').classList.remove('active');
+            document.getElementById('courseDetailView').classList.remove('active');
+            document.getElementById('examPage').classList.remove('active');
+            document.getElementById('homeSection').style.display = 'block';
+            document.getElementById('authSection').style.display = 'none';
+            showNavLinks();
+            window.scrollTo(0,0);
+        }
+
+        function goToAdmin() { window.location.href = 'admin.html'; }
+    </script>
+</body>
+</html>
