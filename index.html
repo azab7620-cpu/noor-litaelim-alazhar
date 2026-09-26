@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نُورُ تَعْلِيمِ الأَزْهَرِ</title>
 
-    <!-- 🔒 Content Security Policy — معدّل لدعم PeerJS للبث المباشر -->
+    <!-- 🔒 Content Security Policy — بدون PeerJS -->
     <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
-      script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://unpkg.com;
+      script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data: https:;
       frame-src https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com https://*.google.com;
-      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://0.peerjs.com wss://0.peerjs.com https://unpkg.com;
+      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com;
       media-src 'self' blob: mediastream:;
       object-src 'none';
       base-uri 'self';
@@ -24,8 +24,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <!-- 📡 PeerJS للبث المباشر الداخلي -->
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background: #f8f6f2; color: #333; overflow-x: hidden; transition: background 0.3s, color 0.3s; font-size: 14px; }
@@ -172,9 +170,6 @@
         .btn-item-action.exam:hover { background: #c99e00; }
         .btn-item-action.disabled { background: #ccc; color: #666; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        /* ═══════════════════════════════════════════════════════════
-           🎬 Video Modal
-           ═══════════════════════════════════════════════════════════ */
         .video-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .video-modal-content { 
             background: linear-gradient(135deg, #2d4a3d 0%, #1a2b1f 100%);
@@ -374,6 +369,42 @@
             height: 100%;
             object-fit: contain;
             background: #000;
+        }
+
+        /* أزرار التحكم بالكاميرا/المايك للطالب */
+        .student-media-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .student-media-controls button {
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #3b0a0a 0%, #520e0e 100%);
+            color: #d4af37;
+        }
+        .student-media-controls button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .student-media-controls button.on {
+            background: linear-gradient(135deg, #2a7a2a 0%, #1f5c1f 100%);
+            color: #fff;
+        }
+        .student-media-controls button.off {
+            background: linear-gradient(135deg, #c00 0%, #800 100%);
+            color: #fff;
         }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -651,7 +682,7 @@
                 <button onclick="switchStudentTab('grades', this)">📊 درجاتي</button>
                 <button onclick="switchStudentTab('live', this)">
                     🔴 البث المباشر
-                    <span id="liveDotBadge" style="display:none; background:#a00; color:#fff; padding:2px 8px; border-radius:50px; font-size:10px; margin-right:6px;">●</span>
+                    <span id="liveDotBadge" style="display:none; background:#a00; color:#fff; padding:2px 8px; border-radius:50px; font-size:10px; margin-right:6px; animation:pulse 1.5s infinite;">●</span>
                 </button>
                 <button onclick="switchStudentTab('platform', this)">💻 المنصة</button>
             </div>
@@ -1311,12 +1342,24 @@
         }
 
         // ============================================================
-        //  🔴 البث المباشر (المستقبِل — WebRTC عبر PeerJS)
+        //  🔴 البث المباشر (Firestore Signaling — WebRTC)
         // ============================================================
         let viewerUnsubscribe = null;
-        let viewerPeer = null;
-        let viewerCurrentRoom = null;
-        let viewerCall = null;
+        let viewerPc = null;
+        let viewerStudentDocUnsub = null;
+        let viewerStudentDocRef = null;
+        let studentLocalStream = null;
+        let currentStreamAdminId = null;
+        let pendingAdminCandidates = [];
+
+        const ICE_SERVERS = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+                { urls: 'stun:stun2.l.google.com:19302' },
+                { urls: 'stun:stun3.l.google.com:19302' }
+            ]
+        };
 
         function startLiveStreamListener() {
             if (viewerUnsubscribe) return;
@@ -1360,10 +1403,10 @@
                     // فيه بث للطالب
                     if (dotBadge) dotBadge.style.display = 'inline-block';
 
-                    // لو مفيش اتصال أو الغرفة تغيرت — نوصل
-                    if (!viewerPeer || viewerCurrentRoom !== data.roomId) {
+                    // لو مفيش اتصال أو الأدمن تغير — نوصل
+                    if (!viewerPc || currentStreamAdminId !== data.adminId) {
                         disconnectViewer();
-                        viewerCurrentRoom = data.roomId;
+                        currentStreamAdminId = data.adminId;
 
                         viewer.innerHTML = `
                             <div style="text-align:center; margin-bottom:15px;">
@@ -1378,70 +1421,224 @@
                                 <video id="liveRemoteVideo" autoplay playsinline></video>
                             </div>
                             <p id="liveViewerStatus" style="text-align:center; margin-top:12px; color:#d4af37; font-weight:700;">⏳ جاري الاتصال بالبث...</p>
+                            <div class="student-media-controls" id="studentMediaControls" style="display:none;">
+                                <button id="btnStudentCam" onclick="toggleStudentCamera_Client()" class="on">
+                                    <span>📷</span> <span id="studentCamText">تشغيل الكاميرا</span>
+                                </button>
+                                <button id="btnStudentMic" onclick="toggleStudentMic_Client()" class="on">
+                                    <span>🎤</span> <span id="studentMicText">تشغيل المايك</span>
+                                </button>
+                            </div>
                         `;
 
-                        connectToBroadcast(data.roomId);
+                        joinLiveStream(data);
                     }
                 },
                 err => console.error('خطأ في مراقبة البث:', err)
             );
         }
 
-        function connectToBroadcast(roomId) {
+        async function joinLiveStream(streamData) {
             try {
-                viewerPeer = new Peer(null, { debug: 1 });
+                const studentId = currentUser.id;
+                const studentRef = db.collection('liveStreams').doc('current').collection('students').doc(studentId);
+                viewerStudentDocRef = studentRef;
 
-                viewerPeer.on('open', (myId) => {
-                    console.log('✅ الطالب جاهز:', myId);
+                // سجّل انضمامك
+                await studentRef.set({
+                    uid: studentId,
+                    joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    studentCandidates: []
+                }, { merge: true });
 
-                    // بنبعت MediaStream فاضي — إحنا بس بنستقبل
-                    const emptyStream = new MediaStream();
-                    viewerCall = viewerPeer.call(roomId, emptyStream);
+                // إعداد RTCPeerConnection
+                viewerPc = new RTCPeerConnection(ICE_SERVERS);
 
-                    viewerCall.on('stream', (remoteStream) => {
-                        console.log('📺 وصل الفيديو من الأدمن');
-                        const video = document.getElementById('liveRemoteVideo');
-                        if (video) {
-                            video.srcObject = remoteStream;
-                            video.play().catch(e => console.warn('autoplay blocked:', e));
-                            const status = document.getElementById('liveViewerStatus');
-                            if (status) status.textContent = '✅ متصل بالبث';
+                viewerPc.onicecandidate = async (event) => {
+                    if (event.candidate) {
+                        try {
+                            await studentRef.update({
+                                studentCandidates: firebase.firestore.FieldValue.arrayUnion(event.candidate.toJSON())
+                            });
+                        } catch(e) {}
+                    }
+                };
+
+                viewerPc.ontrack = (event) => {
+                    console.log('📺 وصل الفيديو');
+                    const video = document.getElementById('liveRemoteVideo');
+                    if (video) {
+                        video.srcObject = event.streams[0];
+                        video.play().catch(e => console.warn(e));
+                        const status = document.getElementById('liveViewerStatus');
+                        if (status) status.textContent = '✅ متصل بالبث';
+                    }
+                };
+
+                viewerPc.onconnectionstatechange = () => {
+                    console.log('🔗 حالة الاتصال:', viewerPc.connectionState);
+                    if (viewerPc.connectionState === 'failed') {
+                        const status = document.getElementById('liveViewerStatus');
+                        if (status) status.textContent = '❌ فشل الاتصال. جرّب تحديث الصفحة.';
+                    }
+                };
+
+                // استمع للتحديثات
+                viewerStudentDocUnsub = studentRef.onSnapshot(async (snap) => {
+                    if (!snap.exists) return;
+                    const data = snap.data();
+
+                    // Offer من الأدمن — إعمل Answer
+                    if (data.offer && viewerPc && !viewerPc.remoteDescription) {
+                        try {
+                            await viewerPc.setRemoteDescription(new RTCSessionDescription(data.offer));
+
+                            // لو عندنا كاميرا/مايك مفتوحة، نبعتها
+                            if (studentLocalStream) {
+                                studentLocalStream.getTracks().forEach(t => {
+                                    try { viewerPc.addTrack(t, studentLocalStream); } catch(e) {}
+                                });
+                            }
+
+                            const answer = await viewerPc.createAnswer();
+                            await viewerPc.setLocalDescription(answer);
+
+                            await studentRef.update({
+                                answer: { type: answer.type, sdp: answer.sdp }
+                            });
+                        } catch(e) { console.warn('Answer error:', e); }
+                    }
+
+                    // Admin ICE candidates
+                    if (data.adminCandidates && viewerPc && viewerPc.remoteDescription) {
+                        for (const c of data.adminCandidates) {
+                            try { await viewerPc.addIceCandidate(new RTCIceCandidate(c)); } catch(e) {}
                         }
-                    });
+                    }
 
-                    viewerCall.on('close', () => {
-                        const status = document.getElementById('liveViewerStatus');
-                        if (status) status.textContent = '⏹️ انتهى البث';
-                    });
-
-                    viewerCall.on('error', (err) => {
-                        console.error('خطأ في المكالمة:', err);
-                        const status = document.getElementById('liveViewerStatus');
-                        if (status) status.textContent = '❌ تعذّر الاتصال بالبث. جرب تحديث الصفحة.';
-                    });
+                    // صلاحيات الكاميرا/المايك من الأدمن
+                    if (data.cameraAllowed !== undefined || data.micAllowed !== undefined) {
+                        updateStudentMediaControls(data);
+                    }
                 });
 
-                viewerPeer.on('error', (err) => {
-                    console.error('PeerJS error:', err);
-                    const status = document.getElementById('liveViewerStatus');
-                    if (status) status.textContent = '❌ خطأ في الاتصال. جرب تحديث الصفحة.';
-                });
+                // أظهر أزرار التحكم بالكاميرا/المايك
+                const controls = document.getElementById('studentMediaControls');
+                if (controls) controls.style.display = 'flex';
 
             } catch (err) {
-                console.error('خطأ في الاتصال بالبث:', err);
+                console.error('خطأ في الانضمام:', err);
+            }
+        }
+
+        function updateStudentMediaControls(data) {
+            const controls = document.getElementById('studentMediaControls');
+            if (controls) controls.style.display = 'flex';
+        }
+
+        let studentCamEnabled = false;
+        let studentMicEnabled = false;
+
+        async function toggleStudentCamera_Client() {
+            if (!viewerPc) return;
+
+            try {
+                if (!studentLocalStream) studentLocalStream = new MediaStream();
+
+                if (!studentCamEnabled) {
+                    const camStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                    const videoTrack = camStream.getVideoTracks()[0];
+                    studentLocalStream.addTrack(videoTrack);
+
+                    // أضف للاتصال
+                    viewerPc.addTrack(videoTrack, studentLocalStream);
+
+                    // أعد إنشاء offer
+                    const offer = await viewerPc.createOffer();
+                    await viewerPc.setLocalDescription(offer);
+                    await viewerStudentDocRef.update({
+                        offer: { type: offer.type, sdp: offer.sdp }
+                    });
+
+                    studentCamEnabled = true;
+                    document.getElementById('btnStudentCam').className = 'off';
+                    document.getElementById('studentCamText').textContent = 'إيقاف الكاميرا';
+
+                    // لو الطالب قفل الكاميرا من المتصفح
+                    videoTrack.addEventListener('ended', () => {
+                        studentCamEnabled = false;
+                        document.getElementById('btnStudentCam').className = 'on';
+                        document.getElementById('studentCamText').textContent = 'تشغيل الكاميرا';
+                    });
+                } else {
+                    studentLocalStream.getVideoTracks().forEach(t => { t.stop(); studentLocalStream.removeTrack(t); });
+                    studentCamEnabled = false;
+                    document.getElementById('btnStudentCam').className = 'on';
+                    document.getElementById('studentCamText').textContent = 'تشغيل الكاميرا';
+                }
+            } catch(e) {
+                console.error('خطأ في الكاميرا:', e);
+                alert('تعذّر فتح الكاميرا. تأكد من السماح للمتصفح.');
+            }
+        }
+
+        async function toggleStudentMic_Client() {
+            if (!viewerPc) return;
+
+            try {
+                if (!studentLocalStream) studentLocalStream = new MediaStream();
+
+                if (!studentMicEnabled) {
+                    const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const audioTrack = micStream.getAudioTracks()[0];
+                    studentLocalStream.addTrack(audioTrack);
+                    viewerPc.addTrack(audioTrack, studentLocalStream);
+
+                    const offer = await viewerPc.createOffer();
+                    await viewerPc.setLocalDescription(offer);
+                    await viewerStudentDocRef.update({
+                        offer: { type: offer.type, sdp: offer.sdp }
+                    });
+
+                    studentMicEnabled = true;
+                    document.getElementById('btnStudentMic').className = 'off';
+                    document.getElementById('studentMicText').textContent = 'إيقاف المايك';
+                } else {
+                    studentLocalStream.getAudioTracks().forEach(t => { t.stop(); studentLocalStream.removeTrack(t); });
+                    studentMicEnabled = false;
+                    document.getElementById('btnStudentMic').className = 'on';
+                    document.getElementById('studentMicText').textContent = 'تشغيل المايك';
+                }
+            } catch(e) {
+                console.error('خطأ في المايك:', e);
+                alert('تعذّر فتح المايك. تأكد من السماح للمتصفح.');
             }
         }
 
         function disconnectViewer() {
-            if (viewerCall) {
-                try { viewerCall.close(); } catch(e) {}
-                viewerCall = null;
+            if (viewerStudentDocUnsub) {
+                try { viewerStudentDocUnsub(); } catch(e) {}
+                viewerStudentDocUnsub = null;
             }
-            if (viewerPeer) {
-                try { viewerPeer.destroy(); } catch(e) {}
-                viewerPeer = null;
+            if (studentLocalStream) {
+                studentLocalStream.getTracks().forEach(t => t.stop());
+                studentLocalStream = null;
             }
-            viewerCurrentRoom = null;
+            if (viewerPc) {
+                try { viewerPc.close(); } catch(e) {}
+                viewerPc = null;
+            }
+            viewerStudentDocRef = null;
+            currentStreamAdminId = null;
+            studentCamEnabled = false;
+            studentMicEnabled = false;
+
+            // حذف تسجيل الطالب
+            if (currentUser) {
+                try {
+                    db.collection('liveStreams').doc('current').collection('students').doc(currentUser.id).delete();
+                } catch(e) {}
+            }
         }
 
         function stopLiveStreamListener() {
@@ -1805,7 +2002,6 @@
         });
 
         async function logout() {
-            // 🔴 أوقف مراقبة البث
             stopLiveStreamListener();
             try { await auth.signOut(); } catch(e) { console.error(e); }
             currentUser = null;
