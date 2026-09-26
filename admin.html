@@ -539,7 +539,7 @@
                         <span>🎤</span> <span>إيقاف المايك</span>
                     </button>
                     <button id="btnSwitchCam" onclick="switchAdminCamera()" class="neutral" style="display:none;">
-                        <span>🔄</span> <span>تبديل الكاميرا</span>
+                        <span>🔄</span> <span>Front 1</span>
                     </button>
                     <span class="stream-status on" id="viewerCountBadge">
                         👥 <strong id="viewerCount">0</strong> مشاهد
@@ -1423,6 +1423,8 @@
         let adminFacingMode = 'user';        // 'user' = أمامية، 'environment' = خلفية
         let adminCurrentCamIndex = 0;
         let adminAvailableCameras = [];
+        let adminCurrentCamName = 'Front 1';
+        let adminCamerasCache = [];
 
         const ICE_SERVERS = {
             iceServers: [
@@ -1459,25 +1461,96 @@
             });
         }
 
-        async function loadAdminCamerasList() {
+        // 🎯 جلب قائمة الكاميرات مع تسميات ذكية (Front 1, Back 1, Back 2...)
+        async function getAdminCamerasList() {
             try {
                 const devices = await navigator.mediaDevices.enumerateDevices();
-                adminAvailableCameras = devices.filter(d => d.kind === 'videoinput');
+                const cams = devices.filter(d => d.kind === 'videoinput');
+                if (cams.length === 0) return [];
+
+                let frontCount = 0, backCount = 0, otherCount = 0;
+                const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+                const result = cams.map((cam, idx) => {
+                    const rawLabel = (cam.label || '').toLowerCase();
+                    let facing = 'unknown';
+                    let name = '';
+
+                    if (rawLabel.includes('front') || rawLabel.includes('user') ||
+                        rawLabel.includes('facetime') || rawLabel.includes('face')) {
+                        frontCount++;
+                        facing = 'front';
+                        name = 'Front ' + frontCount;
+                    } else if (rawLabel.includes('back') || rawLabel.includes('rear') ||
+                               rawLabel.includes('environment') || rawLabel.includes('world')) {
+                        backCount++;
+                        facing = 'back';
+                        name = 'Back ' + backCount;
+                    } else {
+                        if (isMobile) {
+                            if (idx === 0 && frontCount === 0) {
+                                frontCount++;
+                                facing = 'front';
+                                name = 'Front ' + frontCount;
+                            } else {
+                                backCount++;
+                                facing = 'back';
+                                name = 'Back ' + backCount;
+                            }
+                        } else {
+                            otherCount++;
+                            facing = 'unknown';
+                            name = 'Camera ' + otherCount;
+                        }
+                    }
+
+                    return { deviceId: cam.deviceId, rawLabel: cam.label || '', facing, name };
+                });
+
+                adminCamerasCache = result;
+                return result;
             } catch(e) {
-                adminAvailableCameras = [];
+                console.error('enumerateDevices error:', e);
+                return [];
             }
-            return adminAvailableCameras;
+        }
+
+        // Keep old name for compatibility
+        async function loadAdminCamerasList() {
+            const list = await getAdminCamerasList();
+            adminAvailableCameras = list;
+            return list;
         }
 
         async function shouldShowSwitchCameraBtn() {
-            // لو فيه أكتر من كاميرا
-            const cams = await loadAdminCamerasList();
+            const cams = await getAdminCamerasList();
             if (cams.length >= 2) return true;
-
-            // لو موبايل — نفترض وجود أمامية + خلفية
             if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return true;
-
             return false;
+        }
+
+        function updateAdminSwitchBtnLabel(text) {
+            const btn = document.getElementById('btnSwitchCam');
+            if (!btn) return;
+            btn.innerHTML = '<span>🔄</span> <span>' + (text || adminCurrentCamName) + '</span>';
+        }
+
+        async function detectCurrentAdminCamName(track) {
+            if (!track) return 'Front 1';
+            const settings = track.getSettings();
+            const currentId = settings.deviceId;
+
+            if (!adminCamerasCache || adminCamerasCache.length === 0) {
+                await getAdminCamerasList();
+            }
+
+            const found = adminCamerasCache.find(c => c.deviceId === currentId);
+            if (found) return found.name;
+
+            const facing = settings.facingMode || adminFacingMode;
+            if (facing === 'environment') return 'Back 1';
+            if (facing === 'user') return 'Front 1';
+            return 'Camera 1';
         }
 
         async function switchAdminCamera() {
@@ -1486,40 +1559,56 @@
             const oldVideoTrack = liveLocalStream.getVideoTracks()[0];
             if (!oldVideoTrack) return;
 
-            let newVideoTrack = null;
-            const newFacing = adminFacingMode === 'user' ? 'environment' : 'user';
+            // احصل على قائمة الكاميرات
+            const cams = await getAdminCamerasList();
+            if (cams.length < 2) {
+                alert('⚠️ لا توجد كاميرا أخرى للتبديل.');
+                return;
+            }
 
-            // المحاولة الأولى: استخدام facingMode (يعمل على الموبايل)
+            // حدد الكاميرا الحالية
+            const currentId = oldVideoTrack.getSettings().deviceId;
+            let currentIdx = cams.findIndex(c => c.deviceId === currentId);
+            if (currentIdx === -1) currentIdx = 0;
+
+            // الكاميرا التالية (دورة دائرية)
+            const nextIdx = (currentIdx + 1) % cams.length;
+            const nextCam = cams[nextIdx];
+
+            const switchBtn = document.getElementById('btnSwitchCam');
+            if (switchBtn) {
+                switchBtn.innerHTML = '<span>⏳</span> <span>جاري التبديل...</span>';
+            }
+
+            let newVideoTrack = null;
+
+            // المحاولة الأولى: التبديل بالـ deviceId (الأدق)
             try {
                 const newStream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        facingMode: { ideal: newFacing },
+                        deviceId: { exact: nextCam.deviceId },
                         width: { ideal: 1280 },
                         height: { ideal: 720 }
                     },
                     audio: false
                 });
                 newVideoTrack = newStream.getVideoTracks()[0];
-                adminFacingMode = newFacing;
             } catch(e) {
-                console.warn('facingMode switch failed, trying deviceId:', e);
-                // المحاولة الثانية: التنقل بين الأجهزة (يعمل على الديسكتوب)
+                console.warn('deviceId failed, trying facingMode:', e);
                 try {
-                    const cams = await loadAdminCamerasList();
-                    if (cams.length < 2) {
-                        alert('⚠️ لا توجد كاميرا أخرى متاحة للتبديل.');
-                        return;
-                    }
-                    adminCurrentCamIndex = (adminCurrentCamIndex + 1) % cams.length;
-                    const camId = cams[adminCurrentCamIndex].deviceId;
+                    const newFacing = adminFacingMode === 'user' ? 'environment' : 'user';
                     const newStream = await navigator.mediaDevices.getUserMedia({
-                        video: { deviceId: { exact: camId } },
+                        video: { facingMode: { ideal: newFacing }, width: 1280, height: 720 },
                         audio: false
                     });
                     newVideoTrack = newStream.getVideoTracks()[0];
+                    adminFacingMode = newFacing;
                 } catch(e2) {
-                    console.error('All camera switch attempts failed:', e2);
+                    console.error('All switch attempts failed:', e2);
                     alert('⚠️ تعذّر تبديل الكاميرا.');
+                    if (switchBtn) {
+                        switchBtn.innerHTML = '<span>🔄</span> <span>' + adminCurrentCamName + '</span>';
+                    }
                     return;
                 }
             }
@@ -1529,7 +1618,7 @@
             // حافظ على حالة التشغيل/الإيقاف
             newVideoTrack.enabled = adminCamEnabled;
 
-            // 🔄 استبدل التراك في كل اتصالات الطلاب (بدون إعادة تفاوض)
+            // 🔄 استبدل التراك في كل اتصالات الطلاب
             for (const studentId of Object.keys(peerConnections)) {
                 const pc = peerConnections[studentId];
                 const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
@@ -1547,12 +1636,13 @@
             const preview = document.getElementById('localPreview');
             if (preview) preview.srcObject = liveLocalStream;
 
-            // ✅ تأكيد نجاح التبديل للمستخدم
-            const btn = document.getElementById('btnSwitchCam');
-            if (btn) {
-                btn.innerHTML = '<span>🔄</span> <span>✅ تم التبديل</span>';
+            // ✅ حدّث اسم الكاميرا
+            adminCurrentCamName = await detectCurrentAdminCamName(newVideoTrack);
+
+            if (switchBtn) {
+                switchBtn.innerHTML = '<span>🔄</span> <span>✅ ' + adminCurrentCamName + '</span>';
                 setTimeout(() => {
-                    btn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+                    switchBtn.innerHTML = '<span>🔄</span> <span>' + adminCurrentCamName + '</span>';
                 }, 1200);
             }
         }
@@ -1619,15 +1709,16 @@
                 updateAdminCamBtn();
                 updateAdminMicBtn();
 
-                // 🔄 أظهر زر تبديل الكاميرا لو فيه أكتر من كاميرا أو الجهاز موبايل
-                // وكمان اخفيه لو المصدر مشاركة شاشة
+                // 🔄 أظهر زر تبديل الكاميرا مع اسم الكاميرا الحالية
                 const sourceNow = document.getElementById('liveSource').value;
                 if (sourceNow === 'camera') {
                     const showSwitch = await shouldShowSwitchCameraBtn();
                     const switchBtn = document.getElementById('btnSwitchCam');
                     if (switchBtn) {
+                        const videoTrack = liveLocalStream.getVideoTracks()[0];
+                        adminCurrentCamName = await detectCurrentAdminCamName(videoTrack);
                         switchBtn.style.display = showSwitch ? 'inline-flex' : 'none';
-                        switchBtn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+                        switchBtn.innerHTML = '<span>🔄</span> <span>' + adminCurrentCamName + '</span>';
                     }
                 } else {
                     const switchBtn = document.getElementById('btnSwitchCam');
@@ -1861,11 +1952,13 @@
             const switchBtn = document.getElementById('btnSwitchCam');
             if (switchBtn) {
                 switchBtn.style.display = 'none';
-                switchBtn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+                switchBtn.innerHTML = '<span>🔄</span> <span>Front 1</span>';
             }
 
-            // 🔄 أعد تعيين facingMode
+            // 🔄 أعد تعيين الحالات
             adminFacingMode = 'user';
+            adminCurrentCamName = 'Front 1';
+            adminCamerasCache = [];
 
             loadStudentsTable();
         }
@@ -1990,7 +2083,7 @@
                 }
             }
 
-            // 🔄 حدّث زر تبديل الكاميرا لو موجود
+            // 🔄 حدّث قائمة الكاميرات
             loadAdminCamerasList();
         }
     </script>
