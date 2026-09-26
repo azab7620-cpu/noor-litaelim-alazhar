@@ -1350,7 +1350,9 @@
         let viewerStudentDocRef = null;
         let studentLocalStream = null;
         let currentStreamAdminId = null;
-        let pendingAdminCandidates = [];
+        let studentCamEnabled = false;
+        let studentMicEnabled = false;
+        let remoteVideoMuted = true; // يبدأ مكتوم عشان autoplay يشتغل
 
         const ICE_SERVERS = {
             iceServers: [
@@ -1370,7 +1372,6 @@
                     const dotBadge = document.getElementById('liveDotBadge');
                     if (!viewer) return;
 
-                    // مفيش بث
                     if (!doc.exists || !doc.data().isLive) {
                         disconnectViewer();
                         viewer.innerHTML = `
@@ -1386,7 +1387,6 @@
 
                     const data = doc.data();
 
-                    // البث لصف تاني
                     if (data.grade && currentUser && currentUser.grade && data.grade !== currentUser.grade) {
                         disconnectViewer();
                         viewer.innerHTML = `
@@ -1400,10 +1400,8 @@
                         return;
                     }
 
-                    // فيه بث للطالب
                     if (dotBadge) dotBadge.style.display = 'inline-block';
 
-                    // لو مفيش اتصال أو الأدمن تغير — نوصل
                     if (!viewerPc || currentStreamAdminId !== data.adminId) {
                         disconnectViewer();
                         currentStreamAdminId = data.adminId;
@@ -1417,11 +1415,34 @@
                             </div>
                             <h3 style="color:#3b0a0a; margin-bottom:8px; font-size:18px; text-align:center;">${esc(data.title)}</h3>
                             <p style="color:#888; font-size:12px; margin-bottom:18px; text-align:center;">📚 ${esc(data.grade)}</p>
-                            <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:16px; background:#000; border:3px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                                <video id="liveRemoteVideo" autoplay playsinline></video>
+
+                            <!-- 🎬 حاوية الفيديو مع الأزرار -->
+                            <div id="liveVideoContainer" style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:16px; background:#000; border:3px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                                <video id="liveRemoteVideo" autoplay playsinline muted style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; background:#000;"></video>
+
+                                <!-- ▶️ زر التشغيل (لو autoplay اتمنع) -->
+                                <div id="playOverlay" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; cursor:pointer; z-index:10;" onclick="unmuteAndPlay()">
+                                    <div style="text-align:center; color:#fff;">
+                                        <div style="font-size:60px; margin-bottom:15px;">▶️</div>
+                                        <div style="font-weight:800; font-size:15px;">اضغط لتشغيل البث</div>
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- 🎛️ أزرار التحكم بالفيديو -->
+                            <div style="display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
+                                <button onclick="toggleRemoteMute()" id="btnRemoteMute" style="background:linear-gradient(135deg, #3b0a0a, #520e0e); color:#d4af37; border:none; padding:10px 20px; border-radius:50px; font-weight:800; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(0,0,0,0.15); display:flex; align-items:center; gap:6px;">
+                                    <span id="remoteMuteIcon">🔇</span> <span id="remoteMuteText">تشغيل الصوت</span>
+                                </button>
+                                <button onclick="toggleFullscreen()" style="background:linear-gradient(135deg, #2d4a3d, #1a2b1f); color:#d4af37; border:none; padding:10px 20px; border-radius:50px; font-weight:800; cursor:pointer; font-size:13px; box-shadow:0 4px 12px rgba(0,0,0,0.15); display:flex; align-items:center; gap:6px;">
+                                    <span>⛶</span> <span>ملء الشاشة</span>
+                                </button>
+                            </div>
+
                             <p id="liveViewerStatus" style="text-align:center; margin-top:12px; color:#d4af37; font-weight:700;">⏳ جاري الاتصال بالبث...</p>
-                            <div class="student-media-controls" id="studentMediaControls" style="display:none;">
+
+                            <!-- 🎥 أزرار كاميرا/مايك الطالب -->
+                            <div class="student-media-controls" id="studentMediaControls">
                                 <button id="btnStudentCam" onclick="toggleStudentCamera_Client()" class="on">
                                     <span>📷</span> <span id="studentCamText">تشغيل الكاميرا</span>
                                 </button>
@@ -1444,32 +1465,45 @@
                 const studentRef = db.collection('liveStreams').doc('current').collection('students').doc(studentId);
                 viewerStudentDocRef = studentRef;
 
-                // سجّل انضمامك
                 await studentRef.set({
                     uid: studentId,
                     joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     studentCandidates: []
                 }, { merge: true });
 
-                // إعداد RTCPeerConnection
                 viewerPc = new RTCPeerConnection(ICE_SERVERS);
 
                 viewerPc.onicecandidate = async (event) => {
                     if (event.candidate) {
                         try {
-                            await studentRef.update({
+                            await studentRef.set({
                                 studentCandidates: firebase.firestore.FieldValue.arrayUnion(event.candidate.toJSON())
-                            });
-                        } catch(e) {}
+                            }, { merge: true });
+                        } catch(e) { console.warn('student ICE error:', e); }
                     }
                 };
 
                 viewerPc.ontrack = (event) => {
-                    console.log('📺 وصل الفيديو');
+                    console.log('📺 وصل الفيديو من الأدمن');
                     const video = document.getElementById('liveRemoteVideo');
                     if (video) {
                         video.srcObject = event.streams[0];
-                        video.play().catch(e => console.warn(e));
+                        // محاولة التشغيل التلقائي (لأنه muted)
+                        video.play().catch(e => {
+                            console.warn('autoplay blocked:', e);
+                            // أظهر overlay التشغيل
+                            const overlay = document.getElementById('playOverlay');
+                            if (overlay) overlay.style.display = 'flex';
+                        });
+
+                        // لو فيديو ناجح بدون overlay
+                        setTimeout(() => {
+                            if (!video.paused && video.currentTime > 0) {
+                                const overlay = document.getElementById('playOverlay');
+                                if (overlay) overlay.style.display = 'none';
+                            }
+                        }, 1000);
+
                         const status = document.getElementById('liveViewerStatus');
                         if (status) status.textContent = '✅ متصل بالبث';
                     }
@@ -1477,23 +1511,25 @@
 
                 viewerPc.onconnectionstatechange = () => {
                     console.log('🔗 حالة الاتصال:', viewerPc.connectionState);
+                    const status = document.getElementById('liveViewerStatus');
                     if (viewerPc.connectionState === 'failed') {
-                        const status = document.getElementById('liveViewerStatus');
                         if (status) status.textContent = '❌ فشل الاتصال. جرّب تحديث الصفحة.';
+                    } else if (viewerPc.connectionState === 'connected') {
+                        if (status) status.textContent = '✅ متصل بالبث';
                     }
                 };
 
-                // استمع للتحديثات
                 viewerStudentDocUnsub = studentRef.onSnapshot(async (snap) => {
                     if (!snap.exists) return;
                     const data = snap.data();
 
-                    // Offer من الأدمن — إعمل Answer
-                    if (data.offer && viewerPc && !viewerPc.remoteDescription) {
+                    // Offer من الأدمن → إعمل Answer
+                    if (data.offer && viewerPc && !viewerPc.currentRemoteDescription) {
                         try {
                             await viewerPc.setRemoteDescription(new RTCSessionDescription(data.offer));
+                            console.log('✅ setRemoteDescription(offer) نجح');
 
-                            // لو عندنا كاميرا/مايك مفتوحة، نبعتها
+                            // لو الطالب فاتح كاميرا/مايك، ضيفهم
                             if (studentLocalStream) {
                                 studentLocalStream.getTracks().forEach(t => {
                                     try { viewerPc.addTrack(t, studentLocalStream); } catch(e) {}
@@ -1502,42 +1538,85 @@
 
                             const answer = await viewerPc.createAnswer();
                             await viewerPc.setLocalDescription(answer);
-
-                            await studentRef.update({
+                            await studentRef.set({
                                 answer: { type: answer.type, sdp: answer.sdp }
-                            });
-                        } catch(e) { console.warn('Answer error:', e); }
+                            }, { merge: true });
+                            console.log('✅ اتبعت Answer للأدمن');
+                        } catch(e) { console.error('Answer error:', e); }
                     }
 
                     // Admin ICE candidates
                     if (data.adminCandidates && viewerPc && viewerPc.remoteDescription) {
                         for (const c of data.adminCandidates) {
-                            try { await viewerPc.addIceCandidate(new RTCIceCandidate(c)); } catch(e) {}
+                            try {
+                                await viewerPc.addIceCandidate(new RTCIceCandidate(c));
+                            } catch(e) { /* ممكن يكون مضاف بالفعل */ }
                         }
                     }
-
-                    // صلاحيات الكاميرا/المايك من الأدمن
-                    if (data.cameraAllowed !== undefined || data.micAllowed !== undefined) {
-                        updateStudentMediaControls(data);
-                    }
                 });
-
-                // أظهر أزرار التحكم بالكاميرا/المايك
-                const controls = document.getElementById('studentMediaControls');
-                if (controls) controls.style.display = 'flex';
 
             } catch (err) {
                 console.error('خطأ في الانضمام:', err);
             }
         }
 
-        function updateStudentMediaControls(data) {
-            const controls = document.getElementById('studentMediaControls');
-            if (controls) controls.style.display = 'flex';
+        // 🔇 تشغيل/كتم صوت البث
+        function toggleRemoteMute() {
+            const video = document.getElementById('liveRemoteVideo');
+            if (!video) return;
+
+            remoteVideoMuted = !remoteVideoMuted;
+            video.muted = remoteVideoMuted;
+
+            const icon = document.getElementById('remoteMuteIcon');
+            const text = document.getElementById('remoteMuteText');
+
+            if (remoteVideoMuted) {
+                if (icon) icon.textContent = '🔇';
+                if (text) text.textContent = 'تشغيل الصوت';
+            } else {
+                if (icon) icon.textContent = '🔊';
+                if (text) text.textContent = 'كتم الصوت';
+                // لو الفيديو متوقف، شغله
+                video.play().catch(e => console.warn(e));
+            }
         }
 
-        let studentCamEnabled = false;
-        let studentMicEnabled = false;
+        // ▶️ تشغيل + إلغاء الكتم لما يضغط على الزر الكبير
+        function unmuteAndPlay() {
+            const video = document.getElementById('liveRemoteVideo');
+            if (!video) return;
+
+            video.muted = false;
+            remoteVideoMuted = false;
+            video.play().then(() => {
+                const overlay = document.getElementById('playOverlay');
+                if (overlay) overlay.style.display = 'none';
+
+                const icon = document.getElementById('remoteMuteIcon');
+                const text = document.getElementById('remoteMuteText');
+                if (icon) icon.textContent = '🔊';
+                if (text) text.textContent = 'كتم الصوت';
+            }).catch(e => console.error(e));
+        }
+
+        // ⛶ ملء الشاشة
+        function toggleFullscreen() {
+            const container = document.getElementById('liveVideoContainer');
+            if (!container) return;
+
+            if (!document.fullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
 
         async function toggleStudentCamera_Client() {
             if (!viewerPc) return;
@@ -1550,31 +1629,33 @@
                     const videoTrack = camStream.getVideoTracks()[0];
                     studentLocalStream.addTrack(videoTrack);
 
-                    // أضف للاتصال
-                    viewerPc.addTrack(videoTrack, studentLocalStream);
+                    const sender = viewerPc.addTrack(videoTrack, studentLocalStream);
 
                     // أعد إنشاء offer
                     const offer = await viewerPc.createOffer();
                     await viewerPc.setLocalDescription(offer);
-                    await viewerStudentDocRef.update({
+                    await viewerStudentDocRef.set({
                         offer: { type: offer.type, sdp: offer.sdp }
-                    });
+                    }, { merge: true });
 
                     studentCamEnabled = true;
-                    document.getElementById('btnStudentCam').className = 'off';
-                    document.getElementById('studentCamText').textContent = 'إيقاف الكاميرا';
+                    const btn = document.getElementById('btnStudentCam');
+                    if (btn) btn.className = 'off';
+                    const t = document.getElementById('studentCamText');
+                    if (t) t.textContent = 'إيقاف الكاميرا';
 
-                    // لو الطالب قفل الكاميرا من المتصفح
                     videoTrack.addEventListener('ended', () => {
                         studentCamEnabled = false;
-                        document.getElementById('btnStudentCam').className = 'on';
-                        document.getElementById('studentCamText').textContent = 'تشغيل الكاميرا';
+                        if (btn) btn.className = 'on';
+                        if (t) t.textContent = 'تشغيل الكاميرا';
                     });
                 } else {
                     studentLocalStream.getVideoTracks().forEach(t => { t.stop(); studentLocalStream.removeTrack(t); });
                     studentCamEnabled = false;
-                    document.getElementById('btnStudentCam').className = 'on';
-                    document.getElementById('studentCamText').textContent = 'تشغيل الكاميرا';
+                    const btn = document.getElementById('btnStudentCam');
+                    if (btn) btn.className = 'on';
+                    const t = document.getElementById('studentCamText');
+                    if (t) t.textContent = 'تشغيل الكاميرا';
                 }
             } catch(e) {
                 console.error('خطأ في الكاميرا:', e);
@@ -1596,18 +1677,22 @@
 
                     const offer = await viewerPc.createOffer();
                     await viewerPc.setLocalDescription(offer);
-                    await viewerStudentDocRef.update({
+                    await viewerStudentDocRef.set({
                         offer: { type: offer.type, sdp: offer.sdp }
-                    });
+                    }, { merge: true });
 
                     studentMicEnabled = true;
-                    document.getElementById('btnStudentMic').className = 'off';
-                    document.getElementById('studentMicText').textContent = 'إيقاف المايك';
+                    const btn = document.getElementById('btnStudentMic');
+                    if (btn) btn.className = 'off';
+                    const t = document.getElementById('studentMicText');
+                    if (t) t.textContent = 'إيقاف المايك';
                 } else {
                     studentLocalStream.getAudioTracks().forEach(t => { t.stop(); studentLocalStream.removeTrack(t); });
                     studentMicEnabled = false;
-                    document.getElementById('btnStudentMic').className = 'on';
-                    document.getElementById('studentMicText').textContent = 'تشغيل المايك';
+                    const btn = document.getElementById('btnStudentMic');
+                    if (btn) btn.className = 'on';
+                    const t = document.getElementById('studentMicText');
+                    if (t) t.textContent = 'تشغيل المايك';
                 }
             } catch(e) {
                 console.error('خطأ في المايك:', e);
@@ -1632,8 +1717,8 @@
             currentStreamAdminId = null;
             studentCamEnabled = false;
             studentMicEnabled = false;
+            remoteVideoMuted = true;
 
-            // حذف تسجيل الطالب
             if (currentUser) {
                 try {
                     db.collection('liveStreams').doc('current').collection('students').doc(currentUser.id).delete();
@@ -1961,62 +2046,3 @@
                     const doc = await db.collection('users').doc(fbUser.uid).get();
                     if (!doc.exists) {
                         alert('⚠️ لا يوجد ملف مستخدم مرتبط بهذا الحساب. تواصل مع الإدارة.');
-                        await auth.signOut();
-                        return;
-                    }
-
-                    const user = { id: doc.id, ...doc.data() };
-
-                    if (!user.active) {
-                        alert('⏳ حسابك غير مفعّل. تواصل مع الإدارة للتفعيل.');
-                        await auth.signOut();
-                        return;
-                    }
-
-                    currentUser = user;
-
-                    document.getElementById('authSection').style.display = 'none';
-                    document.getElementById('homeSection').style.display = 'none';
-                    document.getElementById('navButtons').style.display = 'none';
-                    document.getElementById('navUser').style.display = 'flex';
-                    document.getElementById('userNameDisplay').textContent = user.name + ' 👋';
-                    hideNavLinks();
-
-                    if (user.role === 'admin') {
-                        document.getElementById('adminLinkBtn').style.display = 'inline-block';
-                        window.location.href = 'admin.html';
-                    } else {
-                        document.getElementById('adminLinkBtn').style.display = 'none';
-                        document.getElementById('studentDashboard').classList.add('active');
-                        loadStudentDashboard(user);
-                        // 🔴 ابدأ مراقبة البث المباشر
-                        startLiveStreamListener();
-                    }
-                    window.scrollTo(0, 0);
-                } catch (err) {
-                    console.error('خطأ في تحميل بيانات المستخدم:', err);
-                }
-            });
-
-            toggleCenterField();
-        });
-
-        async function logout() {
-            stopLiveStreamListener();
-            try { await auth.signOut(); } catch(e) { console.error(e); }
-            currentUser = null;
-            document.getElementById('navButtons').style.display = 'flex';
-            document.getElementById('navUser').style.display = 'none';
-            document.getElementById('studentDashboard').classList.remove('active');
-            document.getElementById('courseDetailView').classList.remove('active');
-            document.getElementById('examPage').classList.remove('active');
-            document.getElementById('homeSection').style.display = 'block';
-            document.getElementById('authSection').style.display = 'none';
-            showNavLinks();
-            window.scrollTo(0,0);
-        }
-
-        function goToAdmin() { window.location.href = 'admin.html'; }
-    </script>
-</body>
-</html>
