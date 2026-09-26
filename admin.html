@@ -520,9 +520,7 @@
             </div>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════
-             🔴 البث المباشر
-             ═══════════════════════════════════════════════════════════ -->
+        <!-- 🔴 البث المباشر -->
         <div id="tabLiveStream" class="tab-content">
             <h4 style="color:#3b0a0a; margin-bottom:15px;">🔴 البث المباشر الداخلي</h4>
 
@@ -1407,14 +1405,14 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  🔴 البث المباشر (Firestore Signaling)
+        //  🔴 البث المباشر (Firestore Signaling — محدّث)
         // ═══════════════════════════════════════════════════════════
         let liveLocalStream = null;
         let isLiveActive = false;
         let adminCamEnabled = true;
         let adminMicEnabled = true;
-        let peerConnections = {};     // studentId → RTCPeerConnection
-        let studentStreams = {};      // studentId → {videoEl}
+        let peerConnections = {};
+        let studentStreams = {};
         let studentsUnsubscribe = null;
         let studentDocUnsubscribes = {};
 
@@ -1423,7 +1421,8 @@
                 { urls: 'stun:stun.l.google.com:19302' },
                 { urls: 'stun:stun1.l.google.com:19302' },
                 { urls: 'stun:stun2.l.google.com:19302' },
-                { urls: 'stun:stun3.l.google.com:19302' }
+                { urls: 'stun:stun3.l.google.com:19302' },
+                { urls: 'stun:stun4.l.google.com:19302' }
             ]
         };
 
@@ -1465,7 +1464,15 @@
                 document.getElementById('localPreview').srcObject = liveLocalStream;
                 document.getElementById('localPreviewContainer').style.display = 'block';
 
-                // احفظ الحالة في Firestore
+                // 🧹 امسح بيانات الطلاب القديمة قبل البدء
+                try {
+                    const oldSnap = await db.collection('liveStreams').doc('current').collection('students').get();
+                    const batch = db.batch();
+                    oldSnap.forEach(d => batch.delete(d.ref));
+                    await batch.commit();
+                    console.log('🧹 تم مسح بيانات الطلاب القديمة');
+                } catch(e) { console.warn('Cleanup error:', e); }
+
                 await db.collection('liveStreams').doc('current').set({
                     isLive: true,
                     title, grade,
@@ -1537,17 +1544,19 @@
                     try {
                         await db.collection('liveStreams').doc('current')
                             .collection('students').doc(studentId)
-                            .update({
+                            .set({
                                 adminCandidates: firebase.firestore.FieldValue.arrayUnion(event.candidate.toJSON())
-                            });
+                            }, { merge: true });
                     } catch(e) { console.warn('ICE send error:', e); }
                 }
             };
 
             pc.onconnectionstatechange = () => {
                 console.log(`🔗 ${studentId}: ${pc.connectionState}`);
-                if (pc.connectionState === 'failed' || pc.connectionState === 'disconnected') {
-                    cleanupPeer(studentId);
+                if (pc.connectionState === 'failed') {
+                    setTimeout(() => {
+                        if (pc.connectionState === 'failed') cleanupPeer(studentId);
+                    }, 5000);
                 }
             };
 
@@ -1555,12 +1564,13 @@
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
 
-            // اكتب offer في وثيقة الطالب
+            // اكتب offer + adminCandidates فاضية
             await db.collection('liveStreams').doc('current')
                 .collection('students').doc(studentId)
                 .set({
                     offer: { type: offer.type, sdp: offer.sdp },
-                    adminId: currentAdmin.id
+                    adminId: currentAdmin.id,
+                    adminCandidates: []
                 }, { merge: true });
 
             // استمع للـ answer والـ ICE من الطالب
@@ -1570,15 +1580,20 @@
                     if (!snap.exists) return;
                     const data = snap.data();
 
-                    if (data.answer && pc.signalingState === 'have-local-offer') {
+                    // answer — بس لو لسه مفيش remote description
+                    if (data.answer && !pc.currentRemoteDescription) {
                         try {
                             await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+                            console.log(`✅ ${studentId}: setRemoteDescription نجح`);
                         } catch(e) { console.warn('setRemote error:', e); }
                     }
 
+                    // student ICE candidates — بعد ما remote description جاهز
                     if (data.studentCandidates && pc.remoteDescription) {
                         for (const c of data.studentCandidates) {
-                            try { await pc.addIceCandidate(new RTCIceCandidate(c)); } catch(e) {}
+                            try {
+                                await pc.addIceCandidate(new RTCIceCandidate(c));
+                            } catch(e) { /* مضاف */ }
                         }
                     }
                 });
@@ -1593,7 +1608,7 @@
                 delete peerConnections[studentId];
             }
             if (studentDocUnsubscribes[studentId]) {
-                studentDocUnsubscribes[studentId]();
+                try { studentDocUnsubscribes[studentId](); } catch(e) {}
                 delete studentDocUnsubscribes[studentId];
             }
             removeStudentStream(studentId);
@@ -1651,10 +1666,6 @@
             const msg = document.getElementById('liveStreamMsg');
 
             Object.keys(peerConnections).forEach(id => cleanupPeer(id));
-            Object.keys(studentDocUnsubscribes).forEach(id => {
-                try { studentDocUnsubscribes[id](); } catch(e) {}
-            });
-            studentDocUnsubscribes = {};
 
             if (studentsUnsubscribe) {
                 try { studentsUnsubscribe(); } catch(e) {}
@@ -1704,7 +1715,7 @@
                 card.id = 'student-stream-' + studentId;
                 card.className = 'student-stream-card';
                 card.innerHTML = `
-                    <video autoplay playsinline></video>
+                    <video autoplay playsinline muted></video>
                     <div class="student-name">👤 طالب</div>
                 `;
                 grid.appendChild(card);
@@ -1804,7 +1815,7 @@
             toggleItemFields();
             loadLiveStreamStatus();
 
-            // 📱 اكتشف الموبايل — مشاركة الشاشة مش مدعومة على الموبايل
+            // 📱 اكتشف الموبايل
             if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 const sourceSelect = document.getElementById('liveSource');
                 if (sourceSelect) {
