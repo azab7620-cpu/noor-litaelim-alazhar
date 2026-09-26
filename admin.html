@@ -538,6 +538,9 @@
                     <button id="btnAdminMic" onclick="toggleAdminMic()" class="neutral">
                         <span>🎤</span> <span>إيقاف المايك</span>
                     </button>
+                    <button id="btnSwitchCam" onclick="switchAdminCamera()" class="neutral" style="display:none;">
+                        <span>🔄</span> <span>تبديل الكاميرا</span>
+                    </button>
                     <span class="stream-status on" id="viewerCountBadge">
                         👥 <strong id="viewerCount">0</strong> مشاهد
                     </span>
@@ -1416,6 +1419,11 @@
         let studentsUnsubscribe = null;
         let studentDocUnsubscribes = {};
 
+        // 🎥 إدارة تبديل الكاميرا للأدمن
+        let adminFacingMode = 'user';        // 'user' = أمامية، 'environment' = خلفية
+        let adminCurrentCamIndex = 0;
+        let adminAvailableCameras = [];
+
         const ICE_SERVERS = {
             iceServers: [
                 { urls: 'stun:stun.l.google.com:19302' },
@@ -1428,16 +1436,125 @@
 
         async function getLiveStream() {
             const source = document.getElementById('liveSource').value;
+
             if (source === 'screen') {
+                // ✅ تحقق من الدعم قبل الاستخدام
+                if (!navigator.mediaDevices || typeof navigator.mediaDevices.getDisplayMedia !== 'function') {
+                    throw new Error('screen_not_supported');
+                }
                 return await navigator.mediaDevices.getDisplayMedia({
                     video: { frameRate: 15 },
                     audio: true
                 });
             }
+
+            // 📷 كاميرا + مايك (مع دعم facingMode)
             return await navigator.mediaDevices.getUserMedia({
-                video: { width: 1280, height: 720 },
+                video: {
+                    facingMode: { ideal: adminFacingMode },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                },
                 audio: true
             });
+        }
+
+        async function loadAdminCamerasList() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                adminAvailableCameras = devices.filter(d => d.kind === 'videoinput');
+            } catch(e) {
+                adminAvailableCameras = [];
+            }
+            return adminAvailableCameras;
+        }
+
+        async function shouldShowSwitchCameraBtn() {
+            // لو فيه أكتر من كاميرا
+            const cams = await loadAdminCamerasList();
+            if (cams.length >= 2) return true;
+
+            // لو موبايل — نفترض وجود أمامية + خلفية
+            if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return true;
+
+            return false;
+        }
+
+        async function switchAdminCamera() {
+            if (!liveLocalStream) return;
+
+            const oldVideoTrack = liveLocalStream.getVideoTracks()[0];
+            if (!oldVideoTrack) return;
+
+            let newVideoTrack = null;
+            const newFacing = adminFacingMode === 'user' ? 'environment' : 'user';
+
+            // المحاولة الأولى: استخدام facingMode (يعمل على الموبايل)
+            try {
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: { ideal: newFacing },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
+                newVideoTrack = newStream.getVideoTracks()[0];
+                adminFacingMode = newFacing;
+            } catch(e) {
+                console.warn('facingMode switch failed, trying deviceId:', e);
+                // المحاولة الثانية: التنقل بين الأجهزة (يعمل على الديسكتوب)
+                try {
+                    const cams = await loadAdminCamerasList();
+                    if (cams.length < 2) {
+                        alert('⚠️ لا توجد كاميرا أخرى متاحة للتبديل.');
+                        return;
+                    }
+                    adminCurrentCamIndex = (adminCurrentCamIndex + 1) % cams.length;
+                    const camId = cams[adminCurrentCamIndex].deviceId;
+                    const newStream = await navigator.mediaDevices.getUserMedia({
+                        video: { deviceId: { exact: camId } },
+                        audio: false
+                    });
+                    newVideoTrack = newStream.getVideoTracks()[0];
+                } catch(e2) {
+                    console.error('All camera switch attempts failed:', e2);
+                    alert('⚠️ تعذّر تبديل الكاميرا.');
+                    return;
+                }
+            }
+
+            if (!newVideoTrack) return;
+
+            // حافظ على حالة التشغيل/الإيقاف
+            newVideoTrack.enabled = adminCamEnabled;
+
+            // 🔄 استبدل التراك في كل اتصالات الطلاب (بدون إعادة تفاوض)
+            for (const studentId of Object.keys(peerConnections)) {
+                const pc = peerConnections[studentId];
+                const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
+                if (sender) {
+                    try { await sender.replaceTrack(newVideoTrack); } catch(e) { console.warn(e); }
+                }
+            }
+
+            // 🔄 استبدل في الـ local stream
+            liveLocalStream.removeTrack(oldVideoTrack);
+            oldVideoTrack.stop();
+            liveLocalStream.addTrack(newVideoTrack);
+
+            // 🔄 حدّث المعاينة
+            const preview = document.getElementById('localPreview');
+            if (preview) preview.srcObject = liveLocalStream;
+
+            // ✅ تأكيد نجاح التبديل للمستخدم
+            const btn = document.getElementById('btnSwitchCam');
+            if (btn) {
+                btn.innerHTML = '<span>🔄</span> <span>✅ تم التبديل</span>';
+                setTimeout(() => {
+                    btn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+                }, 1200);
+            }
         }
 
         async function startLiveStream(e) {
@@ -1458,6 +1575,15 @@
 
             try {
                 liveLocalStream = await getLiveStream();
+
+                // 🎥 احفظ الـ facingMode المستخدم
+                if (document.getElementById('liveSource').value === 'camera') {
+                    try {
+                        const settings = liveLocalStream.getVideoTracks()[0]?.getSettings();
+                        if (settings && settings.facingMode) adminFacingMode = settings.facingMode;
+                    } catch(e) {}
+                }
+
                 adminCamEnabled = liveLocalStream.getVideoTracks().length > 0;
                 adminMicEnabled = liveLocalStream.getAudioTracks().length > 0;
 
@@ -1493,6 +1619,21 @@
                 updateAdminCamBtn();
                 updateAdminMicBtn();
 
+                // 🔄 أظهر زر تبديل الكاميرا لو فيه أكتر من كاميرا أو الجهاز موبايل
+                // وكمان اخفيه لو المصدر مشاركة شاشة
+                const sourceNow = document.getElementById('liveSource').value;
+                if (sourceNow === 'camera') {
+                    const showSwitch = await shouldShowSwitchCameraBtn();
+                    const switchBtn = document.getElementById('btnSwitchCam');
+                    if (switchBtn) {
+                        switchBtn.style.display = showSwitch ? 'inline-flex' : 'none';
+                        switchBtn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+                    }
+                } else {
+                    const switchBtn = document.getElementById('btnSwitchCam');
+                    if (switchBtn) switchBtn.style.display = 'none';
+                }
+
                 document.getElementById('liveStreamStatusBox').innerHTML = `
                     <div style="background:#d4edda; color:#155724; border:2px solid #2a7a2a; padding:15px; border-radius:16px; display:flex; align-items:center; gap:10px;">
                         <span class="live-badge"><span class="live-dot"></span> LIVE</span>
@@ -1514,7 +1655,19 @@
 
             } catch (err) {
                 console.error(err);
-                msg.innerHTML = '<div class="alert alert-warning">❌ تعذّر الوصول للكاميرا/الشاشة.</div>';
+                let errorMsg = '❌ تعذّر الوصول للكاميرا/الشاشة.';
+
+                if (err.message === 'screen_not_supported') {
+                    errorMsg = '⚠️ مشاركة الشاشة غير مدعومة على هذا الجهاز/المتصفح. اختر "📷 كاميرا" بدلاً منها.';
+                } else if (err.name === 'NotAllowedError') {
+                    errorMsg = '⚠️ تم رفض الصلاحية. يرجى السماح بالوصول للكاميرا/الميكروفون.';
+                } else if (err.name === 'NotFoundError') {
+                    errorMsg = '⚠️ لم يتم العثور على كاميرا أو ميكروفون.';
+                } else if (err.name === 'NotReadableError') {
+                    errorMsg = '⚠️ الكاميرا مستخدمة من تطبيق آخر. أغلق التطبيقات الأخرى وحاول مرة أخرى.';
+                }
+
+                msg.innerHTML = '<div class="alert alert-warning">' + errorMsg + '</div>';
                 startBtn.disabled = false;
                 startBtn.textContent = '🔴 بدء البث';
             }
@@ -1703,6 +1856,17 @@
             document.getElementById('stopLiveBtn').style.display = 'none';
             document.getElementById('liveStreamStatusBox').innerHTML = '<div style="text-align:center; padding:15px; color:#888;">⏸️ لا يوجد بث نشط</div>';
             if (msg) msg.innerHTML = '<div class="alert alert-warning">⏹️ تم إيقاف البث.</div>';
+
+            // 🔄 اخفِ زر تبديل الكاميرا
+            const switchBtn = document.getElementById('btnSwitchCam');
+            if (switchBtn) {
+                switchBtn.style.display = 'none';
+                switchBtn.innerHTML = '<span>🔄</span> <span>تبديل الكاميرا</span>';
+            }
+
+            // 🔄 أعد تعيين facingMode
+            adminFacingMode = 'user';
+
             loadStudentsTable();
         }
 
@@ -1815,13 +1979,19 @@
             toggleItemFields();
             loadLiveStreamStatus();
 
-            // 📱 اكتشف الموبايل
-            if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                const sourceSelect = document.getElementById('liveSource');
-                if (sourceSelect) {
-                    sourceSelect.innerHTML = '<option value="camera">📷 كاميرا + مايك</option>';
+            // 📱 تحقق من دعم مشاركة الشاشة (مش شرط نلغيها)
+            const sourceSelect = document.getElementById('liveSource');
+            if (sourceSelect) {
+                const screenOpt = sourceSelect.querySelector('option[value="screen"]');
+                const supportsDisplay = navigator.mediaDevices && typeof navigator.mediaDevices.getDisplayMedia === 'function';
+                if (screenOpt && !supportsDisplay) {
+                    screenOpt.disabled = true;
+                    screenOpt.textContent = '🖥️ مشاركة الشاشة (غير مدعومة على هذا الجهاز)';
                 }
             }
+
+            // 🔄 حدّث زر تبديل الكاميرا لو موجود
+            loadAdminCamerasList();
         }
     </script>
 </body>
