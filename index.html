@@ -944,6 +944,15 @@
             return '#';
         }
 
+        // 🆕 دالة لتوليد ID آمن من اسم الصف
+        function getGradeDocId(grade) {
+            if (!grade) return 'unknown';
+            return 'g_' + encodeURIComponent(grade)
+                .replace(/%/g, '_')
+                .replace(/[^a-zA-Z0-9_]/g, '')
+                .substring(0, 60);
+        }
+
         // ============================================================
         //  🌙 دارك مود
         // ============================================================
@@ -1339,7 +1348,7 @@
         }
 
         // ============================================================
-        //  🔴 البث المباشر (Firestore Signaling — WebRTC)
+        //  🔴 البث المباشر (Firestore Signaling — بث متعدد حسب الصف)
         // ============================================================
         let viewerUnsubscribe = null;
         let viewerPc = null;
@@ -1350,6 +1359,9 @@
         let studentCamEnabled = false;
         let studentMicEnabled = false;
         let remoteVideoMuted = true;
+
+        // 🆕 معرّف البث الحالي (حسب صف الطالب)
+        let currentBroadcastDocId = null;
 
         // 🎥 إدارة تبديل الكاميرا للطالب
         let studentFacingMode = 'user';
@@ -1368,8 +1380,13 @@
 
         function startLiveStreamListener() {
             if (viewerUnsubscribe) return;
+            if (!currentUser || !currentUser.grade) return;
 
-            viewerUnsubscribe = db.collection('liveStreams').doc('current').onSnapshot(
+            // 🆕 استخدم مستند الصف
+            const gradeDocId = getGradeDocId(currentUser.grade);
+            currentBroadcastDocId = gradeDocId;
+
+            viewerUnsubscribe = db.collection('liveStreams').doc(gradeDocId).onSnapshot(
                 doc => {
                     const viewer = document.getElementById('liveStreamViewer');
                     const dotBadge = document.getElementById('liveDotBadge');
@@ -1390,7 +1407,8 @@
 
                     const data = doc.data();
 
-                    if (data.grade && currentUser && currentUser.grade && data.grade !== currentUser.grade) {
+                    // البث لصف تاني (مش المفروض يحدث لأننا بنستمع لمستند صفنا، بس للاحتياط)
+                    if (data.grade && currentUser.grade && data.grade !== currentUser.grade) {
                         disconnectViewer();
                         viewer.innerHTML = `
                             <div style="text-align:center; padding:40px 20px; color:#888;">
@@ -1464,7 +1482,9 @@
         async function joinLiveStream(streamData) {
             try {
                 const studentId = currentUser.id;
-                const studentRef = db.collection('liveStreams').doc('current').collection('students').doc(studentId);
+                // 🆕 استخدم معرّف بث الصف
+                const docId = currentBroadcastDocId || getGradeDocId(currentUser.grade);
+                const studentRef = db.collection('liveStreams').doc(docId).collection('students').doc(studentId);
                 viewerStudentDocRef = studentRef;
 
                 await studentRef.set({
@@ -1722,10 +1742,8 @@
                     if (btn) btn.className = 'off';
                     if (t) t.textContent = 'إيقاف الكاميرا';
 
-                    // 🔍 اكتشف اسم الكاميرا الحالية
                     studentCurrentCamName = await detectCurrentStudentCamName(videoTrack);
 
-                    // 🔄 اعرض زر التبديل مع الاسم
                     if (switchBtn) {
                         const show = await shouldShowStudentSwitchBtn();
                         switchBtn.style.display = show ? 'inline-flex' : 'none';
@@ -1821,7 +1839,6 @@
             oldVideoTrack.stop();
             studentLocalStream.addTrack(newVideoTrack);
 
-            // ✅ حدّث اسم الكاميرا
             studentCurrentCamName = await detectCurrentStudentCamName(newVideoTrack);
 
             if (switchBtn) {
@@ -1899,9 +1916,11 @@
                 switchBtn.innerHTML = '<span>🔄</span> <span>Front 1</span>';
             }
 
+            // 🆕 حذف تسجيل الطالب من مستند صفه
             if (currentUser) {
                 try {
-                    db.collection('liveStreams').doc('current').collection('students').doc(currentUser.id).delete();
+                    const docId = currentBroadcastDocId || getGradeDocId(currentUser.grade);
+                    db.collection('liveStreams').doc(docId).collection('students').doc(currentUser.id).delete();
                 } catch(e) {}
             }
         }
@@ -1912,6 +1931,7 @@
                 viewerUnsubscribe = null;
             }
             disconnectViewer();
+            currentBroadcastDocId = null;
         }
 
         // ============================================================
@@ -2254,7 +2274,12 @@
                         document.getElementById('adminLinkBtn').style.display = 'none';
                         document.getElementById('studentDashboard').classList.add('active');
                         loadStudentDashboard(user);
-                        // 🔴 ابدأ مراقبة البث المباشر
+
+                        // 🔴 ابدأ مراقبة البث المباشر الخاص بصفه
+                        if (viewerUnsubscribe) {
+                            try { viewerUnsubscribe(); } catch(e) {}
+                            viewerUnsubscribe = null;
+                        }
                         startLiveStreamListener();
                     }
                     window.scrollTo(0, 0);
