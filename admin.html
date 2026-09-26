@@ -51,6 +51,7 @@
         body.dark-mode .modal-content { background: var(--bg-card); color: var(--text-primary); }
         body.dark-mode .detail-row { border-bottom-color: var(--border-color); }
         body.dark-mode #emergencyZone { background: linear-gradient(135deg, #2a1010 0%, #3a1515 100%) !important; }
+        body.dark-mode #myStreamsZone { background: linear-gradient(135deg, #0f1e2e 0%, #142738 100%) !important; }
 
         .btn-dark-mode { background: transparent; border: 2px solid #3b0a0a; color: #3b0a0a; padding: 6px 12px; border-radius: 50%; font-size: 16px; cursor: pointer; transition: 0.3s; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; line-height: 1; }
         .btn-dark-mode:hover { transform: scale(1.1) rotate(10deg); background: #f4edd3; }
@@ -440,6 +441,41 @@
         }
         #forceStopAllBtn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
+        /* 📋 منطقة بثوثي */
+        #myStreamsZone {
+            margin-bottom: 20px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+            border: 2px dashed #1e5a8a;
+            border-radius: 18px;
+            box-shadow: 0 6px 18px rgba(30,90,138,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        #myStreamsBtn {
+            background: linear-gradient(135deg, #1e5a8a 0%, #144266 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 26px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(30,90,138,0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+        #myStreamsBtn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(30,90,138,0.55);
+        }
+
         @media (max-width: 600px) {
             .admin-tabs { flex-direction: column; }
             .form-grid { grid-template-columns: 1fr; }
@@ -448,6 +484,8 @@
             .student-streams-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
             #emergencyZone > div { flex-direction: column; align-items: flex-start; }
             #forceStopAllBtn { width: 100%; justify-content: center; }
+            #myStreamsZone { flex-direction: column; align-items: flex-start; }
+            #myStreamsBtn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -562,6 +600,18 @@
                 <div style="text-align:center; padding:15px; color:#888;">⏸️ لا يوجد بث نشط</div>
             </div>
 
+            <!-- 📋 منطقة بثوثي النشطة -->
+            <div id="myStreamsZone">
+                <div>
+                    <strong style="color:#144266; display:block; font-size:14px; margin-bottom:4px;">📋 بثوثي النشطة</strong>
+                    <span style="color:#666; font-size:12px;">اعرض كل البثوث اللي أنت مسجلها دلوقتي وأوقف أي واحد منهم.</span>
+                </div>
+                <button type="button" onclick="showMyStreamsModal()" id="myStreamsBtn">
+                    📋 بثوثي النشطة
+                    <span id="myStreamsCount" style="background:#fff; color:#144266; padding:2px 10px; border-radius:50px; font-size:11px; font-weight:900;">0</span>
+                </button>
+            </div>
+
             <div class="live-control-panel">
                 <h5>🎛️ لوحة التحكم بالبث</h5>
 
@@ -595,7 +645,7 @@
                 </div>
             </div>
 
-            <!-- 🚨 منطقة الطوارئ — إيقاف كل البثوث -->
+            <!-- 🚨 منطقة الطوارئ -->
             <div id="emergencyZone">
                 <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;">
                     <div>
@@ -802,6 +852,19 @@
                 <button class="modal-close" onclick="closeStudentModal()">✕</button>
             </div>
             <div id="studentDetailsContent"></div>
+        </div>
+    </div>
+
+    <!-- 📋 نافذة بثوثي النشطة -->
+    <div id="myStreamsModal" class="modal-overlay" onclick="closeMyStreamsModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 style="color:#3b0a0a; font-size:18px;">📋 بثوثي النشطة</h3>
+                <button class="modal-close" onclick="closeMyStreamsModal()">✕</button>
+            </div>
+            <div id="myStreamsContent">
+                <div style="text-align:center; padding:30px; color:#888;">⏳ جاري التحميل...</div>
+            </div>
         </div>
     </div>
 
@@ -1463,7 +1526,10 @@
             if (tabId === 'teachers') loadTeachersTable();
             if (tabId === 'exams') loadExamsTable();
             if (tabId === 'addBundle') populateBundleSelects();
-            if (tabId === 'liveStream') loadLiveStreamStatus();
+            if (tabId === 'liveStream') {
+                loadLiveStreamStatus();
+                refreshMyStreamsCount();
+            }
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1710,7 +1776,6 @@
 
             const gradeDocId = getGradeDocId(grade);
 
-            // تحقق لو في بث نشط بالفعل لنفس الصف
             try {
                 const existingDoc = await db.collection('liveStreams').doc(gradeDocId).get();
                 if (existingDoc.exists && existingDoc.data().isLive) {
@@ -1801,6 +1866,9 @@
                     });
 
                 liveLocalStream.getVideoTracks()[0]?.addEventListener('ended', () => stopLiveStream());
+
+                // 🆕 حدّث عداد بثوثي
+                refreshMyStreamsCount();
 
             } catch (err) {
                 console.error(err);
@@ -2013,6 +2081,7 @@
 
             loadStudentsTable();
             loadLiveStreamStatus();
+            refreshMyStreamsCount();
         }
 
         function addStudentStream(studentId, stream) {
@@ -2087,7 +2156,6 @@
             } catch(err) { console.error(err); }
         }
 
-        // 🆕 اعرض كل البثات النشطة
         async function loadLiveStreamStatus() {
             try {
                 const snap = await db.collection('liveStreams').get();
@@ -2115,12 +2183,177 @@
         }
 
         // ═══════════════════════════════════════════════════════════
+        //  📋 بثوثي النشطة (كل أدمن يشوف بثوثه بس)
+        // ═══════════════════════════════════════════════════════════
+        async function refreshMyStreamsCount() {
+            if (!currentAdmin) return;
+            try {
+                const snap = await db.collection('liveStreams').get();
+                const mine = snap.docs.filter(d => d.data().isLive && d.data().adminId === currentAdmin.id);
+                const badge = document.getElementById('myStreamsCount');
+                if (badge) {
+                    badge.textContent = mine.length;
+                    badge.style.background = mine.length > 0 ? '#ffd966' : '#fff';
+                    badge.style.color = '#144266';
+                }
+            } catch(e) { console.warn('refreshMyStreamsCount:', e); }
+        }
+
+        async function showMyStreamsModal() {
+            if (!currentAdmin) return;
+            const modal = document.getElementById('myStreamsModal');
+            const content = document.getElementById('myStreamsContent');
+            if (!modal || !content) return;
+
+            modal.style.display = 'flex';
+            content.innerHTML = '<div style="text-align:center; padding:30px; color:#888;">⏳ جاري التحميل...</div>';
+
+            try {
+                const snap = await db.collection('liveStreams').get();
+                const mine = snap.docs.filter(d => d.data().isLive && d.data().adminId === currentAdmin.id);
+
+                if (mine.length === 0) {
+                    content.innerHTML = `
+                        <div style="text-align:center; padding:30px 20px; color:#888;">
+                            <div style="font-size:50px; margin-bottom:12px; opacity:0.5;">📭</div>
+                            <h3 style="color:#666; margin-bottom:8px;">لا يوجد لديك بثوث نشطة</h3>
+                            <p style="font-size:12px;">لما تبدأ بث جديد هيظهر هنا تلقائياً.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                content.innerHTML = mine.map(doc => {
+                    const data = doc.data();
+                    const isCurrentSession = (doc.id === currentBroadcastDocId);
+                    const startedAt = data.startedAt && data.startedAt.toDate ? data.startedAt.toDate() : null;
+                    const startedText = startedAt
+                        ? startedAt.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+                        : '—';
+
+                    return `
+                        <div style="background:${isCurrentSession ? '#e6f7e6' : '#f8f9fa'}; border:2px solid ${isCurrentSession ? '#2a7a2a' : '#dee2e6'}; padding:16px; border-radius:16px; margin-bottom:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:start; gap:12px; flex-wrap:wrap;">
+                                <div style="flex:1; min-width:200px;">
+                                    <div style="font-weight:900; color:#3b0a0a; font-size:15px; margin-bottom:6px;">📝 ${esc(data.title || 'بدون عنوان')}</div>
+                                    <div style="font-size:12px; color:#555; margin-bottom:4px;">🎓 ${esc(data.grade || '—')}</div>
+                                    <div style="font-size:11px; color:#888;">
+                                        ⏰ بدأ: ${startedText}
+                                        ${isCurrentSession
+                                            ? ' • <strong style="color:#2a7a2a;">🔴 الجلسة الحالية</strong>'
+                                            : ' • <em style="color:#a00;">من جلسة أخرى</em>'}
+                                    </div>
+                                </div>
+                                <button onclick="stopMyStreamFromList('${esc(doc.id)}', ${isCurrentSession})" style="background:linear-gradient(135deg, #c00 0%, #800 100%); color:#fff; border:none; padding:10px 20px; border-radius:50px; font-weight:800; font-size:12px; cursor:pointer; box-shadow:0 4px 12px rgba(170,0,0,0.3); white-space:nowrap; font-family:'Cairo', sans-serif;">
+                                    ⏹️ إيقاف البث
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch(e) {
+                console.error(e);
+                content.innerHTML = '<div style="text-align:center; padding:30px; color:#a00;">❌ حدث خطأ أثناء التحميل: ' + esc(e.message) + '</div>';
+            }
+        }
+
+        function closeMyStreamsModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('myStreamsModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function stopMyStreamFromList(docId, isCurrentSession) {
+            if (!currentAdmin) return;
+
+            const confirmMsg = isCurrentSession
+                ? `⚠️ هل أنت متأكد من إيقاف بثك الحالي؟\n\nسيتم فصل كل الطلاب المتصلين.`
+                : `⚠️ ده بث من جلسة تانية (أو متبقي في السيرفر).\n\nهل تريد إيقافه؟`;
+
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                const docRef = db.collection('liveStreams').doc(docId);
+
+                // 1) امسح الطلاب المتصلين
+                const stSnap = await docRef.collection('students').get();
+                if (!stSnap.empty) {
+                    const batch = db.batch();
+                    stSnap.forEach(d => batch.delete(d.ref));
+                    await batch.commit();
+                }
+
+                // 2) علّم البث إنه انتهى
+                await docRef.update({
+                    isLive: false,
+                    stoppedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    stoppedBy: currentAdmin.name + ' (من قائمة بثوثي)'
+                });
+
+                // 3) لو ده البث الحالي بتاع الجلسة، نظّف الـ state المحلي
+                if (isCurrentSession) {
+                    Object.keys(peerConnections).forEach(id => {
+                        try { cleanupPeer(id); } catch(e) {}
+                    });
+
+                    if (studentsUnsubscribe) {
+                        try { studentsUnsubscribe(); } catch(e) {}
+                        studentsUnsubscribe = null;
+                    }
+
+                    if (liveLocalStream) {
+                        liveLocalStream.getTracks().forEach(t => t.stop());
+                        liveLocalStream = null;
+                    }
+
+                    currentBroadcastDocId = null;
+                    isLiveActive = false;
+
+                    document.getElementById('localPreviewContainer').style.display = 'none';
+                    document.getElementById('liveToolbar').style.display = 'none';
+                    document.getElementById('permissionPanel').style.display = 'none';
+                    document.getElementById('studentStreamsContainer').style.display = 'none';
+
+                    const startBtn = document.getElementById('startLiveBtn');
+                    if (startBtn) {
+                        startBtn.style.display = 'inline-block';
+                        startBtn.disabled = false;
+                        startBtn.textContent = '🔴 بدء البث';
+                    }
+                    document.getElementById('stopLiveBtn').style.display = 'none';
+
+                    const switchBtn = document.getElementById('btnSwitchCam');
+                    if (switchBtn) {
+                        switchBtn.style.display = 'none';
+                        switchBtn.innerHTML = '<span>🔄</span> <span>Front 1</span>';
+                    }
+
+                    adminFacingMode = 'user';
+                    adminCurrentCamName = 'Front 1';
+                    adminCamerasCache = [];
+                }
+
+                alert('✅ تم إيقاف البث بنجاح.');
+
+                // 4) حدّث الواجهات
+                refreshMyStreamsCount();
+                showMyStreamsModal();
+                loadLiveStreamStatus();
+                loadStudentsTable();
+
+            } catch(e) {
+                console.error(e);
+                alert('❌ حدث خطأ: ' + e.message);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
         //  🚨 إيقاف طارئ لكل البثوث
         // ═══════════════════════════════════════════════════════════
         async function forceStopAllStreams() {
             const btn = document.getElementById('forceStopAllBtn');
 
-            // 1️⃣ اجلب كل البثوث النشطة
             let snap;
             try {
                 snap = await db.collection('liveStreams').get();
@@ -2132,13 +2365,11 @@
 
             const activeStreams = snap.docs.filter(d => d.data().isLive);
 
-            // 2️⃣ لو مفيش بثوث أصلاً
             if (activeStreams.length === 0) {
                 alert('ℹ️ لا يوجد أي بث نشط على المنصة حالياً.');
                 return;
             }
 
-            // 3️⃣ تأكيد الطوارئ
             const confirmMsg = `⚠️ تحذير طارئ!\n\n` +
                                `عدد البثوث النشطة: ${activeStreams.length}\n` +
                                `سيتم إيقافها كلها فوراً.\n\n` +
@@ -2146,7 +2377,6 @@
                                `هل أنت متأكد من الإيقاف الطارئ؟`;
             if (!confirm(confirmMsg)) return;
 
-            // 4️⃣ اقفل الزر مؤقتاً
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = '⏳ جاري الإيقاف...';
@@ -2155,12 +2385,10 @@
             let stoppedCount = 0;
             let failed = [];
 
-            // 5️⃣ أوقف كل بث واحد واحد
             for (const doc of activeStreams) {
                 try {
                     const data = doc.data();
 
-                    // 5.1) امسح كل الطلاب المتصلين بالبث ده
                     const stSnap = await doc.ref.collection('students').get();
                     if (!stSnap.empty) {
                         const batch = db.batch();
@@ -2168,7 +2396,6 @@
                         await batch.commit();
                     }
 
-                    // 5.2) علّم البث إنه انتهى
                     await doc.ref.update({
                         isLive: false,
                         stoppedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -2177,7 +2404,6 @@
 
                     stoppedCount++;
 
-                    // 5.3) لو ده بثي أنا، اقفل الـ local stream كمان
                     if (currentAdmin && data.adminId === currentAdmin.id) {
                         Object.keys(peerConnections).forEach(id => {
                             try { cleanupPeer(id); } catch(e) {}
@@ -2225,17 +2451,15 @@
                 }
             }
 
-            // 6️⃣ حدّث الواجهات
             try { loadLiveStreamStatus(); } catch(e) {}
             try { loadStudentsTable(); } catch(e) {}
+            try { refreshMyStreamsCount(); } catch(e) {}
 
-            // 7️⃣ رجّع الزر
             if (btn) {
                 btn.disabled = false;
                 btn.innerHTML = '🚨 إيقاف طارئ لكل البثوث';
             }
 
-            // 8️⃣ رسالة النتيجة
             if (failed.length === 0) {
                 alert(`✅ تم إيقاف ${stoppedCount} بث بنجاح.\n\nتم فصل جميع الطلاب.`);
             } else {
@@ -2280,6 +2504,7 @@
                     });
                     alert('✅ تم إيقاف البث القديم.');
                     loadLiveStreamStatus();
+                    refreshMyStreamsCount();
                 }
             } catch(e) { console.warn('checkMyExistingStream:', e); }
         }
@@ -2315,6 +2540,10 @@
 
             // 🆕 كشف بث قديم
             setTimeout(() => checkMyExistingStream(), 500);
+
+            // 🆕 حدّث عدد البثوث كل 5 ثواني
+            refreshMyStreamsCount();
+            setInterval(refreshMyStreamsCount, 5000);
         }
     </script>
 </body>
