@@ -773,6 +773,15 @@
             return '#';
         }
 
+        // 🆕 دالة لتوليد ID آمن من اسم الصف
+        function getGradeDocId(grade) {
+            if (!grade) return 'unknown';
+            return 'g_' + encodeURIComponent(grade)
+                .replace(/%/g, '_')
+                .replace(/[^a-zA-Z0-9_]/g, '')
+                .substring(0, 60);
+        }
+
         // ═══════════════════════════════════════════════════════════
         //  🌙 دارك مود
         // ═══════════════════════════════════════════════════════════
@@ -805,6 +814,9 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
         let currentAdmin = null;
+
+        // 🆕 متغير لحفظ ID البث الحالي
+        let currentBroadcastDocId = null;
 
         async function getCollection(name) {
             const snap = await db.collection(name).get();
@@ -904,10 +916,11 @@
                 return;
             }
 
+            // 🆕 اقرأ الصلاحيات من مستند البث الحالي (بس لو فيه بث نشط)
             let perms = {};
-            if (isLiveActive) {
+            if (isLiveActive && currentBroadcastDocId) {
                 try {
-                    const permsSnap = await db.collection('liveStreams').doc('current').collection('students').get();
+                    const permsSnap = await db.collection('liveStreams').doc(currentBroadcastDocId).collection('students').get();
                     permsSnap.forEach(d => { perms[d.id] = d.data(); });
                 } catch(e) { console.warn(e); }
             }
@@ -1408,7 +1421,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════
-        //  🔴 البث المباشر (Firestore Signaling — محدّث)
+        //  🔴 البث المباشر (Firestore Signaling — بث متعدد)
         // ═══════════════════════════════════════════════════════════
         let liveLocalStream = null;
         let isLiveActive = false;
@@ -1420,7 +1433,7 @@
         let studentDocUnsubscribes = {};
 
         // 🎥 إدارة تبديل الكاميرا للأدمن
-        let adminFacingMode = 'user';        // 'user' = أمامية، 'environment' = خلفية
+        let adminFacingMode = 'user';
         let adminCurrentCamIndex = 0;
         let adminAvailableCameras = [];
         let adminCurrentCamName = 'Front 1';
@@ -1440,7 +1453,6 @@
             const source = document.getElementById('liveSource').value;
 
             if (source === 'screen') {
-                // ✅ تحقق من الدعم قبل الاستخدام
                 if (!navigator.mediaDevices || typeof navigator.mediaDevices.getDisplayMedia !== 'function') {
                     throw new Error('screen_not_supported');
                 }
@@ -1450,7 +1462,6 @@
                 });
             }
 
-            // 📷 كاميرا + مايك (مع دعم facingMode)
             return await navigator.mediaDevices.getUserMedia({
                 video: {
                     facingMode: { ideal: adminFacingMode },
@@ -1461,7 +1472,7 @@
             });
         }
 
-        // 🎯 جلب قائمة الكاميرات مع تسميات ذكية (Front 1, Back 1, Back 2...)
+        // 🎯 جلب قائمة الكاميرات مع تسميات ذكية
         async function getAdminCamerasList() {
             try {
                 const devices = await navigator.mediaDevices.enumerateDevices();
@@ -1515,7 +1526,6 @@
             }
         }
 
-        // Keep old name for compatibility
         async function loadAdminCamerasList() {
             const list = await getAdminCamerasList();
             adminAvailableCameras = list;
@@ -1559,19 +1569,16 @@
             const oldVideoTrack = liveLocalStream.getVideoTracks()[0];
             if (!oldVideoTrack) return;
 
-            // احصل على قائمة الكاميرات
             const cams = await getAdminCamerasList();
             if (cams.length < 2) {
                 alert('⚠️ لا توجد كاميرا أخرى للتبديل.');
                 return;
             }
 
-            // حدد الكاميرا الحالية
             const currentId = oldVideoTrack.getSettings().deviceId;
             let currentIdx = cams.findIndex(c => c.deviceId === currentId);
             if (currentIdx === -1) currentIdx = 0;
 
-            // الكاميرا التالية (دورة دائرية)
             const nextIdx = (currentIdx + 1) % cams.length;
             const nextCam = cams[nextIdx];
 
@@ -1582,7 +1589,6 @@
 
             let newVideoTrack = null;
 
-            // المحاولة الأولى: التبديل بالـ deviceId (الأدق)
             try {
                 const newStream = await navigator.mediaDevices.getUserMedia({
                     video: {
@@ -1615,10 +1621,8 @@
 
             if (!newVideoTrack) return;
 
-            // حافظ على حالة التشغيل/الإيقاف
             newVideoTrack.enabled = adminCamEnabled;
 
-            // 🔄 استبدل التراك في كل اتصالات الطلاب
             for (const studentId of Object.keys(peerConnections)) {
                 const pc = peerConnections[studentId];
                 const sender = pc.getSenders().find(s => s.track && s.track.kind === 'video');
@@ -1627,16 +1631,13 @@
                 }
             }
 
-            // 🔄 استبدل في الـ local stream
             liveLocalStream.removeTrack(oldVideoTrack);
             oldVideoTrack.stop();
             liveLocalStream.addTrack(newVideoTrack);
 
-            // 🔄 حدّث المعاينة
             const preview = document.getElementById('localPreview');
             if (preview) preview.srcObject = liveLocalStream;
 
-            // ✅ حدّث اسم الكاميرا
             adminCurrentCamName = await detectCurrentAdminCamName(newVideoTrack);
 
             if (switchBtn) {
@@ -1663,10 +1664,25 @@
             startBtn.textContent = 'جاري التحضير...';
             msg.innerHTML = '';
 
+            // 🆕 احسب معرّف البث الخاص بالصف
+            const gradeDocId = getGradeDocId(grade);
+
+            // 🆕 تحقق لو في بث نشط بالفعل لنفس الصف
+            try {
+                const existingDoc = await db.collection('liveStreams').doc(gradeDocId).get();
+                if (existingDoc.exists && existingDoc.data().isLive) {
+                    if (existingDoc.data().adminId !== currentAdmin.id) {
+                        msg.innerHTML = '<div class="alert alert-warning">⚠️ يوجد بث نشط بالفعل لهذا الصف من أدمن آخر (' + esc(existingDoc.data().adminName || '') + '). اختر صفاً آخر أو أوقف بثك أولاً.</div>';
+                        startBtn.disabled = false;
+                        startBtn.textContent = '🔴 بدء البث';
+                        return;
+                    }
+                }
+            } catch(e) { console.warn('Check existing error:', e); }
+
             try {
                 liveLocalStream = await getLiveStream();
 
-                // 🎥 احفظ الـ facingMode المستخدم
                 if (document.getElementById('liveSource').value === 'camera') {
                     try {
                         const settings = liveLocalStream.getVideoTracks()[0]?.getSettings();
@@ -1680,16 +1696,19 @@
                 document.getElementById('localPreview').srcObject = liveLocalStream;
                 document.getElementById('localPreviewContainer').style.display = 'block';
 
-                // 🧹 امسح بيانات الطلاب القديمة قبل البدء
+                // 🆕 احفظ معرّف البث الحالي
+                currentBroadcastDocId = gradeDocId;
+
+                // 🧹 امسح بيانات الطلاب القديمة لنفس الصف
                 try {
-                    const oldSnap = await db.collection('liveStreams').doc('current').collection('students').get();
+                    const oldSnap = await db.collection('liveStreams').doc(gradeDocId).collection('students').get();
                     const batch = db.batch();
                     oldSnap.forEach(d => batch.delete(d.ref));
                     await batch.commit();
                     console.log('🧹 تم مسح بيانات الطلاب القديمة');
                 } catch(e) { console.warn('Cleanup error:', e); }
 
-                await db.collection('liveStreams').doc('current').set({
+                await db.collection('liveStreams').doc(gradeDocId).set({
                     isLive: true,
                     title, grade,
                     startedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -1709,7 +1728,6 @@
                 updateAdminCamBtn();
                 updateAdminMicBtn();
 
-                // 🔄 أظهر زر تبديل الكاميرا مع اسم الكاميرا الحالية
                 const sourceNow = document.getElementById('liveSource').value;
                 if (sourceNow === 'camera') {
                     const showSwitch = await shouldShowSwitchCameraBtn();
@@ -1732,8 +1750,8 @@
                     </div>
                 `;
 
-                // استمع للطلاب الجدد
-                studentsUnsubscribe = db.collection('liveStreams').doc('current').collection('students')
+                // استمع للطلاب الجدد من مستند الصف
+                studentsUnsubscribe = db.collection('liveStreams').doc(gradeDocId).collection('students')
                     .onSnapshot(snap => {
                         snap.docChanges().forEach(change => {
                             if (change.type === 'added') {
@@ -1771,22 +1789,19 @@
             const pc = new RTCPeerConnection(ICE_SERVERS);
             peerConnections[studentId] = pc;
 
-            // أضف فيديو/صوت الأدمن
             liveLocalStream.getTracks().forEach(track => {
                 pc.addTrack(track, liveLocalStream);
             });
 
-            // استقبل فيديو/صوت الطالب
             pc.ontrack = (event) => {
                 console.log('📺 وصل فيديو الطالب:', studentId);
                 addStudentStream(studentId, event.streams[0]);
             };
 
-            // ICE candidates
             pc.onicecandidate = async (event) => {
                 if (event.candidate) {
                     try {
-                        await db.collection('liveStreams').doc('current')
+                        await db.collection('liveStreams').doc(currentBroadcastDocId)
                             .collection('students').doc(studentId)
                             .set({
                                 adminCandidates: firebase.firestore.FieldValue.arrayUnion(event.candidate.toJSON())
@@ -1804,12 +1819,10 @@
                 }
             };
 
-            // أنشئ offer
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
 
-            // اكتب offer + adminCandidates فاضية
-            await db.collection('liveStreams').doc('current')
+            await db.collection('liveStreams').doc(currentBroadcastDocId)
                 .collection('students').doc(studentId)
                 .set({
                     offer: { type: offer.type, sdp: offer.sdp },
@@ -1817,14 +1830,12 @@
                     adminCandidates: []
                 }, { merge: true });
 
-            // استمع للـ answer والـ ICE من الطالب
-            const unsub = db.collection('liveStreams').doc('current')
+            const unsub = db.collection('liveStreams').doc(currentBroadcastDocId)
                 .collection('students').doc(studentId)
                 .onSnapshot(async (snap) => {
                     if (!snap.exists) return;
                     const data = snap.data();
 
-                    // answer — بس لو لسه مفيش remote description
                     if (data.answer && !pc.currentRemoteDescription) {
                         try {
                             await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
@@ -1832,12 +1843,11 @@
                         } catch(e) { console.warn('setRemote error:', e); }
                     }
 
-                    // student ICE candidates — بعد ما remote description جاهز
                     if (data.studentCandidates && pc.remoteDescription) {
                         for (const c of data.studentCandidates) {
                             try {
                                 await pc.addIceCandidate(new RTCIceCandidate(c));
-                            } catch(e) { /* مضاف */ }
+                            } catch(e) { }
                         }
                     }
                 });
@@ -1921,20 +1931,25 @@
                 liveLocalStream = null;
             }
 
+            // 🆕 استخدم معرّف البث الحالي
+            const docId = currentBroadcastDocId || 'current';
+
             try {
-                const studentsSnap = await db.collection('liveStreams').doc('current').collection('students').get();
+                const studentsSnap = await db.collection('liveStreams').doc(docId).collection('students').get();
                 const batch = db.batch();
                 studentsSnap.forEach(d => batch.delete(d.ref));
                 await batch.commit();
             } catch(e) { console.warn(e); }
 
             try {
-                await db.collection('liveStreams').doc('current').update({
+                await db.collection('liveStreams').doc(docId).update({
                     isLive: false,
                     stoppedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
             } catch(e) { console.error(e); }
 
+            // 🆕 صفّر معرّف البث
+            currentBroadcastDocId = null;
             isLiveActive = false;
 
             document.getElementById('localPreviewContainer').style.display = 'none';
@@ -1948,19 +1963,18 @@
             document.getElementById('liveStreamStatusBox').innerHTML = '<div style="text-align:center; padding:15px; color:#888;">⏸️ لا يوجد بث نشط</div>';
             if (msg) msg.innerHTML = '<div class="alert alert-warning">⏹️ تم إيقاف البث.</div>';
 
-            // 🔄 اخفِ زر تبديل الكاميرا
             const switchBtn = document.getElementById('btnSwitchCam');
             if (switchBtn) {
                 switchBtn.style.display = 'none';
                 switchBtn.innerHTML = '<span>🔄</span> <span>Front 1</span>';
             }
 
-            // 🔄 أعد تعيين الحالات
             adminFacingMode = 'user';
             adminCurrentCamName = 'Front 1';
             adminCamerasCache = [];
 
             loadStudentsTable();
+            loadLiveStreamStatus();
         }
 
         function addStudentStream(studentId, stream) {
@@ -2004,11 +2018,11 @@
         }
 
         async function saveGlobalPermissions() {
-            if (!isLiveActive) return;
+            if (!isLiveActive || !currentBroadcastDocId) return;
             const allowAllCameras = document.getElementById('permAllCameras').checked;
             const allowAllMics = document.getElementById('permAllMics').checked;
             try {
-                await db.collection('liveStreams').doc('current').update({
+                await db.collection('liveStreams').doc(currentBroadcastDocId).update({
                     'settings.allowAllCameras': allowAllCameras,
                     'settings.allowAllMics': allowAllMics
                 });
@@ -2016,9 +2030,9 @@
         }
 
         async function toggleStudentCamera(studentId, allowed) {
-            if (!isLiveActive) return;
+            if (!isLiveActive || !currentBroadcastDocId) return;
             try {
-                await db.collection('liveStreams').doc('current')
+                await db.collection('liveStreams').doc(currentBroadcastDocId)
                     .collection('students').doc(studentId)
                     .set({ cameraAllowed: allowed }, { merge: true });
                 loadStudentsTable();
@@ -2026,32 +2040,39 @@
         }
 
         async function toggleStudentMic(studentId, allowed) {
-            if (!isLiveActive) return;
+            if (!isLiveActive || !currentBroadcastDocId) return;
             try {
-                await db.collection('liveStreams').doc('current')
+                await db.collection('liveStreams').doc(currentBroadcastDocId)
                     .collection('students').doc(studentId)
                     .set({ micAllowed: allowed }, { merge: true });
                 loadStudentsTable();
             } catch(err) { console.error(err); }
         }
 
+        // 🆕 اعرض كل البثات النشطة
         async function loadLiveStreamStatus() {
             try {
-                const doc = await db.collection('liveStreams').doc('current').get();
+                const snap = await db.collection('liveStreams').get();
                 const box = document.getElementById('liveStreamStatusBox');
                 if (!box) return;
 
-                if (doc.exists && doc.data().isLive) {
-                    const data = doc.data();
-                    box.innerHTML = `
-                        <div style="background:#d4edda; color:#155724; border:2px solid #2a7a2a; padding:15px; border-radius:16px;">
-                            <strong>🔴 البث نشط حالياً:</strong> ${esc(data.title)} — ${esc(data.grade)}
-                            <br><small>إذا لم تكن أنت من بدأه، فمستخدم أدمن آخر يديره حالياً.</small>
+                const activeStreams = snap.docs.filter(d => d.data().isLive);
+
+                if (activeStreams.length === 0) {
+                    box.innerHTML = '<div style="text-align:center; padding:15px; color:#888;">⏸️ لا يوجد بث نشط حالياً</div>';
+                    return;
+                }
+
+                box.innerHTML = activeStreams.map(d => {
+                    const data = d.data();
+                    const isMine = data.adminId === (currentAdmin ? currentAdmin.id : '');
+                    return `
+                        <div style="background:${isMine ? '#d4edda' : '#fff3cd'}; color:${isMine ? '#155724' : '#856404'}; border:2px solid ${isMine ? '#2a7a2a' : '#d4af37'}; padding:15px; border-radius:16px; margin-bottom:10px;">
+                            <strong>🔴 بث نشط:</strong> ${esc(data.title || 'بدون عنوان')} — ${esc(data.grade || '')}
+                            <br><small>👤 ${esc(data.adminName || 'أدمن')} ${isMine ? '(أنت)' : ''}</small>
                         </div>
                     `;
-                } else {
-                    box.innerHTML = '<div style="text-align:center; padding:15px; color:#888;">⏸️ لا يوجد بث نشط</div>';
-                }
+                }).join('');
             } catch(e) { console.error(e); }
         }
 
@@ -2072,7 +2093,6 @@
             toggleItemFields();
             loadLiveStreamStatus();
 
-            // 📱 تحقق من دعم مشاركة الشاشة (مش شرط نلغيها)
             const sourceSelect = document.getElementById('liveSource');
             if (sourceSelect) {
                 const screenOpt = sourceSelect.querySelector('option[value="screen"]');
@@ -2083,7 +2103,6 @@
                 }
             }
 
-            // 🔄 حدّث قائمة الكاميرات
             loadAdminCamerasList();
         }
     </script>
